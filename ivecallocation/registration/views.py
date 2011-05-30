@@ -175,6 +175,7 @@ def register(request, backend, success_url=None, form_class=None,
     argument.
     
     """
+    remote_ip = request.META['REMOTE_ADDR'] if 'REMOTE_ADDR' in request.META else request.META['HTTP_X_FORWARDED_HOST']
     backend = get_backend(backend)
     if not backend.registration_allowed(request):
         return redirect(disallowed_url)
@@ -182,7 +183,7 @@ def register(request, backend, success_url=None, form_class=None,
         form_class = backend.get_form_class(request)
 
     if request.method == 'POST':
-        form = form_class(data=request.POST, files=request.FILES)
+        form = form_class(remote_ip,data=request.POST, files=request.FILES)
         if form.is_valid():
             new_user = backend.register(request, **form.cleaned_data)
             if success_url is None:
@@ -191,7 +192,7 @@ def register(request, backend, success_url=None, form_class=None,
             else:
                 return redirect(success_url)
     else:
-        form = form_class()
+        form = form_class(remote_ip)
     
     if extra_context is None:
         extra_context = {}

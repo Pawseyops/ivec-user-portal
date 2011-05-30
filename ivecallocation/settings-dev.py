@@ -173,3 +173,6 @@ LOGS = []                                               # list the logs you want
 ACCOUNT_ACTIVATION_DAYS = 14
 
 
+RECAPTCHA_PUBLIC_KEY = "6LcB0sQSAAAAAJv_KVDzDjRbAMpJfc9b2t6rlOdV"
+RECAPTCHA_PRIVATE_KEY = "6LcB0sQSAAAAAPy2brzHv_A6i3Atft6rmrfC32-g"
+
