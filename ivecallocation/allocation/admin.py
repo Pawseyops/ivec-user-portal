@@ -94,23 +94,15 @@ class ApplicationAdmin(admin.ModelAdmin):
             return Application.objects.all()
 
         if self.has_change_permission(request):
-            return Application.objects.filter(user=application.created_by)
+            return Application.objects.filter(created_by=request.user)
         else:
             return Application.objects.none()
 
-
-##    def queryset(self, request):
-##        import groups.models
-
-##        if request.user.is_superuser:
-##            return Diagnosis.objects.all()
-
-##        user = groups.models.User.objects.get(user=request.user)
-
-##        if self.has_change_permission(request):
-##            return Diagnosis.objects.filter(patient__working_group=user.working_group).filter(patient__active=True)
-##        else:
-##            return Diagnosis.objects.none()
+    # add the user to created_by on save
+    def save_model(self, request, obj, form, change):
+        if not change:
+            obj.created_by = request.user
+            obj.save()
 
 
 admin.site.register(Application, ApplicationAdmin)
@@ -121,4 +113,6 @@ admin.site.register(Publication)
 admin.site.register(ResearchFunding)
 admin.site.register(SupercomputerJob)
 admin.site.register(Library)
+
+
 
