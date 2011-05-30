@@ -16,13 +16,13 @@ class Application(models.Model):
     priority_area_radio_astronomy = models.BooleanField(help_text=help_text_priority_areas)
     priority_area_geosciences = models.BooleanField(help_text=help_text_priority_areas)
     research_record = models.CharField(max_length=5000, help_text=help_text_research_record, null=True, blank=True)
-    research_significance = models.CharField(max_length=5000, null=True, blank=True)
-    computational_methodology = models.CharField(max_length=5000, null=True, blank=True)
-    core_hours_requested = models.IntegerField(null=True, blank=True)
-    storage_temporary = models.FloatField(null=True, blank=True)
-    storage_resident = models.FloatField(null=True, blank=True)
-    storage_pbstore = models.FloatField(null=True, blank=True)
-    data_transfers = models.CharField(max_length=512, null=True, blank=True)
+    research_significance = models.CharField(max_length=5000, help_text=help_text_research_significance, null=True, blank=True)
+    computational_methodology = models.CharField(max_length=5000, help_text=help_text_computational_methodology, null=True, blank=True)
+    core_hours_requested = models.IntegerField(null=True, blank=True, help_text=help_text_core_hours)
+    storage_temporary = models.CharField(max_length=32, null=True, blank=True, help_text=help_text_storage_temporary)
+    storage_resident = models.CharField(max_length=32, null=True, blank=True, help_text=help_text_storage_resident)
+    storage_pbstore = models.CharField(max_length=32, null=True, blank=True, help_text=help_text_storage_pbstore)
+    data_transfers = models.CharField(max_length=512, null=True, blank=True, help_text=help_text_data_transfers)
     created_by = models.ForeignKey(DjangoUser, editable=False, related_name="%(class)s_creators",null=True)
     created_on = models.DateTimeField(auto_now_add=True, editable=False)
     complete =  models.BooleanField(verbose_name="ready to submit application")
@@ -56,7 +56,7 @@ class Participant(models.Model):
     account = models.BooleanField()
     admin = models.BooleanField()
     student = models.BooleanField()
-    eft = models.IntegerField(null=True, blank=True)
+    eft = models.FloatField(null=True, blank=True, verbose_name="EFT %")
 
     def __unicode__(self):
         return "%s" % self.name
@@ -114,10 +114,10 @@ class SupercomputerJob(models.Model):
     job_type = models.CharField(max_length=1, choices=JOB_TYPE_CHOICES, null=True, blank=True)
     processes = models.IntegerField(verbose_name="Number of (MPI) processes", null=True, blank=True)
     processes_per_node = models.IntegerField(null=True, blank=True)
-    wallclock_time_per_job = models.IntegerField(null=True, blank=True)
+    wallclock_time_per_job = models.CharField(max_length=32, null=True, blank=True)
     number_of_type_of_job = models.IntegerField(verbose_name="Number of jobs of this type", null=True, blank=True)
-    total_memory = models.IntegerField(null=True, blank=True)
-    data_transfer = models.IntegerField(verbose_name="Amount of data read/written to disk", null=True, blank=True)
+    total_memory = models.CharField(max_length=32, null=True, blank=True)
+    data_transfer = models.CharField(max_length=32, verbose_name="Amount of data read/written to disk", null=True, blank=True)
 
 
 
