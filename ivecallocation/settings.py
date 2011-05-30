@@ -104,9 +104,10 @@ INSTALLED_APPS = (
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.sites',
+    'registration',
     'django.contrib.messages',
     # Uncomment the next line to enable the admin:
-    # 'django.contrib.admin',
+    'django.contrib.admin',
     # Uncomment the next line to enable admin documentation:
     # 'django.contrib.admindocs',
 )
@@ -166,4 +167,9 @@ LOGS = []                                               # list the logs you want
 #from django.utils.webhelpers import url
 #SESSION_COOKIE_PATH = url('/')
 #SESSION_SAVE_EVERY_REQUEST = True
+
+
+# registration app settings
+ACCOUNT_ACTIVATION_DAYS = 14
+
 
