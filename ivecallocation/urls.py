@@ -1,9 +1,13 @@
 from django.conf.urls.defaults import *
 from django.contrib import admin
 
+from django.views.generic.simple import redirect_to
+
 # Uncomment the next two lines to enable the admin:
 # from django.contrib import admin
 admin.autodiscover()
+
+from django.utils.webhelpers import url
 
 urlpatterns = patterns('',
     # Example:
@@ -20,4 +24,6 @@ urlpatterns = patterns('',
     
     # registration
     (r'^accounts/', include('registration.backends.ivec.urls')),
+    
+    (r'^$', redirect_to, {'url': url('/accounts/register/')}),
 )

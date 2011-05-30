@@ -9,7 +9,7 @@ from django.shortcuts import render_to_response
 from django.template import RequestContext
 
 from registration.backends import get_backend
-
+from registration.signals import user_activated
 
 def activate(request, backend,
              template_name='registration/activate.html',
@@ -203,3 +203,14 @@ def register(request, backend, success_url=None, form_class=None,
     return render_to_response(template_name,
                               {'form': form},
                               context_instance=context)
+
+
+from django.contrib.auth.models import User, Group
+def on_activate(signal, request, user, sender, *args, **kwargs):
+    # find group 'unprivileged'
+    unprivileged = Group.objects.get(name='unprivileged')
+    user.groups.add(unprivileged)
+    user.is_staff = True
+    user.save()
+
+user_activated.connect(on_activate)
