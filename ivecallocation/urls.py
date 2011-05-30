@@ -19,5 +19,5 @@ urlpatterns = patterns('',
     #(r'^project_status', status_view),
     
     # registration
-    (r'^accounts/', include('registration.backends.default.urls')),
+    (r'^accounts/', include('registration.backends.ivec.urls')),
 )
