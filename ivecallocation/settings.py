@@ -173,4 +173,6 @@ LOGS = []                                               # list the logs you want
 # registration app settings
 ACCOUNT_ACTIVATION_DAYS = 14
 
+RECAPTCHA_PUB_KEY = "6LcB0sQSAAAAAJv_KVDzDjRbAMpJfc9b2t6rlOdV"
+RECAPTCHA_PRIV_KEY = "6LcB0sQSAAAAAPy2brzHv_A6i3Atft6rmrfC32-g"
 
