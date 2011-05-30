@@ -26,4 +26,5 @@ urlpatterns = patterns('',
     (r'^accounts/', include('registration.backends.ivec.urls')),
     
     (r'^$', redirect_to, {'url': url('/accounts/register/')}),
+    
 )

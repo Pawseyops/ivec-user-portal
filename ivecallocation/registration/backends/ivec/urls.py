@@ -50,4 +50,10 @@ urlpatterns = patterns('',
                            {'template': 'registration/registration_closed.html'},
                            name='registration_disallowed'),
                        (r'', include('registration.auth_urls')),
+                       url(r'^register/already_registered/$',
+                           direct_to_template,
+                           {'template': 'registration/already_registered.html'},
+                           name='already_registered'),
+                       (r'', include('registration.auth_urls')),
+                       
                        )

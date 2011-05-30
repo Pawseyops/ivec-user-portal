@@ -7,7 +7,7 @@ Views which allow users to create and activate accounts.
 from django.shortcuts import redirect
 from django.shortcuts import render_to_response
 from django.template import RequestContext
-
+from django.db.utils import IntegrityError
 from registration.backends import get_backend
 from registration.signals import user_activated
 
@@ -186,11 +186,14 @@ def register(request, backend, success_url=None, form_class=None,
         form = form_class(remote_ip,data=request.POST, files=request.FILES)
         if form.is_valid():
             new_user = backend.register(request, **form.cleaned_data)
+            if new_user is None:
+                return redirect('already_registered')
             if success_url is None:
                 to, args, kwargs = backend.post_registration_redirect(request, new_user)
                 return redirect(to, *args, **kwargs)
             else:
                 return redirect(success_url)
+            
     else:
         form = form_class(remote_ip)
     

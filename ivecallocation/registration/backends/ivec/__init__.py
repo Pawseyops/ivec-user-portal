@@ -1,6 +1,7 @@
 from django.conf import settings
 from django.contrib.sites.models import RequestSite
 from django.contrib.sites.models import Site
+from django.contrib.auth.models import User
 
 from registration import signals
 from registration.forms import RegistrationForm
@@ -77,6 +78,15 @@ class IVECBackend(object):
             site = Site.objects.get_current()
         else:
             site = RequestSite(request)
+            
+        # does an equivalent user profile already exist?
+        try:
+            User.objects.get(username=username)
+        except User.DoesNotExist:
+            pass            # all good, they shouldnt exist
+        else:
+            return None     # they already exist
+            
         new_user = RegistrationProfile.objects.create_inactive_user(username, email,
                                                                     password, site)
         signals.user_registered.send(sender=self.__class__,
