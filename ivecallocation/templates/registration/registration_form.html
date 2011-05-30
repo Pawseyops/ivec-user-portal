@@ -49,7 +49,8 @@ Please note that iVEC will manage the allocation on a best effort basis but cann
 </p><p>
 Closing date is Friday 17th June. 
 </p>
-        <form action="/accounts/register/" method="POST">${ csrf_tag(csrf_token) }
+<% from django.utils.webhelpers import url %>
+        <form action="${url('/accounts/register/')}" method="POST">${ csrf_tag(csrf_token) }
             <table>
             ${ form.as_table() }
             </table>
