@@ -1,9 +1,10 @@
-<html>
-    <head>
-        <title>Registration Complete</title>
-    </head>
-    <body>
-        <h2>Registration Complete!</h2>
-        You should soon receieve an email from iVEC with your registration confirmation code. Click on the link in the email to confirm your registration.
-    </body>
-</html>
+<%inherit file="base.html" />
+<% from django.utils.webhelpers import url %>
+
+<%def name="title()">Registration Complete</%def>
+
+<p>
+    You should soon receive an email from iVEC with your registration
+    confirmation code. Click on the link in the email to confirm your
+    registration.
+</p>
