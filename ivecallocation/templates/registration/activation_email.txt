@@ -1,12 +1,16 @@
+<% from django.utils.webhelpers import url %>
+<% from django.contrib.sites.models import Site %>
+<% current_site = Site.objects.get_current() %>
+
 Recently this email address was used to create a profile to apply for resouces on Pawsey-funded iVEC infrastructure.
 
 To activate this profile, please use this link:
 
-http://localhost:8000/accounts/activate/${ activation_key }/
+http://${current_site}${ url('/accounts/activate/') }${activation_key}/
 
 After activation you can login to the application site here:
 
-http://localhost:8000/accounts/login/
+http://${current_site}${ url('/login/') }
 
 If you did not create this profile, please disregard this email.
 

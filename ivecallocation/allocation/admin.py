@@ -34,7 +34,7 @@ class LibraryInline(admin.TabularInline):
 
 class ApplicationAdmin(admin.ModelAdmin):
     save_on_top = True
-    list_display = ['project_title']
+    list_display = ['project_title', 'submitted']
     inlines = [ResearchClassificationInline, ParticipantInline, PublicationInline, ResearchFundingInline, SupportingFundingInline, SupercomputerJobInline, LibraryInline ] 
     form = ApplicationForm
     
@@ -84,6 +84,13 @@ class ApplicationAdmin(admin.ModelAdmin):
               
               )
           }
+        ),
+        ('Submit', 
+         {'fields': 
+              (
+              'complete',              
+              )
+          }
         ),        
 
     )
@@ -102,8 +109,10 @@ class ApplicationAdmin(admin.ModelAdmin):
     def save_model(self, request, obj, form, change):
         if not change:
             obj.created_by = request.user
-            obj.save()
+        obj.save()
 
+    def submitted(self, obj):
+        return "Submitted" if obj.complete else "Not yet submitted"
 
 admin.site.register(Application, ApplicationAdmin)
 admin.site.register(ResearchClassification)
