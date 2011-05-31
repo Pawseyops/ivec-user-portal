@@ -44,13 +44,10 @@ then
 
     # hack activate to set some environment we need
     # this version nukes the python path
-    # hard coded yebife.settings, better version would determine this programatically
     echo "PROJECT_DIRECTORY=`pwd`;" >>  $VPYTHON_DIR/bin/activate
-    #echo "DJANGO_SETTINGS_MODULE=yabife.settings"  >>  $VPYTHON_DIR/bin/activate
-    #echo "PYTHONPATH='$PYTHONPATH:/usr/local/etc/ccgapps/'" >>  $VPYTHON_DIR/bin/activate
     echo "PYTHONPATH=/usr/local/etc/ccgapps:/usr/local/etc/ccgbuild" >>  $VPYTHON_DIR/bin/activate
 
-    echo "export PROJECT_DIRECTORY DJANGO_SETTINGS_MODULE PYTHONPATH" >>  $VPYTHON_DIR/bin/activate
+    echo "export PROJECT_DIRECTORY PYTHONPATH" >>  $VPYTHON_DIR/bin/activate
 
 fi
 
