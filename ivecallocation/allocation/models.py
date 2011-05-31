@@ -60,7 +60,6 @@ class Participant(models.Model):
 
     def __unicode__(self):
         return "%s" % self.name
-
     
 class Publication(models.Model):
     application = models.ForeignKey(Application)

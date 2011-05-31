@@ -44,13 +44,36 @@ class ApplicationAdmin(admin.ModelAdmin):
               (
               'project_title',
               'project_summary',
-              'ResearchClassificationInline',
               'priority_area_radio_astronomy',
               'priority_area_geosciences',
-              'ParticipantInline',              
-              )
+              ),
           }
         ),
+
+
+
+        ('', 
+         {'fields': 
+              (
+              'ResearchClassificationInline',
+              ),
+          'description': help_text_research_classifications
+          }
+        ),
+
+
+        ('', 
+         {'fields': 
+              (
+              'ParticipantInline',
+              ),
+          'description':'Here is my text Here is my text Here is<br/> my text Here is my text Here is my text Here is my text '
+          }
+        ),
+
+
+
+
         ('Part B - Project Team', 
          {'fields': 
               (
