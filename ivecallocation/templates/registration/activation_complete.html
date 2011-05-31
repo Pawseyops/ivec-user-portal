@@ -1,10 +1,10 @@
+<%inherit file="base.html" />
 <% from django.utils.webhelpers import url %>
-<html>
-    <head>
-        <title>Activation complete</title>
-    </head>
-    <body>
-        <h4>Activation complete!</h4>
-        <p>Congratulations! Your account is now active.Go <a href="${url('/login')}">here</a> to login using your email address and password you specified in the registration process.
-    </body>
-</html>
+
+<%def name="title()">Activation Complete</%def>
+
+<p>
+    Congratulations! Your account is now active. 
+    Go <a href="${url('/login')}">here</a> to login using your email address
+    and password you specified in the registration process.
+</p>

@@ -1,11 +1,8 @@
+<%inherit file="base.html" />
 <% from django.utils.webhelpers import url %>
 
-<html>
-    <head>
-        <title>Email Already Registrated</title>
-    </head>
-    <body>
-        <h2>Email Already Registered</h2>
-        This email address is already registered. Try to <a href='${ url("/admin") }'>login</a>.
-    </body>
-</html>
+<%def name="title()">Email Already Registered</%def>
+
+<p>
+    This email address is already registered. Try to <a href='${ url("/admin") }'>login</a>.
+</p>
