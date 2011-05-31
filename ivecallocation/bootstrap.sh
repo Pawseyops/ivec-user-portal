@@ -36,8 +36,7 @@ then
     # create a virtual python in the current directory
     python $VIRTUALENV/build/lib*/virtualenv.py --no-site-packages $VPYTHON_DIR
 
-    # we need mx.DateTime for psycopg2
-    #./$VPYTHON_DIR/bin/easy_install egenix-mx-base
+    ./$VPYTHON_DIR/bin/easy_install fabric
 
     # install all the eggs in this app
     ./$VPYTHON_DIR/bin/easy_install eggs/*
@@ -49,7 +48,7 @@ then
     echo "PROJECT_DIRECTORY=`pwd`;" >>  $VPYTHON_DIR/bin/activate
     #echo "DJANGO_SETTINGS_MODULE=yabife.settings"  >>  $VPYTHON_DIR/bin/activate
     #echo "PYTHONPATH='$PYTHONPATH:/usr/local/etc/ccgapps/'" >>  $VPYTHON_DIR/bin/activate
-    echo "PYTHONPATH=/usr/local/etc/ccgapps/" >>  $VPYTHON_DIR/bin/activate
+    echo "PYTHONPATH=/usr/local/etc/ccgapps:/usr/local/etc/ccgbuild" >>  $VPYTHON_DIR/bin/activate
 
     echo "export PROJECT_DIRECTORY DJANGO_SETTINGS_MODULE PYTHONPATH" >>  $VPYTHON_DIR/bin/activate
 
