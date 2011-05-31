@@ -1,3 +1,5 @@
+import os
+
 from django.conf.urls.defaults import *
 from django.contrib import admin
 
@@ -29,3 +31,12 @@ urlpatterns = patterns('',
     (r'^login[/]$', redirect_to, {'url': url('/admin/')}),
     
 )
+
+
+
+urlpatterns += patterns('',
+        (r'^static/(?P<path>.*)$',
+        'django.views.static.serve',
+        {'document_root': os.path.join(os.path.dirname(__file__),"static"), 'show_indexes': True}),
+)
+
