@@ -1,13 +1,13 @@
 import os
 
 from django.conf.urls.defaults import *
-from django.contrib import admin
 
 from django.views.generic.simple import redirect_to
 
 # Uncomment the next two lines to enable the admin:
 # from django.contrib import admin
-admin.autodiscover()
+
+import admin
 
 from django.utils.webhelpers import url
 

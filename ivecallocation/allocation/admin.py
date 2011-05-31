@@ -175,14 +175,5 @@ class ApplicationAdmin(admin.ModelAdmin):
     def submitted(self, obj):
         return "Submitted" if obj.complete else "Not yet submitted"
 
-admin.site.register(Application, ApplicationAdmin)
-admin.site.register(ResearchClassification)
-admin.site.register(FieldOfResearchCode)
-admin.site.register(Participant)
-admin.site.register(Publication)
-admin.site.register(ResearchFunding)
-admin.site.register(SupercomputerJob)
-admin.site.register(Library)
-
 
 
