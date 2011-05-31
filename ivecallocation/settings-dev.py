@@ -63,3 +63,5 @@ CAPTCHA_URL = os.path.join(MEDIA_URL, 'captchas')
 RECAPTCHA_PUBLIC_KEY = "6LcB0sQSAAAAAJv_KVDzDjRbAMpJfc9b2t6rlOdV"
 RECAPTCHA_PRIVATE_KEY = "6LcB0sQSAAAAAPy2brzHv_A6i3Atft6rmrfC32-g"
 
+# this does not have an effect presently
+#LOGIN_REDIRECT_URL = url('/admin/allocation/application/add/')
