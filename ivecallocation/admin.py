@@ -20,12 +20,5 @@ site = allocation.adminsite.IvecAdminSite(name="Yabi Frontend Administration")
 site.register(django.contrib.auth.models.Group, GroupAdmin)
 site.register(django.contrib.auth.models.User, UserAdmin)
 
-from allocation.admin import *
-site.register(Application, ApplicationAdmin)
-site.register(ResearchClassification)
-site.register(FieldOfResearchCode)
-site.register(Participant)
-site.register(Publication)
-site.register(ResearchFunding)
-site.register(SupercomputerJob)
-site.register(Library)
+from allocation.admin import register
+register(site)
