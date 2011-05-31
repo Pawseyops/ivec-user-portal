@@ -6,31 +6,31 @@ from admin_forms import *
 
 class ResearchClassificationInline(admin.TabularInline):
     model = ResearchClassification
-    extra = 3
+    extra = 1
 
 class ParticipantInline(admin.TabularInline):
     model = Participant
-    extra = 4
+    extra = 1
 
 class PublicationInline(admin.TabularInline):
     model = Publication
-    extra = 10
+    extra = 1
 
 class ResearchFundingInline(admin.TabularInline):
     model = ResearchFunding
-    extra = 10
+    extra = 1
 
 class SupportingFundingInline(admin.TabularInline):
     model = SupportingFunding
-    extra = 10    
+    extra = 1    
 
 class SupercomputerJobInline(admin.TabularInline):
     model = SupercomputerJob
-    extra = 3
+    extra = 1
 
 class LibraryInline(admin.TabularInline):
     model = Library
-    extra = 5
+    extra = 1
 
 class ApplicationAdmin(admin.ModelAdmin):
     save_on_top = True
@@ -44,12 +44,19 @@ class ApplicationAdmin(admin.ModelAdmin):
               (
               'project_title',
               'project_summary',
-              'priority_area_radio_astronomy',
-              'priority_area_geosciences',
               ),
           }
         ),
 
+        ('', 
+         {'fields': 
+              (
+              'priority_area_radio_astronomy',
+              'priority_area_geosciences',
+              ),
+          'description': help_text_priority_areas
+          }
+        ),
 
 
         ('', 
@@ -67,45 +74,76 @@ class ApplicationAdmin(admin.ModelAdmin):
               (
               'ParticipantInline',
               ),
-          'description':'Here is my text Here is my text Here is<br/> my text Here is my text Here is my text Here is my text '
+          'description': help_text_project_participants
           }
         ),
-
-
-
 
         ('Part B - Project Team', 
          {'fields': 
               (
               'research_record',
-              'PublicationInline',
-              'ResearchFundingInline'
-              
               )
           }
         ),
+        ('', 
+         {'fields': 
+              (
+              'PublicationInline',
+              ),
+          'description': help_text_publications
+          }
+        ),
+        ('', 
+         {'fields': 
+              (
+              'ResearchFundingInline',
+              ),
+          'description': help_text_research_funding
+          }
+        ),
+
+
+
+
         ('Part C - Research Proposal', 
          {'fields': 
               (
               'research_significance',
               'computational_methodology',
-              'SupportingFundingInline'
-              
               )
           }
         ),
-        ('Part D - Resource Request', 
+        ('', 
          {'fields': 
               (
-              'SupercomputerJobInline',
+              'SupportingFundingInline',
+              ),
+          'description': help_text_supporting_funding
+          }
+        ),
+
+
+        ('', 
+         {'fields': 
+              (
+              'SupercomputerJobInline',              
               'core_hours_requested',
-              'LibraryInline',
               'storage_temporary',
               'storage_resident',
               'storage_pbstore',
               'data_transfers'
-              
-              )
+              ),
+          'description': help_text_supercomputer_job
+          }
+        ),
+
+
+        ('', 
+         {'fields': 
+              (
+              'LibraryInline',              
+              ),
+          'description': help_text_libraries
           }
         ),
         ('Submit', 

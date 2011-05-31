@@ -4,10 +4,11 @@ help_text_project_summary = "Please make this suitable for a general audience, a
 
 help_text_research_classifications = "List up to three 6-digit field of research codes for the project and their approximate weightings totalling 100%."
 
-help_text_priority_areas = """There are currently two priority areas that each gain independent access to 25% of the Pawsey-funded infrastructure;
+help_text_priority_areas = """<h4>Priority Areas</h4><br/>
+There are currently two priority areas that each gain independent access to 25% of the Pawsey-funded infrastructure;
 radio astronomy and the geosciences.<br/>
-Please check this box if you wish your application to be considered for this priority area.<br/>
-Note that even if you tick the box, your application will also be considered under the other allocation schemes."""
+Please check the boxes below if you wish your application to be considered for these priority areas.<br/>
+Note that even if you tick a box, your application will also be considered under the other allocation schemes."""
 
 help_text_research_record = """Relevant significant contributions to the research field.<br/>
 Include supercomputing experience.<br/>
@@ -41,5 +42,42 @@ help_text_storage_pbstore="""The iVEC Petascale Data Store is intended for longe
 
 help_text_data_transfers="""Please outline what data (if any) will be transferred from remote systems to the iVEC systems. Please describe the size and geographical location of the remote data and the expected frequency of transfers."""
 
-help_text_research_classifications = """List up to three 6-digit Field of Research codes for the project, and their approximate weightings totalling 100%.<p>
-Codes are available from the <a href="http://www.abs.gov.au/ausstats/abs@.nsf/0/6BB427AB9696C225CA2574180004463E?opendocument" target="blank">ABS website</a>."""
+help_text_research_classifications = """<h4>Research Classifications</h4><br/>&bull; List up to three 6-digit Field of Research codes for the project, and their approximate weightings totalling 100%.<br/>
+&bull; Codes are available from the <a href="http://www.abs.gov.au/ausstats/abs@.nsf/0/6BB427AB9696C225CA2574180004463E?opendocument" target="blank">ABS website</a>."""
+
+help_text_project_participants = """<h4>Project Participants</h4><br/>
+&bull; Enter the details of people actively participating in the project.<br/>
+&bull; <b>List the person responsible for the project (Project Leader) first</b>.  This person must be a staff member
+at an Australian university or CSIRO and obtain an iVEC login account (which will be done once the application is
+approved) and will be responsible for approving additional users to the project, ensuring that appropriate progress
+reports are submitted and be the primary conduit between the project team members and iVEC.<br/>
+&bull; Put the proportion of their own time allocated to the project for each participant in the EFT % column.<br/>
+&bull; Tick the admin box if the participant is authorised to add/delete users to/from the project, or grant access to project data.<br/>
+"""
+
+help_text_publications = """<h4>Ten Best Publications</h4><br/>
+&bull; You may include refereed journal articles, conference papers, honours/postgraduate theses,
+book chapters, patents, or reports.<br/>
+&bull; Please include a one sentence statement for each explaining why that publication is significant.
+"""
+
+help_text_research_funding = """<h4>Research Funding Over The Last Five Years</h4><br/>
+&bull; Do not include funding that supports this project as that will go in section named Supporting Funding.
+"""
+
+help_text_supporting_funding = """<h4>Supporting Funding</h4><br/>
+&bull; List funding that is supporting this project.
+"""
+
+help_text_supercomputer_job = """<h4>Resource Request</h4><br/>
+&bull; The data given here should be consistent with Computational Methodology.<br/>
+&bull; Please specify storage in terabytes (TB).
+"""
+
+help_text_libraries = """<h4>Applications, Tools or Libraries</h4><br/>
+&bull; Please make sure you have access to the source code, or that a compiled version appropriate to the <i>epic</i> supercomputer is available.<br/>
+&bull; Indicate in the Licensing column whether a Licence is required, and if so whether you have such a licence.<br/>
+&bull; Include requirements for libraries such as SCALAPACK, FFTW and indicate if you use a common version or install your own.<br/>
+&bull; If you build your own applications, libraries and/or tools please indicate which compilers you use.<br/>
+&bull; For all software please include version numbers.<br/>
+"""

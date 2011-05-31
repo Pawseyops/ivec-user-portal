@@ -13,8 +13,8 @@ from help_text import *
 class Application(models.Model):
     project_title = models.CharField(max_length=100, help_text=help_text_project_title, null=True, blank=True)
     project_summary = models.CharField(max_length=1000, help_text=help_text_project_summary, null=True, blank=True)
-    priority_area_radio_astronomy = models.BooleanField(help_text=help_text_priority_areas)
-    priority_area_geosciences = models.BooleanField(help_text=help_text_priority_areas)
+    priority_area_radio_astronomy = models.BooleanField()
+    priority_area_geosciences = models.BooleanField()
     research_record = models.CharField(max_length=5000, help_text=help_text_research_record, null=True, blank=True)
     research_significance = models.CharField(max_length=5000, help_text=help_text_research_significance, null=True, blank=True)
     computational_methodology = models.CharField(max_length=5000, help_text=help_text_computational_methodology, null=True, blank=True)
@@ -64,7 +64,7 @@ class Participant(models.Model):
 class Publication(models.Model):
     application = models.ForeignKey(Application)
     reference = models.CharField(max_length=256, null=True, blank=True)
-    description = models.CharField(max_length=256, null=True, blank=True)
+    description = models.CharField(max_length=256, null=True, blank=True, verbose_name="significance")
 
     def __unicode__(self):
         return "%s" % self.reference
