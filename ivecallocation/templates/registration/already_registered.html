@@ -1,9 +1,11 @@
+<% from django.utils.webhelpers import url %>
+
 <html>
     <head>
-        <title>Registration Failed</title>
+        <title>Email Already Registrated</title>
     </head>
     <body>
-        <h2>Registration Failed</h2>
-        You are already registered
+        <h2>Email Already Registered</h2>
+        This email address is already registered. Try to <a href='${ url("/admin") }'>login</a>.
     </body>
 </html>
