@@ -51,7 +51,7 @@ class FieldOfResearchCode(models.Model):
 class Participant(models.Model):
     application = models.ForeignKey(Application)
     name = models.CharField(max_length=256, null=True, blank=True)
-    department_institute = models.CharField(max_length=128, verbose_name="Department, Institute", null=True, blank=True)
+    department_institute = models.CharField(max_length=128, verbose_name="Department, Institution", null=True, blank=True)
     email = models.EmailField(null=True, blank=True)
     account = models.BooleanField()
     admin = models.BooleanField()

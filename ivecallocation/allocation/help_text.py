@@ -2,8 +2,6 @@ help_text_project_title = "Please make it informative, it may be published (100 
 
 help_text_project_summary = "Please make this suitable for a general audience, and highlight the aims, novelty, and significance of the outcomes.  Again, assume that the project summary will be published. (1000 characters max)."
 
-help_text_research_classifications = "List up to three 6-digit field of research codes for the project and their approximate weightings totalling 100%."
-
 help_text_priority_areas = """<h4>Priority Areas</h4><br/>
 There are currently two priority areas that each gain independent access to 25% of the Pawsey-funded infrastructure;
 radio astronomy and the geosciences.<br/>
@@ -42,12 +40,12 @@ help_text_storage_pbstore="""The iVEC Petascale Data Store is intended for longe
 
 help_text_data_transfers="""Please outline what data (if any) will be transferred from remote systems to the iVEC systems. Please describe the size and geographical location of the remote data and the expected frequency of transfers."""
 
-help_text_research_classifications = """<h4>Research Classifications</h4><br/>&bull; List up to three 6-digit Field of Research codes for the project, and their approximate weightings totalling 100%.<br/>
+help_text_research_classifications = """<h4>Research Classifications</h4><br/>&bull; List up to three 6-digit Field of Research codes for the project, and their weightings totalling 100%.<br/>
 &bull; Codes are available from the <a href="http://www.abs.gov.au/ausstats/abs@.nsf/0/6BB427AB9696C225CA2574180004463E?opendocument" target="blank">ABS website</a>."""
 
 help_text_project_participants = """<h4>Project Participants</h4><br/>
 &bull; Enter the details of people actively participating in the project.<br/>
-&bull; <b>List the person responsible for the project (Project Leader) first</b>.  This person must be a staff member
+&bull; <b>List the person responsible for the project (Project Leader) first</b>. This person must be a staff member
 at an Australian university or CSIRO and obtain an iVEC login account (which will be done once the application is
 approved) and will be responsible for approving additional users to the project, ensuring that appropriate progress
 reports are submitted and be the primary conduit between the project team members and iVEC.<br/>
@@ -71,7 +69,8 @@ help_text_supporting_funding = """<h4>Supporting Funding</h4><br/>
 
 help_text_supercomputer_job = """<h4>Resource Request</h4><br/>
 &bull; The data given here should be consistent with Computational Methodology.<br/>
-&bull; Please specify storage in terabytes (TB).
+&bull; Please specify storage in terabytes (TB).<br/>
+&bull; Please fill out data for three cases - smallest, typical and largest job.
 """
 
 help_text_libraries = """<h4>Applications, Tools or Libraries</h4><br/>
