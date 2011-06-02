@@ -11,7 +11,7 @@ from help_text import *
 #logger = logging.getLogger('ivecallocation')
 
 class Application(models.Model):
-    project_title = models.CharField(max_length=100, help_text=help_text_project_title, null=True, blank=True)
+    project_title = models.CharField(max_length=100, help_text=help_text_project_title)
     project_summary = models.CharField(max_length=1000, help_text=help_text_project_summary, null=True, blank=True)
     priority_area_radio_astronomy = models.BooleanField()
     priority_area_geosciences = models.BooleanField()
@@ -75,8 +75,8 @@ class ResearchFunding(models.Model):
     participant = models.CharField(max_length=256, null=True, blank=True)
     funding_source = models.CharField(max_length=256, help_text="Include grant ID number if applicable", null=True, blank=True)
     title = models.CharField(max_length=256, null=True, blank=True)
-    years = models.IntegerField(null=True, blank=True)
-    total_funding = models.IntegerField(null=True, blank=True)
+    years = models.CharField(max_length=64, null=True, blank=True)
+    total_funding = models.CharField(max_length=64, null=True, blank=True)
 
     class Meta:
         verbose_name = "research funding"
@@ -91,8 +91,8 @@ class SupportingFunding(models.Model):
     participant = models.CharField(max_length=256, null=True, blank=True)
     funding_source = models.CharField(max_length=256, help_text="Include grant ID number if applicable", null=True, blank=True)
     title = models.CharField(max_length=256, null=True, blank=True)
-    years = models.IntegerField(null=True, blank=True)
-    total_funding = models.IntegerField(null=True, blank=True)
+    years = models.CharField(max_length=64, null=True, blank=True)
+    total_funding = models.CharField(max_length=64, null=True, blank=True)
 
     class Meta:
         verbose_name = "supporting funding"
