@@ -1,5 +1,5 @@
 BEGIN;
-UPDATE allocation_application SET project_title = '(untitled project)' WHERE project_title IS NULL;
+UPDATE allocation_application SET project_title = '(untitled project)' WHERE project_title = '';
 ALTER TABLE allocation_application ALTER COLUMN project_title SET NOT NULL;
 END;
 
