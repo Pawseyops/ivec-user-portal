@@ -62,11 +62,7 @@ then
     cd ..
 
     # hack activate to set some environment we need
-    # this version nukes the python path
     echo "PROJECT_DIRECTORY=`pwd`;" >>  $VPYTHON_DIR/bin/activate
-    #echo "PYTHONPATH=/usr/local/etc/ccgapps:/usr/local/etc/ccgbuild" >>  $VPYTHON_DIR/bin/activate
-
-    #echo "export PROJECT_DIRECTORY PYTHONPATH" >>  $VPYTHON_DIR/bin/activate
     echo "export PROJECT_DIRECTORY " >>  $VPYTHON_DIR/bin/activate
 
 fi
