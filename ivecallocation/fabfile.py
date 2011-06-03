@@ -9,7 +9,7 @@ env.git_trunk_url = ""
 env.svn_trunk_url = "svn+ssh://store.localdomain/store/techsvn/ccg/ivecallocation/trunk/"
 env.svn_tags_url = "svn+ssh://store.localdomain/store/techsvn/ccg/ivecallocation/tags/"
 
-env.writeable_dirs.extend([]) # add directories you wish to have created and made writeable
+env.writeable_dirs.extend(["scratch"]) # add directories you wish to have created and made writeable
 env.content_excludes.extend([]) # add quoted patterns here for extra rsync excludes
 env.content_includes.extend([]) # add quoted patterns here for extra rsync includes
 

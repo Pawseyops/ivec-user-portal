@@ -50,15 +50,20 @@ then
         mkdir tmp
     fi
     cd tmp
-    rm -rf ccgapps-settings
+    rm -rf ccgapps-settings ccgbuild
     svn export svn+ssh://ccg.murdoch.edu.au/store/techsvn/ccg/ccgapps-settings
+    svn export svn+ssh://ccg.murdoch.edu.au/store/techsvn/ccg/ccgbuild
     # the directory has the wrong name, so create a sym link with the name we need
     ln -s ccgapps-settings appsettings
     # the setup.py is at the wrong level
     mv appsetting/setup.py .
     ../$VPYTHON_DIR/bin/python setup.py bdist_egg
+    cd ccgbuild
+    ../../$VPYTHON_DIR/bin/python setup.py bdist_egg
+    cd ..
     ../$VPYTHON_DIR/bin/easy_install dist/*.egg
-    rm -rf appsettings ccgapps-settings
+    ../$VPYTHON_DIR/bin/easy_install ccgbuild/dist/*.egg
+    rm -rf appsettings ccgapps-settings ccgbuild
     cd ..
 
     # hack activate to set some environment we need
@@ -71,7 +76,7 @@ echo -e "\n\n What just happened?\n\n"
 echo " * Python has been installed into $VPYTHON_DIR"
 echo " * eggs from the eggs in this project have been installed"
 echo " * fabric is also installed"
-echo " * and ccgapps-settings"
+echo " * and ccgapps-settings & ccgbuild"
 
 
 # tell the (l)user how to activate this python install
