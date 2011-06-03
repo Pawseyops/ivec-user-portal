@@ -67,6 +67,13 @@ then
 
 fi
 
+echo -e "\n\n What just happened?\n\n"
+echo " * Python has been installed into $VPYTHON_DIR"
+echo " * eggs from the eggs in this project have been installed"
+echo " * fabric is also installed"
+echo " * and ccgapps-settings"
+
 
 # tell the (l)user how to activate this python install
-echo -e "\n\nTo activate this python install, type the following at the prompt:\n\nsource $VPYTHON_DIR/bin/activate\n\n"
+echo -e "\n\nTo activate this python install, type the following at the prompt:\n\nsource $VPYTHON_DIR/bin/activate\n"
+echo -e "To exit your virtual python, simply type 'deactivate' at the shell prompt\n\n"
