@@ -61,3 +61,6 @@ RECAPTCHA_PRIVATE_KEY = "6LcB0sQSAAAAAPy2brzHv_A6i3Atft6rmrfC32-g"
 
 # this does not have an effect presently
 #LOGIN_REDIRECT_URL = url('/admin/allocation/application/add/')
+
+# cookies expiration. Longer timeout requested, set to 8hrs now
+SESSION_COOKIE_AGE = 8*60*60

@@ -38,7 +38,7 @@ help_text_storage_resident="""Resident storage refers to the data needed for day
 
 help_text_storage_pbstore="""The iVEC Petascale Data Store is intended for longer term archiving of data sets, not for the above storage types (in terabytes)."""
 
-help_text_data_transfers="""Please outline what data (if any) will be transferred from remote systems to the iVEC systems. Please describe the size and geographical location of the remote data and the expected frequency of transfers."""
+help_text_data_transfers="""Please outline what data (if any) will be transferred from remote systems to the iVEC systems. Please describe the size and geographical location of the remote data and the expected frequency of transfers. (512 chars max.)"""
 
 help_text_research_classifications = """<h4>Research Classifications</h4><br/>&bull; List up to three 6-digit Field of Research codes for the project, and their weightings totalling 100%.<br/>
 &bull; Codes are available from the <a href="http://www.abs.gov.au/ausstats/abs@.nsf/0/6BB427AB9696C225CA2574180004463E?opendocument" target="blank">ABS website</a>."""
