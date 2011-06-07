@@ -24,3 +24,4 @@ class PublicationForm(forms.ModelForm):
 
     class Meta:
         model = Publication
+

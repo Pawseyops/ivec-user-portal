@@ -3,7 +3,11 @@
 #
 # Its a sample script, tested only to the point of running manage.py runserver_plus
 #
-# You need to have python dev header files installed for mx.DateTime to install
+# You need to have:
+#   python header files 
+#   postgres headers
+#   ldap header
+#   sasl header files
 
 VPYTHON_DIR='mypython'
 VIRTUALENV='virtualenv-1.6.1'
