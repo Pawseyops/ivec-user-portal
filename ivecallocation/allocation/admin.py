@@ -15,6 +15,7 @@ class ParticipantInline(admin.TabularInline):
 class PublicationInline(admin.TabularInline):
     model = Publication
     extra = 1
+    form = PublicationForm
 
 class ResearchFundingInline(admin.TabularInline):
     model = ResearchFunding
