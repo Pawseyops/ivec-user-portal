@@ -56,7 +56,7 @@ then
     # the directory has the wrong name, so create a sym link with the name we need
     ln -s ccgapps-settings appsettings
     # the setup.py is at the wrong level
-    mv appsetting/setup.py .
+    mv appsettings/setup.py .
     ../$VPYTHON_DIR/bin/python setup.py bdist_egg
     cd ccgbuild
     ../../$VPYTHON_DIR/bin/python setup.py bdist_egg
