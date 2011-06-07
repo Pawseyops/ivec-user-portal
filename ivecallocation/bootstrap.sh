@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 #
 # Its a sample script, tested only to the point of running manage.py runserver_plus
