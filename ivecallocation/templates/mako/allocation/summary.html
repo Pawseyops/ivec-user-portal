@@ -12,7 +12,10 @@ ${self.block_content()}<%def name="block_content()">
 
 
 <table>
-% for priority, apps in all_apps.iteritems():
+% for priority in display_order:
+        <tr>
+            <th>&nbsp;</th>
+        </tr>
 
         <tr>
             <th>${priority.upper()}</th>
@@ -26,18 +29,29 @@ ${self.block_content()}<%def name="block_content()">
         <th>Reviews</th>
         <th>&nbsp;</th>
         </tr>
+
+        <% total_hours = 0 %>
+        % for app in sorted(all_apps[priority]):
+
         <tr>
-        % for app in apps:
             <td>${app.project_title}</td>
             <td>${app.created_by}</td>
             <td>${app.overall_score()}</td>
-            <td>${app.core_hours_requested}</td>
-            <td>${app.reviews()}</td>
+            <td align="right">${app.core_hours_requested}</td>
+            <td align="right">${app.reviews()}</td>
             <td><a href="${urlresolvers.reverse('admin:allocation_application_change', args=(app.id,))}">View Application</a></td>
-        % endfor
         </tr>
+        <% if app.core_hours_requested:
+          total_hours += app.core_hours_requested
+        %>
+        % endfor
 
-        <tr><th>&nbsp;</th></tr>
+        <tr>
+            <td colspan="3"><b>Total Hours</b></td>
+            <td align="right">
+              <b>${total_hours}</b>
+            </td>
+        </tr>
 
 % endfor
 </table>

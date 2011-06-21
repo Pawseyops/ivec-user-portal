@@ -1,4 +1,5 @@
 from django import forms
+from django.contrib.auth.models import User
 from models import *
 
 class ApplicationForm(forms.ModelForm):
@@ -42,4 +43,27 @@ class PublicationForm(forms.ModelForm):
 
     class Meta:
         model = Publication
+
+
+class ReviewerScoreForm(forms.ModelForm):
+    def __init__(self, *args, **kwargs):
+        super(ReviewerScoreForm, self).__init__(*args, **kwargs)
+
+    reviewer = forms.ModelChoiceField(queryset=User.objects.filter(is_superuser=True), required=True)
+
+    class Meta:
+        model = ReviewerScore
+
+
+class ReviewerCommentForm(forms.ModelForm):
+    def __init__(self, *args, **kwargs):
+        super(ReviewerCommentForm, self).__init__(*args, **kwargs)
+
+    reviewer = forms.ModelChoiceField(queryset=User.objects.filter(is_superuser=True), required=True)
+
+    class Meta:
+        model = ReviewerComment
+
+
+
 

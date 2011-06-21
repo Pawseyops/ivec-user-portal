@@ -33,9 +33,9 @@ class Application(models.Model):
 
     def __cmp__(self, other):
         if self.overall_score() < other.overall_score():
-            return -1
-        elif self.overall_score() > other.overall_score():
             return 1
+        elif self.overall_score() > other.overall_score():
+            return -1
         else:
             return 0
 

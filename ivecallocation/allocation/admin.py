@@ -37,10 +37,12 @@ class ReviewerScoreInline(admin.TabularInline):
     model = ReviewerScore
     fields = ['research_merit', 'computational_merit', 'reviewer']
     extra = 1
+    form = ReviewerScoreForm
 
 class ReviewerCommentInline(admin.TabularInline):
     model = ReviewerComment
     extra = 1
+    form = ReviewerCommentForm    
 
 
 class ApplicationAdmin(admin.ModelAdmin):
@@ -49,6 +51,7 @@ class ApplicationAdmin(admin.ModelAdmin):
     inlines = [ResearchClassificationInline, ParticipantInline, PublicationInline, ResearchFundingInline,
                SupportingFundingInline, SupercomputerJobInline, LibraryInline, ReviewerScoreInline, ReviewerCommentInline] 
     form = ApplicationForm
+    search_fields = ['project_title']
 
     fieldsets = [
         ('Part A - Summary', 
