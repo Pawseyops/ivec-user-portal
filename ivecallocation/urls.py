@@ -9,7 +9,7 @@ from django.views.generic.simple import redirect_to
 
 import admin
 
-from django.utils.webhelpers import url
+from django.utils.webhelpers import url as wh_url
 
 urlpatterns = patterns('',
     # Example:
@@ -27,12 +27,14 @@ urlpatterns = patterns('',
     # registration
     (r'^accounts/', include('registration.backends.ivec.urls')),
     
-    (r'^$', redirect_to, {'url': url('/accounts/register/')}),
-    (r'^login[/]$', redirect_to, {'url': url('/admin/')}),
-    
+    (r'^$', redirect_to, {'url': wh_url('/accounts/register/')}),
+    (r'^login[/]$', redirect_to, {'url': wh_url('/admin/')}),
 )
 
 
+urlpatterns += patterns('ivecallocation.allocation.views',
+    url(r'^summary/$', 'summary', name='summary'),
+)
 
 urlpatterns += patterns('',
         (r'^static/(?P<path>.*)$',

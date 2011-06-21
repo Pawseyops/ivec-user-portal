@@ -33,13 +33,24 @@ class LibraryInline(admin.TabularInline):
     model = Library
     extra = 1
 
+class ReviewerScoreInline(admin.TabularInline):
+    model = ReviewerScore
+    fields = ['research_merit', 'computational_merit', 'reviewer']
+    extra = 1
+
+class ReviewerCommentInline(admin.TabularInline):
+    model = ReviewerComment
+    extra = 1
+
+
 class ApplicationAdmin(admin.ModelAdmin):
     save_on_top = True
-    list_display = ['project_title', 'submitted']
-    inlines = [ResearchClassificationInline, ParticipantInline, PublicationInline, ResearchFundingInline, SupportingFundingInline, SupercomputerJobInline, LibraryInline ] 
+    list_display = ['project_title', 'created_by', 'core_hours_requested', 'priority_area', 'submitted']
+    inlines = [ResearchClassificationInline, ParticipantInline, PublicationInline, ResearchFundingInline,
+               SupportingFundingInline, SupercomputerJobInline, LibraryInline, ReviewerScoreInline, ReviewerCommentInline] 
     form = ApplicationForm
-    
-    fieldsets = (
+
+    fieldsets = [
         ('Part A - Summary', 
          {'fields': 
               (
@@ -54,6 +65,9 @@ class ApplicationAdmin(admin.ModelAdmin):
               (
               'priority_area_radio_astronomy',
               'priority_area_geosciences',
+              'priority_area_directors',
+              'priority_area_partner',
+              'priority_area_national',              
               ),
           'description': help_text_priority_areas
           }
@@ -153,9 +167,24 @@ class ApplicationAdmin(admin.ModelAdmin):
               'complete',              
               )
           }
-        ),        
+        )
+    ]
 
-    )
+
+
+    ## this may work seems to have caching issues
+    def change_view(self, request, obj_id):
+        if not request.user.is_superuser:
+            restricted_inlines = [ReviewerScoreInline, ReviewerCommentInline] 
+            inlines_to_remove = []
+            for i in self.inline_instances:
+                if i.__class__ in restricted_inlines:
+                    inlines_to_remove.append(i)
+            for i in inlines_to_remove:
+                self.inline_instances.remove(i)
+        return super(ApplicationAdmin, self).change_view(request, obj_id)
+
+
 
     def queryset(self, request):
 
@@ -167,14 +196,18 @@ class ApplicationAdmin(admin.ModelAdmin):
         else:
             return Application.objects.none()
 
+
+    
+    def submitted(self, obj):
+        return "Submitted" if obj.complete else "Not yet submitted"
+
+
     # add the user to created_by on save
     def save_model(self, request, obj, form, change):
         if not change:
             obj.created_by = request.user
         obj.save()
 
-    def submitted(self, obj):
-        return "Submitted" if obj.complete else "Not yet submitted"
 
 
 def register(site):

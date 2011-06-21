@@ -16,6 +16,24 @@ class ApplicationForm(forms.ModelForm):
         model = Application
 
 
+class RestrictedApplicationForm(forms.ModelForm):
+    def __init__(self, *args, **kwargs):
+        super(RestrictedApplicationForm, self).__init__(*args, **kwargs)
+        assert False
+        self.fields["project_title"].widget = forms.TextInput(attrs={'size':'10'})
+        self.fields["project_summary"].widget = forms.Textarea(attrs={'rows':16, 'cols':120})
+        self.fields["research_record"].widget = forms.Textarea(attrs={'rows':16, 'cols':120})
+        self.fields["research_significance"].widget = forms.Textarea(attrs={'rows':16, 'cols':100})
+        self.fields["computational_methodology"].widget = forms.Textarea(attrs={'rows':16, 'cols':100})
+
+        self.fields["data_transfers"].widget = forms.Textarea(attrs={'rows':6, 'cols':100}) #field is 512 chars max in model
+
+
+    class Meta:
+        model = Application
+
+
+
 class PublicationForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super(PublicationForm, self).__init__(*args, **kwargs)
