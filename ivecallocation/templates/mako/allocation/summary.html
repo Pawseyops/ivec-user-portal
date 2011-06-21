@@ -1,0 +1,48 @@
+<%inherit file="admin/base_site.html"/>
+<%namespace name="admin" module="django.contrib.admin.templatetags.adminmedia" />
+
+
+% if not is_popup:
+${self.block_breadcrumbs()}<%def name="block_breadcrumbs()"><div class="breadcrumbs"><a href="${root_path}">${trans("Home")}</a> &rsaquo; ${title}</div></%def>
+% endif
+
+
+${self.block_content()}<%def name="block_content()">
+<div id="content-main">
+
+
+<table>
+% for priority, apps in all_apps.iteritems():
+
+        <tr>
+            <th>${priority.upper()}</th>
+        </tr>
+
+        <tr>
+        <th>Title</th>
+        <th>Created By</th>
+        <th>Overall Score</th>
+        <th>Hours Requested</th>
+        <th>Reviews</th>
+        <th>&nbsp;</th>
+        </tr>
+        <tr>
+        % for app in apps:
+            <td>${app.project_title}</td>
+            <td>${app.created_by}</td>
+            <td>${app.overall_score()}</td>
+            <td>${app.core_hours_requested}</td>
+            <td>${app.reviews()}</td>
+            <td><a href="${urlresolvers.reverse('admin:allocation_application_change', args=(app.id,))}">View Application</a></td>
+        % endfor
+        </tr>
+
+        <tr><th>&nbsp;</th></tr>
+
+% endfor
+</table>
+
+
+
+</div>
+</%def>
