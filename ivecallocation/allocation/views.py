@@ -34,7 +34,7 @@ def summary(request):
             all_apps['national'].append(a)
 
 
-    
+
     return render_to_response('allocation/summary.html', {
 #        'tool': tool,
         'user':request.user,
