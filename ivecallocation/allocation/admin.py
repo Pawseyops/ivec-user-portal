@@ -170,22 +170,33 @@ class ApplicationAdmin(admin.ModelAdmin):
               'complete',              
               )
           }
-        )
+        ),
+        ('', 
+         {'fields': 
+              (
+              'ReviewerScoreInline',              
+              'ReviewerCommentInline',
+              'hours_allocated',
+              ),
+          'description': ''
+          }
+        ),
+        
     ]
 
 
 
-    ## this may work seems to have caching issues
-    def change_view(self, request, obj_id):
-        if not request.user.is_superuser:
-            restricted_inlines = [ReviewerScoreInline, ReviewerCommentInline] 
-            inlines_to_remove = []
-            for i in self.inline_instances:
-                if i.__class__ in restricted_inlines:
-                    inlines_to_remove.append(i)
-            for i in inlines_to_remove:
-                self.inline_instances.remove(i)
-        return super(ApplicationAdmin, self).change_view(request, obj_id)
+##    ## this may work seems to have caching issues
+##    def change_view(self, request, obj_id):
+##        if not request.user.is_superuser:
+##            restricted_inlines = [ReviewerScoreInline, ReviewerCommentInline] 
+##            inlines_to_remove = []
+##            for i in self.inline_instances:
+##                if i.__class__ in restricted_inlines:
+##                    inlines_to_remove.append(i)
+##            for i in inlines_to_remove:
+##                self.inline_instances.remove(i)
+##        return super(ApplicationAdmin, self).change_view(request, obj_id)
 
 
 

@@ -26,11 +26,13 @@ ${self.block_content()}<%def name="block_content()">
         <th>Created By</th>
         <th>Overall Score</th>
         <th>Hours Requested</th>
+        <th>Hours Allocated</th>
         <th>Reviews</th>
         <th>&nbsp;</th>
         </tr>
 
         <% total_hours = 0 %>
+        <% total_allocated_hours = 0 %>
         % for app in sorted(all_apps[priority]):
 
         <tr>
@@ -38,18 +40,26 @@ ${self.block_content()}<%def name="block_content()">
             <td>${app.created_by}</td>
             <td>${app.overall_score()}</td>
             <td align="right">${app.core_hours_requested}</td>
+            <td align="right">${app.hours_allocated}</td>
             <td align="right">${app.reviews()}</td>
             <td><a href="${urlresolvers.reverse('admin:allocation_application_change', args=(app.id,))}">View Application</a></td>
         </tr>
         <% if app.core_hours_requested:
           total_hours += app.core_hours_requested
         %>
+        <% if app.hours_allocated:
+          total_allocated_hours += app.hours_allocated
+        %>
+
         % endfor
 
         <tr>
             <td colspan="3"><b>Total Hours</b></td>
             <td align="right">
               <b>${total_hours}</b>
+            </td>
+            <td align="right">
+              <b>${total_allocated_hours}</b>
             </td>
         </tr>
 
