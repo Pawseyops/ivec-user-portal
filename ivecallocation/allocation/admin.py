@@ -51,8 +51,7 @@ class ReviewerScoreInline(admin.TabularInline):
 class ReviewerCommentInline(admin.TabularInline):
     model = ReviewerComment
     extra = 1
-    form = ReviewerCommentForm    
-
+    form = ReviewerCommentForm
 
 class ApplicationAdmin(admin.ModelAdmin):
     save_on_top = True

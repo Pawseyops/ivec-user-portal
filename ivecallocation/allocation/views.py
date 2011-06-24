@@ -12,7 +12,7 @@ from django.db.models import Q
 def summary(request):
 
     query_list = get_querylist(request=request)
-    apps = Application.objects.filter(reduce(operator.or_,query_list))
+    apps = Application.objects.filter(reduce(operator.or_,query_list)).filter(complete=True)
 
     all_apps = {
         'radio astronomy':[],

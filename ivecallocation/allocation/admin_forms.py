@@ -49,7 +49,7 @@ class ReviewerScoreForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super(ReviewerScoreForm, self).__init__(*args, **kwargs)
 
-    reviewer = forms.ModelChoiceField(queryset=User.objects.filter(is_superuser=True), required=True)
+    reviewer = forms.ModelChoiceField(queryset=User.objects.filter(is_staff=True), required=True)
 
     class Meta:
         model = ReviewerScore
@@ -59,7 +59,7 @@ class ReviewerCommentForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super(ReviewerCommentForm, self).__init__(*args, **kwargs)
 
-    reviewer = forms.ModelChoiceField(queryset=User.objects.filter(is_superuser=True), required=True)
+    reviewer = forms.ModelChoiceField(queryset=User.objects.filter(is_staff=True), required=True)
 
     class Meta:
         model = ReviewerComment
