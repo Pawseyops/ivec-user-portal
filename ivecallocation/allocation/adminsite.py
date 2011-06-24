@@ -43,25 +43,31 @@ class IvecAdminSite(AdminSite):
         else:
             if user.is_active and user.is_staff:
                 login(request, user)
-                
-                unprivileged = Group.objects.get(name='unprivileged')
-                
-                # is user in group 'unprivileged'?
-                if unprivileged in user.groups.all():
-                    # yes. Does this user have an application form
-                    try:
-                        users_app_count = Application.objects.filter(created_by=user).count()
-                        if users_app_count:
-                            # goto changelist
-                            return http.HttpResponseRedirect(url("/admin/allocation/application/"))
-                        else:
-                            # go to add application form
+
+                # if applications are open we redirect to application page
+                # otherwise main admin site
+                if settings.APPLICATIONS_OPEN:
+                    unprivileged = Group.objects.get(name='unprivileged')
+
+                    # is user in group 'unprivileged'?
+                    if unprivileged in user.groups.all():
+                        # yes. Does this user have an application form
+                        try:
+                            users_app_count = Application.objects.filter(created_by=user).count()
+                            if users_app_count:
+                                # goto changelist
+                                return http.HttpResponseRedirect(url("/admin/allocation/application/"))
+                            else:
+                                # go to add application form
+                                return http.HttpResponseRedirect(url("/admin/allocation/application/add/"))
+                        except Application.DoesNotExist:
                             return http.HttpResponseRedirect(url("/admin/allocation/application/add/"))
-                    except Application.DoesNotExist:
-                        return http.HttpResponseRedirect(url("/admin/allocation/application/add/"))
+                    else:
+                        # standard login location
+                        return http.HttpResponseRedirect(request.get_full_path())
                 else:
-                    # standard login location
                     return http.HttpResponseRedirect(request.get_full_path())
+                                
             else:
                 return self.display_login_form(request, ERROR_MESSAGE)
     login = never_cache(login)

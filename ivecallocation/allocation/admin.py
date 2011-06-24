@@ -1,8 +1,17 @@
 # -*- coding: utf-8 -*-
+import operator
 from ivecallocation.allocation.models import *
 from django.contrib import admin
 from django import forms
 from admin_forms import *
+from django.core.exceptions import ObjectDoesNotExist
+from django.contrib.auth.models import User, Group
+from django.db.models import Q
+from ivecallocation.allocation.utils import get_querylist
+
+
+
+
 
 class ResearchClassificationInline(admin.TabularInline):
     model = ResearchClassification
@@ -202,11 +211,22 @@ class ApplicationAdmin(admin.ModelAdmin):
 
     def queryset(self, request):
 
+        # superuser - return all
         if request.user.is_superuser:
             return Application.objects.all()
 
-        if self.has_change_permission(request):
+        query_list = get_querylist(request=request)
+    
+        # reviewer - return all
+        if query_list:
+            print 'here'
+            return Application.objects.filter(reduce(operator.or_,query_list))
+
+        # has change privilege - show them just their applications
+        elif self.has_change_permission(request):
             return Application.objects.filter(created_by=request.user)
+
+        # show none
         else:
             return Application.objects.none()
 
@@ -226,10 +246,10 @@ class ApplicationAdmin(admin.ModelAdmin):
 
 def register(site):
     site.register(Application, ApplicationAdmin)
-    site.register(ResearchClassification)
-    site.register(FieldOfResearchCode)
-    site.register(Participant)
-    site.register(Publication)
-    site.register(ResearchFunding)
-    site.register(SupercomputerJob)
-    site.register(Library)
+##    site.register(ResearchClassification)
+##    site.register(FieldOfResearchCode)
+##    site.register(Participant)
+##    site.register(Publication)
+##    site.register(ResearchFunding)
+##    site.register(SupercomputerJob)
+##    site.register(Library)

@@ -14,7 +14,7 @@ class GroupAdmin(django.contrib.auth.admin.GroupAdmin):
 class UserAdmin(django.contrib.auth.admin.UserAdmin):
     pass
 
-site = allocation.adminsite.IvecAdminSite(name="Yabi Frontend Administration")
+site = allocation.adminsite.IvecAdminSite(name="iVEC Allocation Administration")
 
 # Django Auth.
 site.register(django.contrib.auth.models.Group, GroupAdmin)

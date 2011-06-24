@@ -1,15 +1,18 @@
+import operator
 from django.http import HttpResponse, HttpResponseNotFound, HttpResponseRedirect
 from django.shortcuts import render_to_response, get_object_or_404
 from django.contrib.admin.views.decorators import staff_member_required
 from django.core.exceptions import ObjectDoesNotExist
 from django.core import urlresolvers
 from models import *
+from ivecallocation.allocation.utils import get_querylist
+from django.db.models import Q
 
 @staff_member_required
 def summary(request):
 
-
-    apps = Application.objects.filter(complete=True)
+    query_list = get_querylist(request=request)
+    apps = Application.objects.filter(reduce(operator.or_,query_list))
 
     all_apps = {
         'radio astronomy':[],
