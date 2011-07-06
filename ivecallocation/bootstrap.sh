@@ -9,7 +9,41 @@
 #   ldap header
 #   sasl header files
 
-VPYTHON_DIR='mypython'
+EGGS_DIR='eggs/'
+EGGS_PATTERN='*.*' #this ignores dirs, but means egg names must contain a .
+CONFIG_DIR=''
+if [ $# -eq 1 ]
+then
+    CONFIG_DIR=$1
+fi
+EGGS_PATH="$EGGS_DIR$CONFIG_DIR/$EGGS_PATTERN"
+if [ ! -d $EGGS_DIR$CONFIG_DIR ]
+then
+    echo "No such configuration path exists: $EGGS_PATH"
+    echo "Perhaps try one of these:"
+    cd $EGGS_DIR
+    for arg in *
+    do
+        if [ -d $arg ]
+        then
+            echo "$arg"
+        fi
+    done
+    cd ..
+    exit
+fi
+
+echo "---+++---"
+echo "Building for eggs in $EGGS_PATH"
+if [ -f $EGGS_DIR$CONFIG_DIR/DEPENDENCIES ]
+then
+    cat $EGGS_DIR$CONFIG_DIR/DEPENDENCIES
+fi    
+echo "---+++---"
+
+BASE_DIR=`basename ${PWD}`
+PRE="virt_"
+VPYTHON_DIR="$PRE$BASE_DIR"
 VIRTUALENV='virtualenv-1.6.1'
 VIRTUALENV_TARBALL='virtualenv-1.6.1.tar.gz'
 
@@ -44,7 +78,7 @@ then
     ./$VPYTHON_DIR/bin/easy_install fabric
 
     # install all the eggs in this app
-    ./$VPYTHON_DIR/bin/easy_install eggs/*
+    ./$VPYTHON_DIR/bin/easy_install $EGGS_PATH
 
     # now we are going to eggify app settings, so we can run it locally
     # we need to jump through a few legacy hoops to make this happen
@@ -78,7 +112,7 @@ fi
 
 echo -e "\n\n What just happened?\n\n"
 echo " * Python has been installed into $VPYTHON_DIR"
-echo " * eggs from the eggs in this project have been installed"
+echo " * eggs from the eggs in this project ($EGGS_PATH) have been installed"
 echo " * fabric is also installed"
 echo " * and ccgapps-settings & ccgbuild"
 

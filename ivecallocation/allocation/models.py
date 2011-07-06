@@ -100,6 +100,12 @@ class FieldOfResearchCode(models.Model):
     def __unicode__(self):
         return "%s" % self.code
 
+class ParticipantStatus(models.Model):
+    name = models.CharField(max_length=50)
+    description = models.CharField(max_length=256, null=True, blank=True)
+
+    def __unicode__(self):
+        return "%s" % self.name
 
 class Participant(models.Model):
     application = models.ForeignKey(Application)
@@ -110,6 +116,11 @@ class Participant(models.Model):
     admin = models.BooleanField()
     student = models.BooleanField()
     eft = models.FloatField(null=True, blank=True, verbose_name="EFT %")
+    status = models.ForeignKey(ParticipantStatus)
+    account_email_hash = models.CharField(max_length=50, null=True, blank=True) 
+    account_email_on = models.DateTimeField(null=True, blank=True)
+    details_filled_on = models.DateTimeField(null=True, blank=True)
+    account_created_on = models.DateTimeField(null=True, blank=True)
 
     def __unicode__(self):
         return "%s" % self.name

@@ -1,0 +1,14 @@
+
+Dear ${participant.name},
+
+An account creation request has been submitted for you as part of the application ${participant.application.project_title}.
+
+Please click the following link to progress with your application creation process:
+
+${link}
+
+
+Regards,
+
+iVEC
+

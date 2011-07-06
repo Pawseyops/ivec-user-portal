@@ -8,6 +8,7 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.contrib.auth.models import User, Group
 from django.db.models import Q
 from ivecallocation.allocation.utils import get_querylist
+from ivecallocation.allocation import account_services
 
 
 
@@ -242,12 +243,32 @@ class ApplicationAdmin(admin.ModelAdmin):
         obj.save()
 
 
+class ParticipantAdmin(admin.ModelAdmin):
+    save_on_top = True
+    list_display = ['name', 'email', 'department_institute', 'status', 'account', 'account_email_on', 'account_created_on']
+    list_filter = ['account', 'status']
+    search_fields = ['name', 'email']
+    actions = ['send_account_creation_email']
+
+    def send_account_creation_email(self, request, queryset):
+        selected = request.POST.getlist(admin.ACTION_CHECKBOX_NAME)
+
+        for id in selected:
+            participant = Participant.objects.get(id=id)
+            account_services.send_account_creation_mail(participant, request)
+            
+            message = "Account creation email sent to %s participant(s)" % len(selected)
+            self.message_user(request, message)
+
+        #return delete_selected(self, request, queryset)
+
+    send_account_creation_email.short_description = "Send account creation email to selected Participants."
 
 def register(site):
     site.register(Application, ApplicationAdmin)
 ##    site.register(ResearchClassification)
 ##    site.register(FieldOfResearchCode)
-##    site.register(Participant)
+    site.register(Participant, ParticipantAdmin)
 ##    site.register(Publication)
 ##    site.register(ResearchFunding)
 ##    site.register(SupercomputerJob)
