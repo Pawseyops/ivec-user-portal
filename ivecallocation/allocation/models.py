@@ -141,7 +141,7 @@ class Institution(models.Model):
 
 class ParticipantAccount(models.Model):
     participant = models.OneToOneField(Participant)
-    institution = models.ForeignKey(Institution, null=False)
+    institution = models.ForeignKey(Institution, null=True)
     first_name = models.CharField(max_length=256)
     last_name = models.CharField(max_length=256)
     phone = models.CharField(max_length=50, null=True, blank=True)
