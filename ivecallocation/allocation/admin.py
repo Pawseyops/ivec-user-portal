@@ -245,7 +245,7 @@ class ApplicationAdmin(admin.ModelAdmin):
 
 class ParticipantAdmin(admin.ModelAdmin):
     save_on_top = True
-    list_display = ['name', 'email', 'department_institute', 'status', 'account', 'account_email_on', 'account_created_on', 'has_ldap_details']
+    list_display = ['name', 'email', 'department_institute', 'status', 'account', 'account_email_on', 'account_created_on', 'has_account_details']
     list_filter = ['account', 'status']
     search_fields = ['name', 'email']
     actions = ['fetch_ldap_details', 'send_account_creation_email']

@@ -123,7 +123,7 @@ class Participant(models.Model):
     details_filled_on = models.DateTimeField(null=True, blank=True)
     account_created_on = models.DateTimeField(null=True, blank=True)
 
-    def has_ldap_details(self):
+    def has_account_details(self):
         try:
             self.participantaccount
             # TODO why doesn't this work? works for participant, not for participantaccount
@@ -132,7 +132,7 @@ class Participant(models.Model):
             return "<a href='%s'>Yes</a>" % url
         except ParticipantAccount.DoesNotExist:
             return 'No'
-    has_ldap_details.allow_tags = True
+    has_account_details.allow_tags = True
 
     def __unicode__(self):
         return "%s" % self.name
@@ -156,7 +156,7 @@ class ParticipantAccount(models.Model):
     password_hash = models.CharField(('password'), max_length=256, null=True, blank=True)
 
     old_ldap_details = models.CharField(max_length=2000, null=True, blank=True)
-    data_fetched_on = models.DateTimeField(auto_now_add=True)
+    data_fetched_on = models.DateTimeField(null=True, blank=True)
     
     def __unicode__(self):
         return "%s %s" % (self.first_name, self.last_name)

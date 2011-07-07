@@ -27,7 +27,7 @@ CREATE TABLE "allocation_participantaccount" (
     "gid_number" integer,
     "password_hash" varchar(256),
     "old_ldap_details" varchar(2000),
-    "data_fetched_on" timestamp with time zone NOT NULL
+    "data_fetched_on" timestamp with time zone 
 ); 
 
 COMMIT;

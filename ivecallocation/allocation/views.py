@@ -99,7 +99,7 @@ def account_request(request, email_hash):
             data_dict['first_name'] = participant_account.first_name
             data_dict['last_name'] = participant_account.last_name
             data_dict['phone'] = participant_account.phone
-            data_dict['institution'] = participant_account.institution.id
+            #data_dict['institution'] = participant_account.institution.id
             
             form = ParticipantAccountForm(data=data_dict)
         else:
