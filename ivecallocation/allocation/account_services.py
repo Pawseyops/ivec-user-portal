@@ -80,3 +80,5 @@ def get_ldap_details(emailaddress):
     else:
         return dict(usermatch[0].get_attributes())
 
+def hash_password(newpassword, pwencoding='md5'):
+    return ldap_helper.createpassword(newpassword, pwencoding=pwencoding)

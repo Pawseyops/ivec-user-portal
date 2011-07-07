@@ -17,6 +17,34 @@ from django.contrib import logging
 #Create a logging object for ldap debugging
 logger = logging.getLogger('mango_ldap')
 
+import md5 
+import base64 
+
+#
+# Pass pwencoding=None to store the password CLEAR
+# Other supported encodings: 'md5'
+def createpassword(newpassword, pwencoding=None):
+    encpassword = ''
+    if newpassword is None or newpassword != '':
+        throw Exception("Cannot create password given None or empty input")
+    else:
+        logger.debug( 'encoding new password') 
+        #time to encode the password:
+        if pwencoding is None:
+            #No encoding
+            encpassword = newpassword
+        elif pwencoding == 'md5':
+            #MD5 encoding
+            m = md5.new()
+            m.update(newpassword)
+            logger.debug( 'doing md5')
+            encpassword = '{MD5}%s' % (base64.encodestring( m.digest()) ) 
+        #Insert other encoding schemes here.            
+        else:
+            throw Exception("Unsupported password encoding")
+
+    return encpassword.strip()
+
 class LDAPSearchResult(object):
     """A class to model LDAP results.
     """
@@ -301,23 +329,8 @@ class LDAPHandler(object):
             detailsDict['uid'] = newusername #setting the new username
           
             if newpassword is not None and newpassword != '':
-                logger.debug( 'encoding new password') 
-                #time to encode the password:
-                encpassword = ''
-                if pwencoding is None:
-                    #No encoding
-                    encpassword = newpassword
-                elif pwencoding == 'md5':
-                    #MD5 encoding
-                    import md5 
-                    import base64 
-                    m = md5.new()
-                    m.update(newpassword)
-                    logger.debug( 'doing md5')
-                    encpassword = '{MD5}%s' % (base64.encodestring( m.digest()) ) 
-                #Insert other encoding schemes here.            
-
-                detailsDict['userPassword'] = encpassword.strip()
+          
+                detailsDict['userPassword'] = createpassword(newpassword, pwencoding=pwencoding)
                 logger.debug( 'finished encoding' )
             logger.debug( 'looking up old user')
             #ok now look up the user to update. Make sure we look them up using the old name.
