@@ -137,6 +137,12 @@ class ParticipantAccount(models.Model):
     first_name = models.CharField(max_length=256)
     last_name = models.CharField(max_length=256)
     phone = models.CharField(max_length=50, null=True, blank=True)
+    uid = models.CharField(max_length=256, null=True, blank=True)
+    uid_number = models.IntegerField(null=True, blank=True)
+    gid_number = models.IntegerField(null=True, blank=True)
+    password_hash = models.CharField(max_length=256, null=True, blank=True)
+    ivec_terms_accepted = models.BooleanField(default=False)
+
     old_ldap_details = models.CharField(max_length=2000, null=True, blank=True)
     data_fetched_on = models.DateTimeField(auto_now_add=True)
     

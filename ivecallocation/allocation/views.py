@@ -4,6 +4,7 @@ from django.shortcuts import render_to_response, get_object_or_404
 from django.contrib.admin.views.decorators import staff_member_required
 from django.core.exceptions import ObjectDoesNotExist
 from django.core import urlresolvers
+from django.utils.webhelpers import siteurl
 from models import *
 from forms import *
 from ivecallocation.allocation.utils import get_querylist
@@ -68,18 +69,27 @@ def account_request(request, email_hash):
     except Participant.DoesNotExist:
         return render_to_response('allocation/invalid_hash.html', {})
 
-    participant_account = None
-    try:
-        participant_account = participant.participantaccount
-    except ParticipantAccount.DoesNotExist:
-        pass
-   
-    if participant_account:
-        participant_account_form = ParticipantAccountForm(instance=participant_account)
+    if request.method == 'POST':
+        form = ParticipantAccountForm(request.POST)
+        if form.is_valid():
+            return HttpResponseRedirect(siteurl(request) + 'account-details/thanks')
     else:
-        participant_account_form = ParticipantAccountForm()
+        participant_account = None
+        try:
+            participant_account = participant.participantaccount
+        except ParticipantAccount.DoesNotExist:
+            pass
+   
+        if participant_account:
+            form = ParticipantAccountForm(instance=participant_account)
+        else:
+            form = ParticipantAccountForm()
 
     return render_to_response('allocation/account_request.html', {
-        'form': participant_account_form,
-        })
+        'form': form,
+    })
+
+
+def account_details_thanks(request):
+    return render_to_response('allocation/account_details_thanks.html', {})
 

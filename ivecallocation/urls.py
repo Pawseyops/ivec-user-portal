@@ -35,6 +35,7 @@ urlpatterns = patterns('',
 urlpatterns += patterns('ivecallocation.allocation.views',
     url(r'^summary/$', 'summary', name='summary'),
     url(r'^account-request/(?P<email_hash>[\w\d\-]+)[/]$', 'account_request', name='account-request'),
+    url(r'^account-details/thanks[/]$', 'account_details_thanks', name='account-details-thanks'),
 )
 
 urlpatterns += patterns('',

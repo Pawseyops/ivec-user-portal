@@ -6,6 +6,11 @@ CREATE TABLE "allocation_participantaccount" (
     "first_name" varchar(256) NOT NULL,
     "last_name" varchar(256) NOT NULL,
     "phone" varchar(50),
+    "uid" varchar(256),
+    "uid_number" integer,
+    "gid_number" integer,
+    "password_hash" varchar(256),
+    "ivec_terms_accepted" boolean NOT NULL,
     "old_ldap_details" varchar(2000),
     "data_fetched_on" timestamp with time zone NOT NULL
 );
