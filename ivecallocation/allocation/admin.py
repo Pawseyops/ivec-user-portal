@@ -281,7 +281,7 @@ def register(site):
 ##    site.register(ResearchClassification)
 ##    site.register(FieldOfResearchCode)
     site.register(Participant, ParticipantAdmin)
-    site.register(ParticipantAccount)
+    site.register(Institution)
 ##    site.register(Publication)
 ##    site.register(ResearchFunding)
 ##    site.register(SupercomputerJob)

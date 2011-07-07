@@ -10,6 +10,7 @@ from django.utils import simplejson
 from django.contrib import logging
 logger = logging.getLogger('ivecallocation') 
 from ivecallocation.allocation.models import *
+from django.db import transaction
 
 # TODO
 FROM_EMAIL = 'us@ccg.murdoch.edu.au'
@@ -82,3 +83,13 @@ def get_ldap_details(emailaddress):
 
 def hash_password(newpassword, pwencoding='md5'):
     return ldap_helper.createpassword(newpassword, pwencoding=pwencoding)
+
+@transaction.commit_on_success
+def save_account_details(participant_account):
+    participant = participant_account.participant
+    participant.status_id = 3
+    participant.account_email_hash = None
+    participant.details_filled_on = datetime.datetime.now()
+    participant_account.save()
+    participant.save()
+

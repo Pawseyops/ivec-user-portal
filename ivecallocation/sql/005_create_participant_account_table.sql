@@ -6,14 +6,14 @@ CREATE TABLE "allocation_institution" (
     "ldap_ou_name" varchar(256) NOT NULL
 );
 
-INSERT INTO "allocation_institution"("id", "display_name", "ldap_ou_name") VALUES
-    (1, "CSIRO", "CSIRO"),
-    (2, "Curtin University", "Curtin University"),
-    (3, "Edith Cowan University", "Edith Cowan University"),
-    (4, "iVEC", "iVEC"),
-    (5, "Murdoch University", "Murdoch University"),
-    (6, "University of Western Australia", "UWA"),
-    (7, "External", "External");
+INSERT INTO "allocation_institution"("display_name", "ldap_ou_name") VALUES
+    ('CSIRO', 'CSIRO'),
+    ('Curtin University', 'Curtin University'),
+    ('Edith Cowan University', 'Edith Cowan University'),
+    ('iVEC', 'iVEC'),
+    ('Murdoch University', 'Murdoch University'),
+    ('University of Western Australia', 'UWA'),
+    ('External', 'External');
 
 CREATE TABLE "allocation_participantaccount" (
     "id" serial NOT NULL PRIMARY KEY,
@@ -26,7 +26,6 @@ CREATE TABLE "allocation_participantaccount" (
     "uid_number" integer,
     "gid_number" integer,
     "password_hash" varchar(256),
-    "ivec_terms_accepted" boolean NOT NULL,
     "old_ldap_details" varchar(2000),
     "data_fetched_on" timestamp with time zone NOT NULL
 ); 

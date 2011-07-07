@@ -10,6 +10,7 @@ from forms import *
 from ivecallocation.allocation.utils import get_querylist
 from django.db.models import Q
 from ivecallocation.allocation import models
+from ivecallocation.allocation import account_services
 
 @staff_member_required
 def summary(request):
@@ -65,28 +66,47 @@ def summary(request):
 
 def account_request(request, email_hash):
     try:
-        participant = Participant.objects.get(account_email_hash = email_hash)
+        participant = Participant.objects.get(account_email_hash=email_hash)
     except Participant.DoesNotExist:
         return render_to_response('allocation/invalid_hash.html', {})
 
+    had_ldap_details = False
+    try:
+        participant_account = participant.participantaccount
+        had_ldap_details = True
+    except ParticipantAccount.DoesNotExist:
+        participant_account = ParticipantAccount(participant=participant) 
+ 
     if request.method == 'POST':
-        form = ParticipantAccountForm(request.POST)
+        if had_ldap_details:
+            form = ParticipantAccountForm(request.POST)
+        else:
+            form = ParticipantAccountWithPasswordForm(request.POST)
+
         if form.is_valid():
+            participant_account.first_name = form.cleaned_data.get('first_name')
+            participant_account.last_name = form.cleaned_data.get('last_name')
+            participant_account.institution_id = form.cleaned_data.get('institution').id
+            participant_account.phone = form.cleaned_data.get('phone')
+            if not had_ldap_details:
+                participant_account.password_hash = account_services.hash_password(form.cleaned_data.get('password1'))
+            account_services.save_account_details(participant_account)
             return HttpResponseRedirect(siteurl(request) + 'account-details/thanks')
     else:
-        participant_account = None
-        try:
-            participant_account = participant.participantaccount
-        except ParticipantAccount.DoesNotExist:
-            pass
-   
-        if participant_account:
-            form = ParticipantAccountForm(instance=participant_account)
+  
+        if had_ldap_details:
+            data_dict = {}
+            data_dict['first_name'] = participant_account.first_name
+            data_dict['last_name'] = participant_account.last_name
+            data_dict['phone'] = participant_account.phone
+            data_dict['institution'] = participant_account.institution.id
+            
+            form = ParticipantAccountForm(data=data_dict)
         else:
-            form = ParticipantAccountForm()
+            form = ParticipantAccountWithPasswordForm()
 
     return render_to_response('allocation/account_request.html', {
-        'form': form,
+        'form': form, 'participant_email': participant.email
     })
 
 
