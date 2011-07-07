@@ -26,7 +26,7 @@ import base64
 def createpassword(newpassword, pwencoding=None):
     encpassword = ''
     if newpassword is None or newpassword != '':
-        throw Exception("Cannot create password given None or empty input")
+        raise Exception("Cannot create password given None or empty input")
     else:
         logger.debug( 'encoding new password') 
         #time to encode the password:
@@ -41,7 +41,7 @@ def createpassword(newpassword, pwencoding=None):
             encpassword = '{MD5}%s' % (base64.encodestring( m.digest()) ) 
         #Insert other encoding schemes here.            
         else:
-            throw Exception("Unsupported password encoding")
+            raise Exception("Unsupported password encoding")
 
     return encpassword.strip()
 
