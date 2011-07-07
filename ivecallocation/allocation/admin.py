@@ -245,10 +245,24 @@ class ApplicationAdmin(admin.ModelAdmin):
 
 class ParticipantAdmin(admin.ModelAdmin):
     save_on_top = True
-    list_display = ['name', 'email', 'department_institute', 'status', 'account', 'account_email_on', 'account_created_on']
+    list_display = ['name', 'email', 'department_institute', 'status', 'account', 'account_email_on', 'account_created_on', 'has_ldap_details']
     list_filter = ['account', 'status']
     search_fields = ['name', 'email']
-    actions = ['send_account_creation_email']
+    actions = ['fetch_ldap_details', 'send_account_creation_email']
+
+    def fetch_ldap_details(self, request, queryset):
+        selected = request.POST.getlist(admin.ACTION_CHECKBOX_NAME)
+
+        migrated_count = 0
+        for id in selected:
+            participant = Participant.objects.get(id=id)
+            if account_services.fetch_old_ldap_details(participant):
+                migrated_count += 1
+            
+            message = "Migrated details for %s participant(s) of the total of %s selected" % (migrated_count, len(selected))
+            self.message_user(request, message)
+
+    fetch_ldap_details.short_description = "Fetch account details from old LDAP."
 
     def send_account_creation_email(self, request, queryset):
         selected = request.POST.getlist(admin.ACTION_CHECKBOX_NAME)
@@ -259,8 +273,6 @@ class ParticipantAdmin(admin.ModelAdmin):
             
             message = "Account creation email sent to %s participant(s)" % len(selected)
             self.message_user(request, message)
-
-        #return delete_selected(self, request, queryset)
 
     send_account_creation_email.short_description = "Send account creation email to selected Participants."
 

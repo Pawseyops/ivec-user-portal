@@ -5,8 +5,10 @@ from django.contrib.admin.views.decorators import staff_member_required
 from django.core.exceptions import ObjectDoesNotExist
 from django.core import urlresolvers
 from models import *
+from forms import *
 from ivecallocation.allocation.utils import get_querylist
 from django.db.models import Q
+from ivecallocation.allocation import models
 
 @staff_member_required
 def summary(request):
@@ -59,3 +61,25 @@ def summary(request):
 #        'json_url': webhelpers.url('/ws/tool/' + quote(tool.name)),
 #        'tool_params': format_params(tool.toolparameter_set.order_by('id')),
         })
+
+def account_request(request, email_hash):
+    try:
+        participant = Participant.objects.get(account_email_hash = email_hash)
+    except Participant.DoesNotExist:
+        return render_to_response('allocation/invalid_hash.html', {})
+
+    participant_account = None
+    try:
+        participant_account = participant.participantaccount
+    except ParticipantAccount.DoesNotExist:
+        pass
+   
+    if participant_account:
+        participant_account_form = ParticipantAccountForm(instance=participant_account)
+    else:
+        participant_account_form = ParticipantAccountForm()
+
+    return render_to_response('allocation/account_request.html', {
+        'form': participant_account_form,
+        })
+

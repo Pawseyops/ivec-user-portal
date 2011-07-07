@@ -122,9 +122,27 @@ class Participant(models.Model):
     details_filled_on = models.DateTimeField(null=True, blank=True)
     account_created_on = models.DateTimeField(null=True, blank=True)
 
+    def has_ldap_details(self):
+        try:
+            self.participantaccount
+            return True
+        except ParticipantAccount.DoesNotExist:
+            return False
+
     def __unicode__(self):
         return "%s" % self.name
+
+class ParticipantAccount(models.Model):
+    participant = models.OneToOneField(Participant)
+    first_name = models.CharField(max_length=256)
+    last_name = models.CharField(max_length=256)
+    phone = models.CharField(max_length=50, null=True, blank=True)
+    old_ldap_details = models.CharField(max_length=2000, null=True, blank=True)
+    data_fetched_on = models.DateTimeField(auto_now_add=True)
     
+    def __unicode__(self):
+        return "%s %s" % (self.first_name, self.last_name)
+
 class Publication(models.Model):
     application = models.ForeignKey(Application)
     reference = models.CharField(max_length=256, null=True, blank=True)
