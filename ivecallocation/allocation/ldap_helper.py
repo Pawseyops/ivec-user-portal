@@ -12,7 +12,7 @@ from ldap.cidict import cidict
 from django.conf import settings
 
 import socket, errno
-import logging
+from django.contrib import logging
 
 #Create a logging object for ldap debugging
 logger = logging.getLogger('mango_ldap')

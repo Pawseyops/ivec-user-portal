@@ -7,8 +7,9 @@ import uuid
 import datetime
 import ldap_helper
 from django.utils import simplejson
-
+from django.contrib import logging
 logger = logging.getLogger('ivecallocation') 
+from ivecallocation.allocation.models import *
 
 # TODO
 FROM_EMAIL = 'us@ccg.murdoch.edu.au'
@@ -44,15 +45,19 @@ def fetch_old_ldap_details(participant):
         try:
             participant_account = ParticipantAccount()
             participant_account.participant = participant
-            participant_account.old_ldap_details = simplejson.dumps(details))
-            participant_account.first_name = details.get('givenname', [''])[0]
+            participant_account.old_ldap_details = simplejson.dumps(details)
+            participant_account.first_name = details.get('givenName', [''])[0]
             participant_account.last_name = details.get('sn', [''])[0]
-            participant_account.phone = details.get('telephonenumber', [''])[0]
+            participant_account.phone = details.get('telephoneNumber', [''])[0]
+            participant_account.uid = details.get('uid', [''])[0]
+            participant_account.uid_number = details.get('uidNumber', [''])[0]
+            participant_account.gid_number = details.get('gidNumber', [''])[0]
+            participant_account.password_hash = details.get('userPassword', [''])[0]
+            participant_account.save()
+            retval = True
         except Exception, e:
             logger.warning("Could not parse returned ldap details, could not create participant account: %s" % (e));
             
-        participant_account.save()
-        retval = True
     return retval
 
 def send_mail(subject, message, to):
@@ -60,16 +65,18 @@ def send_mail(subject, message, to):
     django_mail.send_mail(subject, message, FROM_EMAIL, [to])
 
 def get_ldap_details(emailaddress):
-    base = 'dc=ivec,dc=org'
-    userbase = 'cn=users,dc=ldap,%s' % (base)
-    groupbase = 'cn=groups,dc=ldap,%s' % (base)
-    ld = ldap_helper.LDAPHandler(server='ldap://absinthe.ivec.org', user_base=userbase,
-                                    group = None, group_base = groupbase, admin_base=None
-    
-    )
-    usermatch = ld.ldap_query(base=userbase filter='(mail=%s)' % (emailaddress) )
+    ld = ldap_helper.LDAPHandler(userdn     = settings.IVEC_LDAP_USERDN, 
+                                 password   = settings.IVEC_LDAP_PASSWORD, 
+                                 server     = settings.IVEC_LDAP_SERVER, 
+                                 user_base  = settings.IVEC_LDAP_USERBASE, 
+                                 group      = None, 
+                                 group_base = settings.IVEC_LDAP_GROUPBASE, 
+                                 admin_base = settings.IVEC_LDAP_ADMINBASE,
+                                 dont_require_cert=True, debug=True)
+    usermatch = ld.ldap_query(base=settings.IVEC_LDAP_USERBASE, filter='(mail=%s)' % (emailaddress) )
+    ld.close()
     if len(usermatch) == 0:
         return None
     else:
-        return usermatch[0].get_attributes()
+        return dict(usermatch[0].get_attributes())
 
