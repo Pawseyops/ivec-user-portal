@@ -6,6 +6,12 @@ from django.utils.webhelpers import url
 from appsettings.default_dev import *
 from appsettings.ivecallocation.dev import *
 
+AUTH_LDAP_SERVER = None
+AUTH_LDAP_GROUP =  None
+AUTH_LDAP_GROUP_BASE = None
+AUTH_LDAP_ADMIN_BASE = None
+AUTH_LDAP_USER_BASE = None
+
 ROOT_URLCONF = 'ivecallocation.urls'
 
 INSTALLED_APPS.extend( [
