@@ -6,6 +6,14 @@ CREATE TABLE "allocation_institution" (
     "ldap_ou_name" varchar(256) NOT NULL
 );
 
+INSERT INTO "allocation_institution"("id", "display_name", "ldap_ou_name") VALUES
+    (1, "CSIRO", "CSIRO"),
+    (2, "Curtin University", "Curtin University"),
+    (3, "Edith Cowan University", "Edith Cowan University"),
+    (4, "iVEC", "iVEC"),
+    (5, "Murdoch University", "Murdoch University"),
+    (6, "University of Western Australia", "UWA"),
+    (7, "External", "External");
 
 CREATE TABLE "allocation_participantaccount" (
     "id" serial NOT NULL PRIMARY KEY,
