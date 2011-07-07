@@ -3,12 +3,13 @@
 
 <%def name="title()">2011 Application for Resources on Pawsey-Funded iVEC Infrastructure</%def>
 
+<p>
+Please complete your details and submit the form in order to progress your application. Should you
+have any problem completing this form please contact <a href="mailto:help@ivec.org">help@ivec.org</a>.
+</p>
 
 <form action="." method="POST">${ csrf_tag(csrf_token) }
-    <p>
-        To commence your account creation please provide the details below.
-    </p>
-    <p>Utilisation of iVEC services are subject to <a href="http://www.ivec.org/services/apply-account/condition-use">Conditions of Use</a>. Please ensure that you have read and agree to these conditions.</p>
+    <p>Use of iVEC infrastructure is subject to <a href="http://www.ivec.org/services/apply-account/condition-use">Conditions of Use</a>. Please ensure that you have read these conditions and indicate you agree to these conditions below.</p>
     <p>
         Your email address is: ${ participant_email }.
     </p>
