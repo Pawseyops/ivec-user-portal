@@ -52,6 +52,7 @@ def fetch_old_ldap_details(participant):
             participant_account.uid_number = details.get('uidNumber', [''])[0]
             participant_account.gid_number = details.get('gidNumber', [''])[0]
             participant_account.password_hash = details.get('userPassword', [''])[0]
+            participant_account.data_fetched_on = datetime.datetime.now() 
             participant_account.save()
             retval = True
         except Exception, e:
