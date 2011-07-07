@@ -12,8 +12,6 @@ logger = logging.getLogger('ivecallocation')
 from ivecallocation.allocation.models import *
 from django.db import transaction
 
-# TODO
-FROM_EMAIL = 'us@ccg.murdoch.edu.au'
 # TODO use Django's loader
 TEMPLATE_LOOKUP = mako.lookup.TemplateLookup(directories=settings.TEMPLATE_DIRS)
 
@@ -63,7 +61,7 @@ def fetch_old_ldap_details(participant):
 
 def send_mail(subject, message, to):
     assert 'ccg.murdoch.edu.au' in to, "Can send email just to a ccg.murdoch.edu.au address"    
-    django_mail.send_mail(subject, message, FROM_EMAIL, [to])
+    django_mail.send_mail(subject, message, settings.DEFAULT_FROM_EMAIL, [to])
 
 def get_ldap_details(emailaddress):
     ld = ldap_helper.LDAPHandler(userdn     = settings.IVEC_LDAP_USERDN, 
