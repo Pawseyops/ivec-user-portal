@@ -1,6 +1,7 @@
 
 Dear ${participant.name},
 
+
 An account creation request has been submitted for you as part of the application ${participant.application.project_title}.
 
 Please click the following link to progress with your application creation process:
@@ -12,3 +13,13 @@ Regards,
 
 iVEC
 
+--
+iVEC, 'Home of the Pawsey Centre'
+26 Dick Perry Avenue, Technology Park
+Kensington WA 6151
+Australia
+
+Phone: +61 8 6436 8831
+Fax: +61 8 6436 8555
+Email: help@ivec.org
+WWW:  http://www.ivec.org
