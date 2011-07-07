@@ -2,6 +2,7 @@
 from django.db import models
 from django.contrib.auth.models import User as DjangoUser
 from django.db.models import Avg
+from django.core.urlresolvers import reverse
 
 #from choices import *
 from help_text import *
@@ -125,9 +126,13 @@ class Participant(models.Model):
     def has_ldap_details(self):
         try:
             self.participantaccount
-            return True
+            # TODO why doesn't this work? works for participant, not for participantaccount
+            #url = reverse('admin:allocation_participantaccount_change', args=[self.participant.id] )
+            url = '../participantaccount/%s' % self.participantaccount.id 
+            return "<a href='%s'>Yes</a>" % url
         except ParticipantAccount.DoesNotExist:
-            return False
+            return 'No'
+    has_ldap_details.allow_tags = True
 
     def __unicode__(self):
         return "%s" % self.name
