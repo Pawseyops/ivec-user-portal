@@ -1,13 +1,15 @@
 
 Dear ${participant.name},
 
+Recently iVEC received an application for access to Pawsey funded iVEC resources titled:  
 
-An account creation request has been submitted for you as part of the application ${participant.application.project_title}.
+"${participant.application.project_title}"
 
-Please click the following link to progress with your application creation process:
+This application has been successful. 
+
+Please click the following link to progress with your account creation process:
 
 ${link}
-
 
 Regards,
 
