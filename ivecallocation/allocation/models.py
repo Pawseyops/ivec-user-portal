@@ -132,15 +132,23 @@ class Participant(models.Model):
     def __unicode__(self):
         return "%s" % self.name
 
+class Institution(models.Model):
+    display_name = models.CharField(max_length=256, null=False, blank=False)
+    ldap_ou_name = models.CharField(max_length=256, null=False, blank=False)
+
+    def __unicode__(self):
+        return "%s" % self.display_name
+
 class ParticipantAccount(models.Model):
     participant = models.OneToOneField(Participant)
+    institution = models.ForeignKey(Institution, null=False)
     first_name = models.CharField(max_length=256)
     last_name = models.CharField(max_length=256)
     phone = models.CharField(max_length=50, null=True, blank=True)
     uid = models.CharField(max_length=256, null=True, blank=True)
     uid_number = models.IntegerField(null=True, blank=True)
     gid_number = models.IntegerField(null=True, blank=True)
-    password_hash = models.CharField(max_length=256, null=True, blank=True)
+    password_hash = models.CharField(('password'), max_length=256, null=True, blank=True)
     ivec_terms_accepted = models.BooleanField(default=False)
 
     old_ldap_details = models.CharField(max_length=2000, null=True, blank=True)
