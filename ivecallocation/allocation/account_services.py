@@ -13,11 +13,11 @@ from ivecallocation.allocation.models import *
 from django.db import transaction
 
 # TODO use Django's loader
+TEMPLATE_LOOKUP = mako.lookup.TemplateLookup(directories=settings.TEMPLATE_DIRS)
 
 def send_account_creation_mail(participant, request):
-    template_lookup = mako.lookup.TemplateLookup(directories=settings.TEMPLATE_DIRS)
     subject = "Successful application for Pawsey funded iVEC infrastructure"
-    message_template = template_lookup.get_template('allocation/account_request_email.txt')
+    message_template = TEMPLATE_LOOKUP.get_template('allocation/account_request_email.txt')
     email_hash = str(uuid.uuid4())
     site_url = siteurl(request)
     link = siteurl(request).rstrip('/') + reverse('account-request', args=[email_hash])

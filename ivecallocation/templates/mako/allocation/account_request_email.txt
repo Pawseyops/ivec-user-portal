@@ -11,6 +11,8 @@ Please click the following link to progress with your account creation process:
 
 ${link}
 
+If you experience difficulties following the above link or believe you received this email in error please contact help@ivec.org.
+
 Regards,
 
 iVEC
