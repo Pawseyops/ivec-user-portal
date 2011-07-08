@@ -42,8 +42,10 @@ def fetch_old_ldap_details(participant):
 
     if details is not None:
         try:
-            participant_account = ParticipantAccount()
-            participant_account.participant = participant
+            try:
+                participant_account = participant.participantaccount
+            except ParticipantAccount.DoesNotExist:
+                participant_account = ParticipantAccount(participant=participant)
             participant_account.old_ldap_details = simplejson.dumps(details)
             participant_account.first_name = details.get('givenName', [''])[0]
             participant_account.last_name = details.get('sn', [''])[0]
@@ -56,7 +58,7 @@ def fetch_old_ldap_details(participant):
             participant_account.save()
             retval = True
         except Exception, e:
-            logger.warning("Could not parse returned ldap details, could not create participant account: %s" % (e));
+            logger.error("Could not parse returned ldap details, could not create participant account: %s" % (e));
             
     return retval
 
