@@ -259,8 +259,8 @@ class ParticipantAdmin(admin.ModelAdmin):
             if account_services.fetch_old_ldap_details(participant):
                 migrated_count += 1
             
-            message = "Migrated details for %s participant(s) of the total of %s selected" % (migrated_count, len(selected))
-            self.message_user(request, message)
+        message = "Migrated details for %s participant(s) of the total of %s selected" % (migrated_count, len(selected))
+        self.message_user(request, message)
 
     fetch_ldap_details.short_description = "Fetch account details from old LDAP."
 
@@ -271,8 +271,8 @@ class ParticipantAdmin(admin.ModelAdmin):
             participant = Participant.objects.get(id=id)
             account_services.send_account_creation_mail(participant, request)
             
-            message = "Account creation email sent to %s participant(s)" % len(selected)
-            self.message_user(request, message)
+        message = "Account creation email sent to %s participant(s)" % len(selected)
+        self.message_user(request, message)
 
     send_account_creation_email.short_description = "Send account creation email to selected Participants."
 
