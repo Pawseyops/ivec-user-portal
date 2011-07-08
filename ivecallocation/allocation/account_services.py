@@ -16,7 +16,7 @@ from django.db import transaction
 TEMPLATE_LOOKUP = mako.lookup.TemplateLookup(directories=settings.TEMPLATE_DIRS)
 
 def send_account_creation_mail(participant, request):
-    subject = "Account creation at iVEC"
+    subject = "Successful application for Pawsey funded iVEC infrastructure"
     message_template = TEMPLATE_LOOKUP.get_template('allocation/account_request_email.txt')
     email_hash = str(uuid.uuid4())
     site_url = siteurl(request)

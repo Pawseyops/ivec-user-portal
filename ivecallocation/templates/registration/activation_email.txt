@@ -14,6 +14,8 @@ http://${current_site}${ url('/login/') }
 
 If you did not create this profile, please disregard this email.
 
+If you experience difficulties following the above link or believe you received this email in error please contact help@ivec.org.
+
 --
 iVEC, 'Home of the Pawsey Centre'
 26 Dick Perry Avenue, Technology Park
