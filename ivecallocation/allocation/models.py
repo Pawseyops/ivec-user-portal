@@ -109,6 +109,13 @@ class ParticipantStatus(models.Model):
         return "%s" % self.name
 
 class Participant(models.Model):
+    STATUS = {
+        'NEW': 1,
+        'EMAIL_SENT': 2,
+        'DETAILS_FILLED': 3,
+        'ACCOUNT_CREATED': 4
+    }
+
     application = models.ForeignKey(Application)
     name = models.CharField(max_length=256, null=True, blank=True)
     department_institute = models.CharField(max_length=128, verbose_name="Department, Institution", null=True, blank=True)

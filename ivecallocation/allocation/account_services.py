@@ -26,7 +26,7 @@ def send_account_creation_mail(participant, request):
     send_mail(subject, message, participant.email)
 
     participant.account_email_hash = email_hash
-    participant.status_id = 2
+    participant.status_id = Participant.STATUS['EMAIL_SENT']
     participant.account_email_on = datetime.datetime.now()
     participant.save()
 
@@ -88,7 +88,7 @@ def hash_password(newpassword, pwencoding='md5'):
 @transaction.commit_on_success
 def save_account_details(participant_account):
     participant = participant_account.participant
-    participant.status_id = 3
+    participant.status_id = Participant.STATUS['DETAILS_FILLED']
     participant.account_email_hash = None
     participant.details_filled_on = datetime.datetime.now()
     participant_account.save()
