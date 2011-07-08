@@ -13,7 +13,7 @@ class ParticipantAccountForm(BaseParticipantAccountForm):
                              error_messages={'required': "You must agree to the terms to register"      })
 
 class ParticipantAccountWithPasswordForm(BaseParticipantAccountForm):
-    password1 = forms.CharField(widget=forms.PasswordInput(render_value=False), label='Password')
+    password1 = forms.CharField(widget=forms.PasswordInput(render_value=False), label='Desired password')
     password2 = forms.CharField(widget=forms.PasswordInput(render_value=False), label='Password (again)')
     tos = forms.BooleanField(widget=forms.CheckboxInput(),
                              label='I have read and agree to the Terms of Service',
