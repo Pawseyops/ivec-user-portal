@@ -19,8 +19,7 @@ def send_account_creation_mail(participant, request):
     subject = "Successful application for Pawsey funded iVEC infrastructure"
     message_template = TEMPLATE_LOOKUP.get_template('allocation/account_request_email.txt')
     email_hash = str(uuid.uuid4())
-    site_url = siteurl(request)
-    link = siteurl(request).rstrip('/') + reverse('account-request', args=[email_hash])
+    link = "%s%s/%s" % (siteurl(request), 'account-request', email_hash)
 
     message = message_template.render(participant=participant, link=link)
     send_mail(subject, message, participant.email)
