@@ -5,7 +5,7 @@ Recently iVEC received an application for access to Pawsey funded iVEC resources
 
 "${participant.application.project_title}"
 
-This application has been successful. 
+This application has been successful, details about the size of your allocation and how to access your account will be provided after your account has been activated.
 
 Please click the following link to progress with your account creation process:
 
