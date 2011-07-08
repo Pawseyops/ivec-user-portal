@@ -134,6 +134,13 @@ class Participant(models.Model):
             return 'No'
     has_account_details.allow_tags = True
 
+    def fetched_from_ldap(self):
+        try:
+            pa = self.participantaccount
+            return pa.data_fetched_on is not None
+        except ParticipantAccount.DoesNotExist:
+            return False
+
     def __unicode__(self):
         return "%s" % self.name
 
