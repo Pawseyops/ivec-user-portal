@@ -11,6 +11,8 @@ from django.contrib import logging
 logger = logging.getLogger('ivecallocation') 
 from ivecallocation.allocation.models import *
 from django.db import transaction
+from django.utils import simplejson
+
 
 # TODO use Django's loader
 TEMPLATE_LOOKUP = mako.lookup.TemplateLookup(directories=settings.TEMPLATE_DIRS)
@@ -176,12 +178,26 @@ def set_user_ldap_dict(participant):
     detailsdict["sn"] = [participantaccount.last_name]
     detailsdict["cn"] = [participantaccount.first_name + ',' + participantaccount.last_name] # required attribute
     detailsdict['telephoneNumber'] = [participantaccount.phone]
-    detailsdict['uid'] = [str(participantaccount.uid)]
     detailsdict['userPassword'] = [participantaccount.password_hash]
 
-    # these 2 need the 'posixAccount' in objectClasses
-    #detailsdict['uidNumber'] = [participantaccount.uid_number]
-    #detailsdict['gidNumber'] = [participantaccount.gid_number]
+
+    uid =  str(participantaccount.uid)
+    detailsdict['uid'] = [uid]
+    
+    #POSIX STUFF
+    detailsdict['uidNumber'] = [participantaccount.uid_number]
+    detailsdict['gidNumber'] = [participantaccount.gid_number]
+    detailsdict['homeDirectory'] = '/home/%s' % (uid)
+    #pull out the previous login shell.
+    loginshell = '/bin/bash'
+    if participantaccount.old_ldap_details is not None:
+        try:
+            prev_details = simplejson.loads(participantaccount.old_ldap_details)
+            loginshell = str(prev_details['loginShell'][0])
+        except:
+            pass
+    detailsdict['loginShell'] = loginshell
+
 
     # conver the unicode strings in strings for ldap, will be done in ldap_handler in the future
     for attr in detailsdict:
@@ -200,6 +216,7 @@ def create_user_account(ldaph, participant, usercontainer, userdn, basedn):
     institution = participant_account.institution.ldap_ou_name
     usercontainer = 'ou=%s,%s' % (institution,usercontainer)
     olddict = {}
+   
     detailsdict = set_user_ldap_dict(participant)
 
     print "create_user_account %s uid: %s userdn: %s basedn: %s" % (participant.email, uid, userdn, basedn)
@@ -211,7 +228,7 @@ def create_user_account(ldaph, participant, usercontainer, userdn, basedn):
                   detailsDict = detailsdict,
                   pwencoding = None,
                   #objectclasses = ['top', 'inetOrgPerson', 'organizationalPerson', 'person', 'posixAccount'],
-                  objectclasses = ['top', 'inetOrgPerson', 'organizationalPerson', 'person'],
+                  objectclasses = ['top', 'inetOrgPerson', 'organizationalPerson', 'posixAccount', 'person'],
                   usercontainer = usercontainer,
                   userdn = userdn,
                   basedn = basedn)
@@ -247,6 +264,12 @@ def save_account_details(participant_account):
     participant = participant_account.participant
     participant.status_id = Participant.STATUS['DETAILS_FILLED']
     participant.details_filled_on = datetime.datetime.now()
+    #make sure the uid is valid
+    participant_account.uid = participant_account.get_unique_uid()
+    participant_account.save()
+    #set the gid and uid based on the part_accnt id.
+    participant_account.uid_number = participant_account.id + 20050
+    participant_account.gid_number = participant_account.id + 20050
     participant_account.save()
     participant.save()
 

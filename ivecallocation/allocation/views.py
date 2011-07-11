@@ -144,7 +144,7 @@ def account_details_thanks(request):
             participantdetails.append( ("Last Name", ppt_account.last_name) )
             participantdetails.append( ("Email", participant.email) )
             participantdetails.append( ("Phone Number", ppt_account.phone) )
-            #participantdetails.append( ("UID (pending)", ppt_account.uid) )
+            participantdetails.append( ("Username (pending)", ppt_account.uid) )
             participantdetails.append( ("Institution", ppt_account.institution.display_name) )
 
         except Participant.DoesNotExist:

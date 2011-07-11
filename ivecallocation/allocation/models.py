@@ -172,6 +172,37 @@ class ParticipantAccount(models.Model):
     old_ldap_details = models.CharField(max_length=2000, null=True, blank=True)
     data_fetched_on = models.DateTimeField(null=True, blank=True)
     
+    def get_unique_uid(self):
+        
+        def check_unique_uid(uid):
+            qs = ParticipantAccount.objects.filter(uid = uid)
+            if len(qs) > 1:
+                return False
+            else:
+                return True
+        
+        #Check to see if we have the same uid as anyone else.
+        #if so, try for a uid using firstname + lastname[0]
+        #and if that still conflicts, use self.uid + 1,2,3 etc
+        original_uid = self.uid
+        
+        if original_uid is None or len(original_uid) == 0:
+           original_uid = self.first_name.lower()
+
+        #catch uid's that have somehow come with a capitalisation.
+        if original_uid.lower() != original_uid:
+            original_uid = original_uid.lower()
+
+        candidate_uid = original_uid 
+        if not check_unique_uid(candidate_uid):
+            candidate_uid = ("%s%s" % (self.first_name, self.last_name[0])).lower()
+            counter = 1
+            while not check_unique_uid(candidate_uid):
+                candidate_uid = ("%s%s" % (original_uid, str(counter))).lower()
+                counter +=1
+
+        return candidate_uid
+
     def __unicode__(self):
         return "%s %s" % (self.first_name, self.last_name)
 
