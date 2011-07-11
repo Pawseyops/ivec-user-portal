@@ -169,7 +169,7 @@ class LDAPHandler(object):
             else:
                 LDAP_DEBUG = debug
             
-            print "LDAP_DEBUG=",LDAP_DEBUG
+            #print "LDAP_DEBUG=",LDAP_DEBUG
             
             # check our AUTH_LDAP_SERVER setting. If its a string, turn it to a list. Then we iterate over the list trying servers.
             server_list = [server] if type(server)==str else list(server)
@@ -302,6 +302,26 @@ class LDAPHandler(object):
             #this can happen when a dummy user has been inserted into a group.
             return {}
 
+    # FJ start
+    # Generic version of ldap_get_user_details that allows to search for a user with an attribute and its value
+    # Used to look for a user using its email address.
+    # CAUTION: several users could have the same attribute value, the result returned is the details of the first entry returned by the search
+    def get_user_details_from_attribute(self, attribute, value):
+        ''' Returns a dictionary of user details searchin gor the attribute name and its value
+            Returns empty dict on fail'''
+        #Get application user details (only users in the application's LDAP tree) 
+        logger.debug('***ldap_get_user_details***')
+        searchbase = self.USER_BASE
+        result_data = self.ldap_query(base=searchbase, filter = "%s=%s" % (attribute, value) )
+        if len(result_data) > 0:
+            userdetails = result_data[0].get_attributes()   # return the details of the first entry found
+            return userdetails
+        else:
+            logger.debug('\tldap_get_user_details returned no results: %s=%s' % (attribute, value) )
+            #user doesn't exist
+            #this can happen when a dummy user has been inserted into a group.
+            return {}
+    # FJ end
 
     def ldap_update_user(self, username, newusername, newpassword, detailsDict, pwencoding=None):
             '''You will need an authenticated connection with admin privelages to update user details in LDAP'''
@@ -406,7 +426,7 @@ class LDAPHandler(object):
                 dn = 'uid=%s,%s,%s,%s' % (username, usercontainer, userdn, basedn)
                 from copy import deepcopy
                 data = deepcopy(detailsDict)
-                if isinstance(objectclasses, list)
+                if isinstance(objectclasses, list):
                     data['objectClass'] = objectclasses
                 else:
                     data['objectClass'] = [objectclasses]
@@ -422,7 +442,7 @@ class LDAPHandler(object):
                 #TODO interrogate res
                 retval = True
             except Exception, e:
-                print 'Exception adding LDAP user: ', str(e)
+                logger.debug('Exception adding LDAP user: ', str(e))
         return retval
 
     def ldap_add_group(self, groupname):
