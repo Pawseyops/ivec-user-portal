@@ -406,11 +406,15 @@ class LDAPHandler(object):
                 dn = 'uid=%s,%s,%s,%s' % (username, usercontainer, userdn, basedn)
                 from copy import deepcopy
                 data = deepcopy(detailsDict)
-                data['objectclass'] = objectclasses
-
-                newattrs = []
-                for key in data:
-                    newattrs.append( (str(key), str(data[key])) )
+                if isinstance(objectclass, list)
+                    data['objectClass'] = objectclasses
+                else:
+                    data['objectClass'] = [objectclasses]
+                    
+                #newattrs = []
+                #for key in data:
+                #    newattrs.append( (str(key), str(data[key])) )
+                newattrs = ldap.modlist.addModlist(data)
 
                 #so now newattrs contains a list of tuples, which are key value pairs.
                 logger.debug('Calling ldap_add: %s and %s' % (dn, str(newattrs)) )

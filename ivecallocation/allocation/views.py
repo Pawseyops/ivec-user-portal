@@ -12,6 +12,8 @@ from django.db.models import Q
 from ivecallocation.allocation import models
 from ivecallocation.allocation import account_services
 
+PROCESSED_PARTICIPANT_SESSION_KEY = 'PROCESSED_PARTICIPANT'
+
 @staff_member_required
 def summary(request):
 
@@ -91,6 +93,7 @@ def account_request(request, email_hash):
             if not had_ldap_details:
                 participant_account.password_hash = account_services.hash_password(form.cleaned_data.get('password1'))
             account_services.save_account_details(participant_account)
+            request.session[PROCESSED_PARTICIPANT_SESSION_KEY] = participant.email
             return HttpResponseRedirect(siteurl(request) + 'account-details/thanks')
     else:
   
@@ -111,5 +114,7 @@ def account_request(request, email_hash):
 
 
 def account_details_thanks(request):
+    p_email = request.session(PROCESSED_PARTICIPANT_SESSION_KEY,None)
+    
     return render_to_response('allocation/account_details_thanks.html', {})
 
