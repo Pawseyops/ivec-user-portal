@@ -246,7 +246,6 @@ def hash_password(newpassword, pwencoding='md5'):
 def save_account_details(participant_account):
     participant = participant_account.participant
     participant.status_id = Participant.STATUS['DETAILS_FILLED']
-    participant.account_email_hash = None
     participant.details_filled_on = datetime.datetime.now()
     participant_account.save()
     participant.save()

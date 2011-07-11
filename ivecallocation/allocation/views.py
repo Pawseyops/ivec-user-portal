@@ -96,7 +96,7 @@ def account_request(request, email_hash):
             if not had_ldap_details:
                 participant_account.password_hash = account_services.hash_password(form.cleaned_data.get('password1'))
             account_services.save_account_details(participant_account)
-            request.session[PROCESSED_PARTICIPANT_SESSION_KEY] = participant.email
+            request.session[PROCESSED_PARTICIPANT_SESSION_KEY] = email_hash
             return HttpResponseRedirect(siteurl(request) + 'account-details/thanks')
     else:
   
@@ -117,7 +117,37 @@ def account_request(request, email_hash):
 
 
 def account_details_thanks(request):
-    p_email = request.session(PROCESSED_PARTICIPANT_SESSION_KEY,None)
+    participant_email_hash = None
+    try:
+        participant_email_hash = request.session.get(PROCESSED_PARTICIPANT_SESSION_KEY,None)
+    except:
+        pass
     
-    return render_to_response('allocation/account_details_thanks.html', {})
+    #now remove the session key if it existed
+    if participant_email_hash is not None:
+        del request.session[PROCESSED_PARTICIPANT_SESSION_KEY]
+    
+    participantdetails = None
+    error = None
+    if participant_email_hash is None:
+        error = "Unable to retrieve participant by hash: no hash provided."
+    else:
+        try:
+            participant = Participant.objects.get(account_email_hash = participant_email_hash)
+            #erase the email hash - we don't need it anymore
+            participant.account_email_hash = None
+            participant.save()
+            
+            ppt_account = participant.participantaccount
+            participantdetails = []
+            participantdetails.append( ("First Name", ppt_account.first_name) )
+            participantdetails.append( ("Last Name", ppt_account.last_name) )
+            participantdetails.append( ("Email", participant.email) )
+            participantdetails.append( ("Phone Number", ppt_account.phone) )
+            #participantdetails.append( ("UID (pending)", ppt_account.uid) )
+            participantdetails.append( ("Institution", ppt_account.institution.display_name) )
+
+        except Participant.DoesNotExist:
+            error = "Unable to retrieve participant by hash: %s" % (str(participant_email_hash))
+    return render_to_response('allocation/account_details_thanks.html', {"participantdetails": participantdetails, "error":error})
 
