@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 import ldap
+import ldap.modlist as modlist
 import random
 import django
 from django.contrib.auth.models import User, Group
@@ -378,7 +379,6 @@ class LDAPHandler(object):
                     else:
                         logger.debug('new and old values for %s are the same' % (k) )
                 logger.debug('finished testing')
-                import ldap.modlist as modlist
                 mods = modlist.modifyModlist(old.get_attributes(), detailsDict, ignore_oldexistent=1)
                 
                 logger.debug('Mods: ')
@@ -406,7 +406,7 @@ class LDAPHandler(object):
                 dn = 'uid=%s,%s,%s,%s' % (username, usercontainer, userdn, basedn)
                 from copy import deepcopy
                 data = deepcopy(detailsDict)
-                if isinstance(objectclass, list)
+                if isinstance(objectclasses, list)
                     data['objectClass'] = objectclasses
                 else:
                     data['objectClass'] = [objectclasses]
@@ -414,7 +414,7 @@ class LDAPHandler(object):
                 #newattrs = []
                 #for key in data:
                 #    newattrs.append( (str(key), str(data[key])) )
-                newattrs = ldap.modlist.addModlist(data)
+                newattrs = modlist.addModlist(data)
 
                 #so now newattrs contains a list of tuples, which are key value pairs.
                 logger.debug('Calling ldap_add: %s and %s' % (dn, str(newattrs)) )
