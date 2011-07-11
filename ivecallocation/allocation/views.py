@@ -18,7 +18,10 @@ PROCESSED_PARTICIPANT_SESSION_KEY = 'PROCESSED_PARTICIPANT'
 def summary(request):
 
     query_list = get_querylist(request=request)
-    apps = Application.objects.filter(reduce(operator.or_,query_list)).filter(complete=True)
+    if query_list:
+        apps = Application.objects.filter(reduce(operator.or_,query_list)).filter(complete=True)
+    else:
+        apps = []
 
     all_apps = {
         'radio astronomy':[],
