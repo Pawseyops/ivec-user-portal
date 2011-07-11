@@ -36,8 +36,7 @@ import logging
 LOG_DIRECTORY = os.path.join(PROJECT_DIRECTORY,"logs")
 LOGGING_LEVEL = logging.DEBUG
 LOGGING_FORMATTER = logging.Formatter('[%(name)s:%(levelname)s:%(filename)s:%(lineno)s:%(funcName)s] %(message)s')
-LOGS = ['ivecallocation']
-
+LOGS = ['ivecallocation', 'mango-ldap']
 # registration app settings
 ACCOUNT_ACTIVATION_DAYS = 14
 
@@ -77,8 +76,8 @@ EPIC_LDAP_COMPANY   = 'dc=ivec'
 EPIC_LDAP_BASE      = '%s,%s' % (EPIC_LDAP_COMPANY, EPIC_LDAP_DOMAIN)
 EPIC_LDAP_USER_OU   = 'ou=People'
 EPIC_LDAP_USERBASE  = '%s,%s' % (EPIC_LDAP_USER_OU, EPIC_LDAP_BASE)
-EPIC_LDAP_GROUPBASE = 'ou=Host Groups,%s' % (EPIC_LDAP_BASE)
+EPIC_LDAP_GROUPBASE = 'ou=Projects,ou=Groups,%s' % (EPIC_LDAP_BASE)
 EPIC_LDAP_SERVER    = 'ldaps://fdsdev.localdomain'  # 'ldap://..' if not authenticated, otherwise 'ldaps://...'
 EPIC_LDAP_ADMINBASE = EPIC_LDAP_BASE
 EPIC_LDAP_USERDN    = 'uid=portalapp,ou=System,ou=People' # 'uid=portalapp,ou=System,ou=People,dc=ivec,dc=org'
-EPIC_LDAP_PASSWORD  = 'te3rueto' # 'te3rueto' not enough to write the password
+EPIC_LDAP_PASSWORD  = 'te3rueto'
