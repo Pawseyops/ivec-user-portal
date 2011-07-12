@@ -407,7 +407,7 @@ class LDAPHandler(object):
                     r = self.l.modify_ext_s(dn, mods)
             except ldap.LDAPError, e:
                 logger.debug('Error editing user: %s' % (str(e) ) )
-                print('Error editing user: %s' % (str(e) ) )
+                #print('Error editing user: %s' % (str(e) ) )
 
             return
 
@@ -503,10 +503,10 @@ class LDAPHandler(object):
 
         return True
 
-    def ldap_add_group_with_parent(self, groupname, parentdn, description):
+    def ldap_add_group_with_parent(self, groupname, parentdn, description = None, objectClasses = None, attributes = None):
         '''You need to have used an admin enabled username and password to successfully do this'''
         logger.debug('***ldap_add_group***')
-        groupname = groupname.strip()
+        groupname = str(groupname).strip()  # unicode -> string
         f = '(objectClass=groupOfUniqueNames)'
         groupresult = self.ldap_query(base = self.GROUP_BASE , filter = f, rattrs = ['cn'])
         for groupres in groupresult:
@@ -516,10 +516,14 @@ class LDAPHandler(object):
         #ok so we are good to go.
         logger.debug('preparing to add group')
         newattrs = []
+        if attributes:
+            newattrs = attributes
         newattrs.append( ('cn', groupname) )
-        newattrs.append( ('objectClass', self.GROUPOC) )
-        newattrs.append( ('description', description) )
-        #newattrs.append( ('uniqueMember', 'uid=dummy') )   # is it needed?
+        if not objectClasses:
+            objectClasses = self.GROUPOC
+        newattrs.append( ('objectClass', objectClasses) )   # objectClasses must be a list
+        if description:
+            newattrs.append( ('description', description) )
 
         dn = 'cn=%s,%s' % (groupname, parentdn)
         logger.debug('calling ldap_add: %s AND %s' % (str(dn), str(newattrs) ) )
