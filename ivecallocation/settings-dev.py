@@ -11,7 +11,6 @@ ROOT_URLCONF = 'ivecallocation.urls'
 INSTALLED_APPS.extend( [
     'ivecallocation.allocation',
     'ivecallocation.registration',
-    'ivecallocation.manageusers'
 ] )
 
 AUTHENTICATION_BACKENDS = [
