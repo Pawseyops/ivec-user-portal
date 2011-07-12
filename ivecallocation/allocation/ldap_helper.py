@@ -323,6 +323,7 @@ class LDAPHandler(object):
 
     def ldap_update_user(self, username, newusername, newpassword, detailsDict, pwencoding=None):
             '''You will need an authenticated connection with admin privelages to update user details in LDAP'''
+            #TODO: return an error status
             logger.debug('***ldap_update_user****')
             #if the new username is different to the old username, 
             #cache the current groups for this user.
@@ -404,9 +405,10 @@ class LDAPHandler(object):
                     logger.debug(t)
                 if len(mods) > 0:
                     r = self.l.modify_ext_s(dn, mods)
-            except Exception, e:
+            except ldap.LDAPError, e:
                 logger.debug('Error editing user: %s' % (str(e) ) )
-                
+                print('Error editing user: %s' % (str(e) ) )
+
             return
 
     def ldap_add_user(self, username, detailsDict, pwencoding=None, objectclasses=[], usercontainer='', userdn='', basedn=''):
