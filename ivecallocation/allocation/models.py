@@ -29,6 +29,7 @@ class Application(models.Model):
     storage_resident = models.CharField(max_length=32, null=True, blank=True, help_text=help_text_storage_resident)
     storage_pbstore = models.CharField(max_length=32, null=True, blank=True, help_text=help_text_storage_pbstore)
     data_transfers = models.CharField(max_length=512, null=True, blank=True, help_text=help_text_data_transfers)
+    ldap_project_name = models.CharField(max_length=256, null=True, blank=True)
     created_by = models.ForeignKey(DjangoUser, editable=False, related_name="%(class)s_creators",null=True)
     created_on = models.DateTimeField(auto_now_add=True, editable=False)
     complete =  models.BooleanField(verbose_name="ready to submit application")
