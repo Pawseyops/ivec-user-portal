@@ -272,7 +272,7 @@ class ParticipantAdmin(admin.ModelAdmin):
         message = "Account creation email sent to %s participant(s)" % len(selected)
         self.message_user(request, message)
 
-    send_account_creation_email.short_description = "Send account creation email to selected Participants."
+    send_account_creation_email.short_description = "Send account request creation email to selected Participants."
 
     def create_user_account(self, request, queryset):
         selected = request.POST.getlist(admin.ACTION_CHECKBOX_NAME)
@@ -283,7 +283,7 @@ class ParticipantAdmin(admin.ModelAdmin):
         message = "Created %s account(s), updated %s of the total of %s selected. Errors: %s" % (created_count, updated_count, len(selected), error_count)
         self.message_user(request, message)
         
-    create_user_account.short_description = "Create selected participant account(s) in ldap"
+    create_user_account.short_description = "Create selected participant account(s) in LDAP"
 
     def send_account_created_email(self, request, queryset):
         selected = request.POST.getlist(admin.ACTION_CHECKBOX_NAME)
@@ -306,7 +306,7 @@ class ParticipantAdmin(admin.ModelAdmin):
             
         return HttpResponse("</br>".join(details))
 
-    send_account_created_email.short_description = "Send account created notification email to selected Participants."
+    CSV_summary_of_LDAP_accounts.short_description = "Generate an LDAP account summary (CSV) for selected Participants."
 
 class ParticipantAccountAdminForm(forms.ModelForm):
     class Meta:
