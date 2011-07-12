@@ -189,7 +189,13 @@ def create_user_accounts(participant_id_list):
                         done = ldaph.ldap_add_user_to_group(uid, groupname)
 
                         participant.status_id = Participant.STATUS['ACCOUNT_CREATED']
+                        participant.account_created_on = datetime.datetime.now()
+                        application = participant.application
                         participant.save()
+
+                        # save the groupname like 'Astronomy23' in the application
+                        #application.ldapproject = groupname
+                        #application.save()
 
             except ParticipantAccount.DoesNotExist, e:
                 logger.debug("ParticipantAccount.DoesNotExist %s error: %s" % (participant.email, e) )
@@ -298,8 +304,8 @@ def update_user_account(ldaph, participant):
 
     detailsdict = set_user_ldap_dict(participant)
 
-    print "update_user_account %s uid: %s" % (participant.email, uid)
-    res = False
+    #print "update_user_account %s uid: %s" % (participant.email, uid)
+
     res = ldaph.ldap_update_user(username = uid,
                              newusername = uid,
                              newpassword = participant_account.password_hash,
