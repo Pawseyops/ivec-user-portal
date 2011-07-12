@@ -189,12 +189,13 @@ def create_user_accounts(participant_id_list):
                         done = ldaph.ldap_add_user_to_group(uid, groupname)
 
                         # create a posixGroup with cn=uid
-                        '''
                         groupname = participant_account.uid
-                        create_group(ldaphandler = ldaph, parentou = area, groupname = groupname, description = str(participant.application.project_title))
+                        gidnumber = str(participant_account.gid_number)
+                        parentou = settings.EPIC_LDAP_POSIXGROUPBASE # 'ou=POSIX,ou=Groups,dc=ivec,dc=org'
+                        create_POSIX_group(ldaphandler = ldaph, parentou = parentou, groupname = groupname, gidnumber = gidnumber)
                         uid = participant_account.uid
                         done = ldaph.ldap_add_user_to_group(uid, groupname)
-                        '''
+                        
                         participant.status_id = Participant.STATUS['ACCOUNT_CREATED']
                         participant.account_created_on = datetime.datetime.now()
                         application = participant.application
@@ -209,6 +210,10 @@ def create_user_accounts(participant_id_list):
                 result['errors'] += 1
         ldaph.close()
     return result
+
+def create_POSIX_group(ldaphandler, parentou, groupname, gidnumber):
+    ldaphandler.ldap_add_group_with_parent(groupname = groupname, parentdn = parentou, objectClasses = ['top','posixGroup'], attributes = [('gidNumber',gidnumber)])
+    return
 
 def create_group(ldaphandler, parentou, groupname, description):
     # create the OU for this group like 'Astronomy'
