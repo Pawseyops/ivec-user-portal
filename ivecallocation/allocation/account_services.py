@@ -261,27 +261,31 @@ def set_user_ldap_dict(participant):
     return detailsdict
 
 def create_user_account(ldaph, participant, usercontainer, userdn, basedn):
+    res = False
     participant_account = participant.participantaccount
     uid = participant_account.uid
-    institution = participant_account.institution.ldap_ou_name
-    usercontainer = 'ou=%s,%s' % (institution,usercontainer)
-    olddict = {}
-   
-    detailsdict = set_user_ldap_dict(participant)
+    unique_uid = participant_account.get_unique_uid()
+    if uid != unique_uid:
+        logger.debug("Unwilling to submit non-unique uid (%s) for LDAP account creation - suggest %s" % (uid, unique_uid) )
+    else: 
+        institution = participant_account.institution.ldap_ou_name
+        usercontainer = 'ou=%s,%s' % (institution,usercontainer)
+        olddict = {}
+       
+        detailsdict = set_user_ldap_dict(participant)
 
-    logger.debug( "create_user_account %s uid: %s userdn: %s basedn: %s" % (participant.email, uid, userdn, basedn) )
-    res = False
-    # ldap_handler.add_user build the user dn like this:
-    # dn = 'uid=%s,%s,%s,%s' % (username, usercontainer, userdn, basedn)
-    # real example from ldap browser: uid=hum092,ou=CSIRO,ou=People,dc=ivec,dc=org
-    res = ldaph.ldap_add_user(username = uid,
-                  detailsDict = detailsdict,
-                  pwencoding = None,
-                  #objectclasses = ['top', 'inetOrgPerson', 'organizationalPerson', 'person', 'posixAccount'],
-                  objectclasses = ['top', 'inetOrgPerson', 'organizationalPerson', 'person', 'posixAccount'],
-                  usercontainer = usercontainer,
-                  userdn = userdn,
-                  basedn = basedn)
+        logger.debug( "create_user_account %s uid: %s userdn: %s basedn: %s" % (participant.email, uid, userdn, basedn) )
+        # ldap_handler.add_user build the user dn like this:
+        # dn = 'uid=%s,%s,%s,%s' % (username, usercontainer, userdn, basedn)
+        # real example from ldap browser: uid=hum092,ou=CSIRO,ou=People,dc=ivec,dc=org
+        res = ldaph.ldap_add_user(username = uid,
+                      detailsDict = detailsdict,
+                      pwencoding = None,
+                      #objectclasses = ['top', 'inetOrgPerson', 'organizationalPerson', 'person', 'posixAccount'],
+                      objectclasses = ['top', 'inetOrgPerson', 'organizationalPerson', 'person', 'posixAccount'],
+                      usercontainer = usercontainer,
+                      userdn = userdn,
+                      basedn = basedn)
 
     # ldap_add_user returns false if the user was not added
     logger.debug("create_user_account result: %s" % (res,) )

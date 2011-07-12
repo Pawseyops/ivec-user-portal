@@ -297,12 +297,27 @@ class ParticipantAdmin(admin.ModelAdmin):
 
     send_account_created_email.short_description = "Send account created notification email to selected Participants."
 
+class ParticipantAccountAdminForm(forms.ModelForm):
+    class Meta:
+        model = ParticipantAccount
+
+    def clean_uid(self):
+        data = self.cleaned_data['uid']
+        unique_uid = self.instance.get_unique_uid()
+        if data != unique_uid:
+            raise forms.ValidationError('Non unique uid "%s": I suggest "%s".' % (data, unique_uid))
+        return data
+
+class ParticipantAccountAdmin(admin.ModelAdmin):
+    form = ParticipantAccountAdminForm 
+
+
 def register(site):
     site.register(Application, ApplicationAdmin)
 ##    site.register(ResearchClassification)
 ##    site.register(FieldOfResearchCode)
     site.register(Participant, ParticipantAdmin)
-    site.register(ParticipantAccount)
+    site.register(ParticipantAccount, ParticipantAccountAdmin)
     site.register(Institution)
 ##    site.register(Publication)
 ##    site.register(ResearchFunding)
