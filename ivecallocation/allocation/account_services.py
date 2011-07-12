@@ -188,14 +188,22 @@ def create_user_accounts(participant_id_list):
                         uid = participant_account.uid
                         done = ldaph.ldap_add_user_to_group(uid, groupname)
 
+                        # create a posixGroup with cn=uid
+                        '''
+                        groupname = participant_account.uid
+                        create_group(ldaphandler = ldaph, parentou = area, groupname = groupname, description = str(participant.application.project_title))
+                        uid = participant_account.uid
+                        done = ldaph.ldap_add_user_to_group(uid, groupname)
+                        '''
+                        
                         participant.status_id = Participant.STATUS['ACCOUNT_CREATED']
                         participant.account_created_on = datetime.datetime.now()
                         application = participant.application
                         participant.save()
 
                         # save the groupname like 'Astronomy23' in the application
-                        #application.ldapproject = groupname
-                        #application.save()
+                        application.ldap_project_name = groupname
+                        application.save()
 
             except ParticipantAccount.DoesNotExist, e:
                 logger.debug("ParticipantAccount.DoesNotExist %s error: %s" % (participant.email, e) )
