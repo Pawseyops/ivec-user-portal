@@ -460,18 +460,77 @@ class LDAPHandler(object):
         newattrs = []
         newattrs.append( ('cn', groupname) )
         newattrs.append( ('objectClass', self.GROUPOC) )
-        newattrs.append( ('uniqueMember', 'uid=dummy') )
+        #newattrs.append( ('uniqueMember', 'uid=dummy') )   # is it needed?
 
         dn = 'cn=%s,%s' % (groupname, self.GROUP_BASE)
         logger.debug('calling ldap_add: %s AND %s' % (str(dn), str(newattrs) ) )
+        print('calling ldap_add: %s AND %s' % (str(dn), str(newattrs) ) )
         try:
             res = self.l.add_s(dn, newattrs)
         except Exception, e:
             logger.debug('ldap_add_group: Exception in ldap_add: %s' % ( str(e) ) )
+            print('ldap_add_group: Exception in ldap_add: %s' % ( str(e) ) )
             return False
         logger.debug('the response from the add command was: %s' % (str(res) ) )
+        print('the response from the add command was: %s' % (str(res) ) )
 
         return True
+
+    # FJ start
+    def create_ou(self, name, parentdn):
+        '''Create an OU for a group'''
+        cn = 'schema'
+        newattrs = []
+        newattrs.append( ('ou', name) )
+        #newattrs.append( ('cn', cn) )
+        newattrs.append( ('objectClass', 'organizationalunit') )
+        #newattrs.append( ('uniqueMember', 'uid=dummy') )   # is it needed?
+
+        dn = 'ou=%s,%s' % (name, parentdn)
+        logger.debug('calling ldap create_ou: %s AND %s' % (str(dn), str(newattrs) ) )
+        print('calling ldap_add: %s AND %s' % (str(dn), str(newattrs) ) )
+        try:
+            res = self.l.add_s(dn, newattrs)
+        except Exception, e:
+            logger.debug('ldap create_ou: Exception in ldap_add: %s' % ( str(e) ) )
+            print('ldap create_ou: Exception in ldap_add: %s' % ( str(e) ) )
+            return False
+        logger.debug('the response from the add command was: %s' % (str(res) ) )
+        print('the response from the add OU command was: %s' % (str(res) ) )
+
+        return True
+
+    def ldap_add_group_with_parent(self, groupname, parentdn):
+        '''You need to have used an admin enabled username and password to successfully do this'''
+        logger.debug('***ldap_add_group***')
+        groupname = groupname.strip()
+        f = '(objectClass=groupOfUniqueNames)'
+        groupresult = self.ldap_query(base = self.GROUP_BASE , filter = f, rattrs = ['cn'])
+        for groupres in groupresult:
+            if groupname == groupres.get_attr_values('cn')[0]:
+                return False
+       
+        #ok so we are good to go.
+        logger.debug('preparing to add group')
+        newattrs = []
+        newattrs.append( ('cn', groupname) )
+        newattrs.append( ('objectClass', self.GROUPOC) )
+        #newattrs.append( ('uniqueMember', 'uid=dummy') )   # is it needed?
+
+        dn = 'cn=%s,%s' % (groupname, parentdn)
+        logger.debug('calling ldap_add: %s AND %s' % (str(dn), str(newattrs) ) )
+        print('calling ldap_add: %s AND %s' % (str(dn), str(newattrs) ) )
+        try:
+            res = self.l.add_s(dn, newattrs)
+        except Exception, e:
+            logger.debug('ldap_add_group: Exception in ldap_add: %s' % ( str(e) ) )
+            print('ldap_add_group: Exception in ldap_add: %s' % ( str(e) ) )
+            return False
+        logger.debug('the response from the add command was: %s' % (str(res) ) )
+        print('the response from the add command was: %s' % (str(res) ) )
+
+        return True
+    # FJ end
 
     def ldap_rename_group(self, oldname, newname):
         '''You need to have used an admin enabled username and password to successfully do this'''
