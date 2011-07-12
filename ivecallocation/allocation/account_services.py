@@ -182,7 +182,7 @@ def create_user_accounts(participant_id_list):
                     if done:
                         # user added or updated to the ldap directory, add the user to the group, create the group if it doesn't exist
                         (area, areanum) = get_application_area(participant)
-                        # TODO: add description of the application to the group
+
                         groupname = '%s-%s' % (area, areanum)
                         create_group(ldaphandler = ldaph, parentou = area, groupname = groupname, description = str(participant.application.project_title))
                         uid = participant_account.uid
@@ -214,14 +214,15 @@ def add_user_to_group(ldaphandler, uid, groupname):
 
 def set_user_ldap_dict(participant):
     '''set the user attributes from the old dictionary and add/'override the attributes we really need'''
+    
+    detailsdict = {}
     participantaccount = participant.participantaccount
+
+    # uncomment these lines if adding the old LDAP details is necessary
+    '''
     if participantaccount and participantaccount.old_ldap_details:
         detailsdict = simplejson.loads(participantaccount.old_ldap_details)
-    else:
-        detailsdict = {}
-
-    # DEBUG TEST ONLY
-    detailsdict = {}
+    '''
 
     #print "set_user_ldap_dict type: %s detailsdict BEFORE: %s" % (type(detailsdict), detailsdict)
 
