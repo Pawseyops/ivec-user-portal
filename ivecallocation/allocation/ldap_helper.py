@@ -261,7 +261,7 @@ class LDAPHandler(object):
                 logger.debug('LDAP Query: %s, %s, %s, %s' % (str(base), str(scope), str(filter), str(rattrs)))
             result_data = self.l.search_s(base, scope, filter, rattrs)
             retval = self.get_search_results(result_data)
-        except Exception, e:
+        except ldap.LDAPError, e:
             logger.debug('LDAP Query Error: %s' % (str(e) ) )
         return retval
     
@@ -291,7 +291,7 @@ class LDAPHandler(object):
                 a = self.ldap_get_user_groups(username)
                 logger.debug('\tThe User Groups were: %s' % (str(a)) )
                 userdetails['groups'] = a 
-            except Exception, e:
+            except ldap.LDAPError, e:
                 logger.debug('\tException: %s' % (str(e) ) )
             return userdetails
         else:
@@ -365,7 +365,7 @@ class LDAPHandler(object):
                     r = self.l.rename_s(dn, newrdn, newsuperior=newparent, delold=true)
                     #Change the dn, so we use this one from now on in the update
                     dn = "%s, %s" % (newrdn, newparent) 
-                except Exception, e:
+                except ldap.LDAPError, e:
                     logger.debug ('User rename failed. %s' % ( str(e) ) )
             
             logger.debug('Editing User: %s' % (str(dn) ) )
@@ -373,7 +373,7 @@ class LDAPHandler(object):
                 userfilter = "(&(objectclass=person) (uid=%s))" % username
                 usrs = self.ldap_query(filter = userfilter, base=self.USER_BASE)
                 if len(usrs) != 1:
-                    raise Exception, "More than one user found for %s" % (username)
+                    raise ldap.LDAPError, "More than one user found for %s" % (username)
                 old = usrs[0]
                 logger.debug('OLD: ')
                 o = old.get_attributes()
@@ -441,7 +441,7 @@ class LDAPHandler(object):
                 res = self.l.add_s(dn, newattrs)
                 #TODO interrogate res
                 retval = True
-            except Exception, e:
+            except ldap.LDAPError, e:
                 logger.debug('Exception adding LDAP user: ', str(e))
                 #print('Exception adding LDAP user: ', str(e))
         return retval
@@ -468,7 +468,7 @@ class LDAPHandler(object):
         #print('calling ldap_add: %s AND %s' % (str(dn), str(newattrs) ) )
         try:
             res = self.l.add_s(dn, newattrs)
-        except Exception, e:
+        except ldap.LDAPError, e:
             logger.debug('ldap_add_group: Exception in ldap_add: %s' % ( str(e) ) )
             #print('ldap_add_group: Exception in ldap_add: %s' % ( str(e) ) )
             return False
@@ -492,7 +492,7 @@ class LDAPHandler(object):
         #print('calling ldap_add: %s AND %s' % (str(dn), str(newattrs) ) )
         try:
             res = self.l.add_s(dn, newattrs)
-        except Exception, e:
+        except ldap.LDAPError, e:
             logger.debug('ldap create_ou: Exception in ldap_add: %s' % ( str(e) ) )
             #print('ldap create_ou: Exception in ldap_add: %s' % ( str(e) ) )
             return False
@@ -524,7 +524,7 @@ class LDAPHandler(object):
         #print('calling ldap_add: %s AND %s' % (str(dn), str(newattrs) ) )
         try:
             res = self.l.add_s(dn, newattrs)
-        except Exception, e:
+        except ldap.LDAPError, e:
             logger.debug('ldap_add_group: Exception in ldap_add: %s' % ( str(e) ) )
             #print('ldap_add_group: Exception in ldap_add: %s' % ( str(e) ) )
             return False
@@ -543,7 +543,7 @@ class LDAPHandler(object):
         try:
             ret = self.l.rename_s(dn, newrdn) #by default removes the old one (delold=1)
             
-        except Exception, e:
+        except ldap.LDAPError, e:
             logger.debug('Couldn\'t rename group %s: %s' % (oldname, str(e)) )
             return False
         
@@ -559,7 +559,7 @@ class LDAPHandler(object):
         dn = 'cn=%s,%s' % (groupname.strip(), self.GROUP_BASE)
         try:
             ret = self.l.delete_s(dn)
-        except Exception, e:
+        except ldap.LDAPError, e:
             logger.debug('Couldn\'t delete group %s: %s' % (groupname, str(e))  ) 
             return False
 
@@ -696,7 +696,7 @@ class LDAPHandler(object):
                             if len(mods) > 0:
                                 r = self.l.modify_ext_s(gdn, mods)
                             retval = True
-                        except Exception, e:
+                        except ldap.LDAPError, e:
                             logger.debug('Exception adding user %s to group %s: %s' % (username, groupname, str(e)))
                             #print 'Exception adding user %s to group %s: %s' % (username, groupname, str(e))
 
@@ -742,7 +742,7 @@ class LDAPHandler(object):
                 if len(mods) > 0:
                     r = self.l.modify_ext_s(gdn, mods)
                 retval = True
-        except Exception, e:
+        except ldap.LDAPError, e:
             logger.debug( 'Exception when removing %s from %s: %s' % (username, groupname, str(e)) )
 
         logger.debug('***ldap_remove_user_from_group*** : exit')
