@@ -193,9 +193,10 @@ def create_user_accounts(participant_id_list):
                         (area, areanum) = get_application_area(participant)
 
                         groupname = '%s%s' % (area, areanum)
+                        gidnumber = str(30010 + application.id)
                         create_group(ldaphandler = ldaph, parentou = area, groupname = groupname, description = str(participant.application.project_title))
                         uid = participant_account.uid
-                        done = ldaph.ldap_add_user_to_group(uid, groupname)
+                        done = ldaph.ldap_add_user_to_group(uid, groupname, gidnumber)
 
                         # create a posixGroup with cn=uid
                         posixgroupname = participant_account.uid
@@ -224,14 +225,14 @@ def create_POSIX_group(ldaphandler, parentou, groupname, gidnumber):
     ldaphandler.ldap_add_group_with_parent(groupname = groupname, parentdn = parentou, objectClasses = ['top','posixGroup'], attributes = [('gidNumber',gidnumber)])
     return
 
-def create_group(ldaphandler, parentou, groupname, description):
+def create_group(ldaphandler, parentou, groupname, description, gidnumber):
     # create the OU for this group like 'Astronomy'
     ldaphandler.create_ou(name = parentou, parentdn = settings.EPIC_LDAP_GROUPBASE) # 'ou=Projects,ou=Groups,%s' % (EPIC_LDAP_BASE)
 
     # can't create the group if the parent doesn't exist
     # the group name would be like 'Astronomy-01'
     groupparent = 'ou=%s,%s' % (parentou, settings.EPIC_LDAP_GROUPBASE)
-    ldaphandler.ldap_add_group_with_parent(groupname = groupname, parentdn = groupparent, description = description)
+    ldaphandler.ldap_add_group_with_parent(groupname = groupname, parentdn = groupparent, description = description,  objectClasses = ['top','posixGroup'], attributes = [('gidNumber',gidnumber)])
     return
 
 def add_user_to_group(ldaphandler, uid, groupname):
