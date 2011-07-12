@@ -150,6 +150,14 @@ class Participant(models.Model):
         except ParticipantAccount.DoesNotExist:
             return False
 
+    def application_id(self):
+        return self.application_id
+    application_id.admin_order_field = 'application__id'
+
+    def hours_allocated(self):
+        return self.application.hours_allocated
+    hours_allocated.admin_order_field = 'application__hours_allocated'
+
     def __unicode__(self):
         return "%s" % self.name
 
