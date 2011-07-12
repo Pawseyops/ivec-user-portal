@@ -169,8 +169,6 @@ class LDAPHandler(object):
             else:
                 LDAP_DEBUG = debug
             
-            #print "LDAP_DEBUG=",LDAP_DEBUG
-            
             # check our AUTH_LDAP_SERVER setting. If its a string, turn it to a list. Then we iterate over the list trying servers.
             server_list = [server] if type(server)==str else list(server)
             
@@ -420,6 +418,7 @@ class LDAPHandler(object):
         if len(usrs) != 0:
             #user already existed!
             logger.debug('\tA user called %s already existed. Refusing to add.' % (username))
+            #print('\tA user called %s already existed. Refusing to add.' % (username))
         else:
             try:
                 logger.debug('\tPreparing to add user %s' % (username))
@@ -438,11 +437,13 @@ class LDAPHandler(object):
 
                 #so now newattrs contains a list of tuples, which are key value pairs.
                 logger.debug('Calling ldap_add: %s and %s' % (dn, str(newattrs)) )
+                #print('Calling ldap_add: %s and %s' % (dn, str(newattrs)) )
                 res = self.l.add_s(dn, newattrs)
                 #TODO interrogate res
                 retval = True
             except Exception, e:
                 logger.debug('Exception adding LDAP user: ', str(e))
+                #print('Exception adding LDAP user: ', str(e))
         return retval
 
     def ldap_add_group(self, groupname):
@@ -464,15 +465,15 @@ class LDAPHandler(object):
 
         dn = 'cn=%s,%s' % (groupname, self.GROUP_BASE)
         logger.debug('calling ldap_add: %s AND %s' % (str(dn), str(newattrs) ) )
-        print('calling ldap_add: %s AND %s' % (str(dn), str(newattrs) ) )
+        #print('calling ldap_add: %s AND %s' % (str(dn), str(newattrs) ) )
         try:
             res = self.l.add_s(dn, newattrs)
         except Exception, e:
             logger.debug('ldap_add_group: Exception in ldap_add: %s' % ( str(e) ) )
-            print('ldap_add_group: Exception in ldap_add: %s' % ( str(e) ) )
+            #print('ldap_add_group: Exception in ldap_add: %s' % ( str(e) ) )
             return False
         logger.debug('the response from the add command was: %s' % (str(res) ) )
-        print('the response from the add command was: %s' % (str(res) ) )
+        #print('the response from the add command was: %s' % (str(res) ) )
 
         return True
 
@@ -488,19 +489,19 @@ class LDAPHandler(object):
 
         dn = 'ou=%s,%s' % (name, parentdn)
         logger.debug('calling ldap create_ou: %s AND %s' % (str(dn), str(newattrs) ) )
-        print('calling ldap_add: %s AND %s' % (str(dn), str(newattrs) ) )
+        #print('calling ldap_add: %s AND %s' % (str(dn), str(newattrs) ) )
         try:
             res = self.l.add_s(dn, newattrs)
         except Exception, e:
             logger.debug('ldap create_ou: Exception in ldap_add: %s' % ( str(e) ) )
-            print('ldap create_ou: Exception in ldap_add: %s' % ( str(e) ) )
+            #print('ldap create_ou: Exception in ldap_add: %s' % ( str(e) ) )
             return False
         logger.debug('the response from the add command was: %s' % (str(res) ) )
-        print('the response from the add OU command was: %s' % (str(res) ) )
+        #print('the response from the add OU command was: %s' % (str(res) ) )
 
         return True
 
-    def ldap_add_group_with_parent(self, groupname, parentdn):
+    def ldap_add_group_with_parent(self, groupname, parentdn, description):
         '''You need to have used an admin enabled username and password to successfully do this'''
         logger.debug('***ldap_add_group***')
         groupname = groupname.strip()
@@ -515,19 +516,20 @@ class LDAPHandler(object):
         newattrs = []
         newattrs.append( ('cn', groupname) )
         newattrs.append( ('objectClass', self.GROUPOC) )
+        newattrs.append( ('description', description) )
         #newattrs.append( ('uniqueMember', 'uid=dummy') )   # is it needed?
 
         dn = 'cn=%s,%s' % (groupname, parentdn)
         logger.debug('calling ldap_add: %s AND %s' % (str(dn), str(newattrs) ) )
-        print('calling ldap_add: %s AND %s' % (str(dn), str(newattrs) ) )
+        #print('calling ldap_add: %s AND %s' % (str(dn), str(newattrs) ) )
         try:
             res = self.l.add_s(dn, newattrs)
         except Exception, e:
             logger.debug('ldap_add_group: Exception in ldap_add: %s' % ( str(e) ) )
-            print('ldap_add_group: Exception in ldap_add: %s' % ( str(e) ) )
+            #print('ldap_add_group: Exception in ldap_add: %s' % ( str(e) ) )
             return False
         logger.debug('the response from the add command was: %s' % (str(res) ) )
-        print('the response from the add command was: %s' % (str(res) ) )
+        #print('the response from the add command was: %s' % (str(res) ) )
 
         return True
     # FJ end
@@ -695,7 +697,8 @@ class LDAPHandler(object):
                                 r = self.l.modify_ext_s(gdn, mods)
                             retval = True
                         except Exception, e:
-                            print 'Exception adding user %s to group %s: %s' % (username, groupname, str(e)) 
+                            logger.debug('Exception adding user %s to group %s: %s' % (username, groupname, str(e)))
+                            #print 'Exception adding user %s to group %s: %s' % (username, groupname, str(e))
 
                     else:
                         logger.debug('\tCouldn\'t get group dn')
