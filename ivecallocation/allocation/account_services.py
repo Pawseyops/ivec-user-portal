@@ -105,15 +105,15 @@ def get_application_area(participant):
     app = participant.application
     areanum = str(app.id)
     if app.priority_area_radio_astronomy:
-        area = 'Astronomy'
+        area = 'astronomy'
     elif app.priority_area_geosciences:
-        area = 'Geosciences'
+        area = 'geosciences'
     elif app.priority_area_directors:
-        area = 'Geosciences'
+        area = 'directors'
     elif app.priority_area_partner:
-        area = 'Partners'
+        area = 'partners'
     elif app.priority_area_national:
-        area = 'National'
+        area = 'national'
     else:
         area = 'Other'  # should not happen
     #print "participant %s area: %s areanum: %s" % (participant.email, area, areanum)
@@ -183,7 +183,7 @@ def create_user_accounts(participant_id_list):
                         # user added or updated to the ldap directory, add the user to the group, create the group if it doesn't exist
                         (area, areanum) = get_application_area(participant)
 
-                        groupname = '%s-%s' % (area, areanum)
+                        groupname = '%s%s' % (area, areanum)
                         create_group(ldaphandler = ldaph, parentou = area, groupname = groupname, description = str(participant.application.project_title))
                         uid = participant_account.uid
                         done = ldaph.ldap_add_user_to_group(uid, groupname)
