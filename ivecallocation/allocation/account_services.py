@@ -195,7 +195,6 @@ def create_user_accounts(participant_id_list):
                         uid = participant_account.uid
                         done = ldaph.ldap_add_user_to_group(uid, groupname)
                         '''
-                        
                         participant.status_id = Participant.STATUS['ACCOUNT_CREATED']
                         participant.account_created_on = datetime.datetime.now()
                         application = participant.application
@@ -245,6 +244,7 @@ def set_user_ldap_dict(participant):
     detailsdict["cn"] = [participantaccount.first_name + ' ' + participantaccount.last_name] # required attribute
     detailsdict['telephoneNumber'] = [participantaccount.phone]
     detailsdict['userPassword'] = [participantaccount.password_hash]
+    detailsdict['mail'] = [participant.email]
 
     uid =  str(participantaccount.uid)
     detailsdict['uid'] = [uid]
