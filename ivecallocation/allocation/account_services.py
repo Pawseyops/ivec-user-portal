@@ -198,12 +198,12 @@ def create_user_accounts(participant_id_list):
                         done = ldaph.ldap_add_user_to_group(uid, groupname)
 
                         # create a posixGroup with cn=uid
-                        groupname = participant_account.uid
+                        posixgroupname = participant_account.uid
                         gidnumber = str(participant_account.gid_number)
                         parentou = settings.EPIC_LDAP_POSIXGROUPBASE # 'ou=POSIX,ou=Groups,dc=ivec,dc=org'
-                        create_POSIX_group(ldaphandler = ldaph, parentou = parentou, groupname = groupname, gidnumber = gidnumber)
+                        create_POSIX_group(ldaphandler = ldaph, parentou = parentou, groupname = posixgroupname, gidnumber = gidnumber)
                         uid = participant_account.uid
-                        done = ldaph.ldap_add_user_to_group(uid, groupname)
+                        done = ldaph.ldap_add_user_to_group(uid, posixgroupname)
                         
                         participant.status_id = Participant.STATUS['ACCOUNT_CREATED']
                         participant.account_created_on = datetime.datetime.now()
