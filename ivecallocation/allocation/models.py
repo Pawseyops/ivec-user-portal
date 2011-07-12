@@ -213,6 +213,16 @@ class ParticipantAccount(models.Model):
 
         return candidate_uid
 
+    def constrain_uidgid(self):
+        '''Ensures the users uidnumber and gidnumber are over 20k, and unique in the database.
+           Can only be called after the user has already been saved.
+        '''
+        offset = 20050
+        if ( (self.uid_number != self.id + offset) or (self.gid_number != self.id+offset)):
+            self.uid_number = self.id + offset
+            self.gid_number = self.id + offset
+            self.save()
+
     def __unicode__(self):
         return "%s %s" % (self.first_name, self.last_name)
 

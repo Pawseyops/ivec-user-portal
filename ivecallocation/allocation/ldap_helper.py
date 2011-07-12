@@ -17,7 +17,7 @@ from django.contrib import logging
 
 #Create a logging object for ldap debugging
 logger = logging.getLogger('mango_ldap')
-
+logger.setLevel(logging.DEBUG)
 import md5 
 import base64 
 

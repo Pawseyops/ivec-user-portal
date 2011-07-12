@@ -133,7 +133,7 @@ def create_user_accounts(participant_id_list):
     result = {'created':0, 'errors':0, 'updated':0, 'msg': ''}
     
     #connect to the 'new' ldap repo, where we create all the accounts
-    #print "ldap bind with: server: %s userdn: %s password: %s" % (settings.EPIC_LDAP_SERVER, settings.EPIC_LDAP_USERDN, settings.EPIC_LDAP_PASSWORD)
+    logger.debug("ldap bind with: server: %s userdn: %s" % (settings.EPIC_LDAP_SERVER, settings.EPIC_LDAP_USERDN) )
     ldaph = ldap_helper.LDAPHandler(userdn     = settings.EPIC_LDAP_USERDN, 
                                  password   = settings.EPIC_LDAP_PASSWORD, 
                                  server     = settings.EPIC_LDAP_SERVER, 
@@ -161,7 +161,7 @@ def create_user_accounts(participant_id_list):
         for id in participant_id_list:
             participant = Participant.objects.get(id=id)
             institution = participant.participantaccount.institution.ldap_ou_name
-            #print "\nParticipant: %s institution: %s" % (participant.email, institution)
+            logger.debug("\nParticipant: %s institution: %s" % (participant.email, institution) )
 
             #if participant.status != 3: # TODO: change this!
             #    continue # account not ready yet
@@ -171,11 +171,11 @@ def create_user_accounts(participant_id_list):
                 email = participant.email
 
                 if participant_account:
-                    #print "participant: %s %s email:%s" % (participant_account.first_name, participant_account.last_name, email)
+                    logger.debug("participant: %s %s email:%s" % (participant_account.first_name, participant_account.last_name, email) )
                     # get the user entry in the new ldap repo if it exists
 
                     userdetails = ldaph.get_user_details_from_attribute(attribute = 'mail', value = email)
-                    #print "user email: %s details: %s" % (email, userdetails)
+                    logger.debug("user email: %s details: %s" % (email, userdetails) )
                     done = False
 
                     if not userdetails:
@@ -204,7 +204,7 @@ def create_user_accounts(participant_id_list):
                         #done = add_user_to_group(ldaphandler = ldaph, uid = uid, groupname = areanum)
                         done = ldaph.ldap_add_user_to_group(uid, groupname)
             except ParticipantAccount.DoesNotExist, e:
-                #print "\nParticipantAccount.DoesNotExist %s error: %s" % (participant.email, e)
+                logger.debug("ParticipantAccount.DoesNotExist %s error: %s" % (participant.email, e) )
                 result['errors'] += 1
         ldaph.close()
     return result
@@ -266,7 +266,7 @@ def set_user_ldap_dict(participant):
     #POSIX STUFF
     detailsdict['uidNumber'] = [participantaccount.uid_number]
     detailsdict['gidNumber'] = [participantaccount.gid_number]
-    detailsdict['homeDirectory'] = '/home/%s' % (uid)
+    detailsdict['homeDirectory'] = ['/home/%s' % (uid)]
     #pull out the previous login shell.
     loginshell = '/bin/bash'
     if participantaccount.old_ldap_details is not None:
@@ -275,7 +275,7 @@ def set_user_ldap_dict(participant):
             loginshell = str(prev_details['loginShell'][0])
         except:
             pass
-    detailsdict['loginShell'] = loginshell
+    detailsdict['loginShell'] = [loginshell]
 
 
     # convert the unicode strings in strings for ldap, will be done in ldap_handler in the future
@@ -298,7 +298,7 @@ def create_user_account(ldaph, participant, usercontainer, userdn, basedn):
    
     detailsdict = set_user_ldap_dict(participant)
 
-    print "create_user_account %s uid: %s userdn: %s basedn: %s" % (participant.email, uid, userdn, basedn)
+    logger.debug( "create_user_account %s uid: %s userdn: %s basedn: %s" % (participant.email, uid, userdn, basedn) )
     res = False
     # ldap_handler.add_user build the user dn like this:
     # dn = 'uid=%s,%s,%s,%s' % (username, usercontainer, userdn, basedn)
@@ -307,13 +307,13 @@ def create_user_account(ldaph, participant, usercontainer, userdn, basedn):
                   detailsDict = detailsdict,
                   pwencoding = None,
                   #objectclasses = ['top', 'inetOrgPerson', 'organizationalPerson', 'person', 'posixAccount'],
-                  objectclasses = ['top', 'inetOrgPerson', 'organizationalPerson', 'posixAccount', 'person'],
+                  objectclasses = ['top', 'inetOrgPerson', 'organizationalPerson', 'person', 'posixAccount'],
                   usercontainer = usercontainer,
                   userdn = userdn,
                   basedn = basedn)
 
     # ldap_add_user returns false if the user was not added
-    print "create_user_account res: %s" % (res,)
+    logger.debug("create_user_account result: %s" % (res,) )
     return res
 
 def update_user_account(ldaph, participant):
@@ -346,9 +346,7 @@ def save_account_details(participant_account):
     #make sure the uid is valid
     participant_account.uid = participant_account.get_unique_uid()
     participant_account.save()
-    #set the gid and uid based on the part_accnt id.
-    participant_account.uid_number = participant_account.id + 20050
-    participant_account.gid_number = participant_account.id + 20050
-    participant_account.save()
+    participant_account.constrain_uidgid() #'fixes' the uidnumber/gidnumber and saves
+     
     participant.save()
 

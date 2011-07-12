@@ -35,7 +35,7 @@ import logging
 LOG_DIRECTORY = os.path.join(PROJECT_DIRECTORY,"logs")
 LOGGING_LEVEL = logging.DEBUG
 LOGGING_FORMATTER = logging.Formatter('[%(name)s:%(levelname)s:%(filename)s:%(lineno)s:%(funcName)s] %(message)s')
-LOGS = ['ivecallocation', 'mango-ldap']
+LOGS = ['ivecallocation', 'mango_ldap']
 # registration app settings
 ACCOUNT_ACTIVATION_DAYS = 14
 
@@ -65,18 +65,3 @@ SESSION_COOKIE_AGE = 8*60*60
 
 # applications open, controls whether the login redirects to the Application Change Page or the main Admin site
 APPLICATIONS_OPEN = False
-
-# needed by ldap_helper
-AUTH_LDAP_ADMIN_BASE = ''
-
-#FJ TODO REMOVE I am not sure why the settings in CCGAPPS don't work in my local dev environment
-EPIC_LDAP_DOMAIN    = 'dc=org'
-EPIC_LDAP_COMPANY   = 'dc=ivec'
-EPIC_LDAP_BASE      = '%s,%s' % (EPIC_LDAP_COMPANY, EPIC_LDAP_DOMAIN)
-EPIC_LDAP_USER_OU   = 'ou=People'
-EPIC_LDAP_USERBASE  = '%s,%s' % (EPIC_LDAP_USER_OU, EPIC_LDAP_BASE)
-EPIC_LDAP_GROUPBASE = 'ou=Projects,ou=Groups,%s' % (EPIC_LDAP_BASE)
-EPIC_LDAP_SERVER    = 'ldaps://fdsdev.localdomain'  # 'ldap://..' if not authenticated, otherwise 'ldaps://...'
-EPIC_LDAP_ADMINBASE = EPIC_LDAP_BASE
-EPIC_LDAP_USERDN    = 'uid=portalapp,ou=System,ou=People' # 'uid=portalapp,ou=System,ou=People,dc=ivec,dc=org'
-EPIC_LDAP_PASSWORD  = 'te3rueto'
