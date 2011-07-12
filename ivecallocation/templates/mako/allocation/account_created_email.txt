@@ -1,11 +1,10 @@
 
-Dear ${participant.name},
+Dear ${participant.name.strip()},
 
-Your account at iVEC has been created.  Your user name is ${participant.name} and
-your project is ${participant.project}.
+Your account at iVEC has been created. Your user name is ${uid} and your project is ${project}.
 
 You should be able to;
-  ssh -Y ${participant.name}@epic.ivec.org
+  ssh -Y ${uid}@epic.ivec.org
 
 When you have logged in, you can change your password by typing;
 
@@ -13,12 +12,13 @@ passwd
 
 and follow the prompts.
 
-You have a project directory on epic called /scratch/${participant.project}/${participant.name}.
+You have a project directory on epic called /scratch/${project}/${uid}.
+You have ${participant.application.hours_allocated} CPU hours allocated.
 
 You can create whatever directory structure you like here and this is where you should run your jobs from. Please note that /home and /scratch are NOT backed up, so don't leave your data here.
 
 
-Online help can be found at:
+Please read the online help which can be found at:
 
 http://www.ivec.org/Supercomputing/Facilities/iVEC%40Murdoch/Epic%40Murdoch
 

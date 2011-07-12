@@ -34,8 +34,16 @@ def send_account_creation_mail(participant, request):
 def send_account_created_notification_mail(participant, request):
     subject = "Account created for Pawsey funded iVEC infrastructure"
     message_template = TEMPLATE_LOOKUP.get_template('allocation/account_created_email.txt')
-
-    message = message_template.render(participant=participant)
+    uid = participant.participantaccount.uid
+    account_details = get_user_account_details(uid)
+    project = None
+    for group in account_details['groups']:
+        if group != uid:
+            project = group
+            break;
+    
+    assert(project is not None, "Project could not be retrieved at time of 'account created' email")
+    message = message_template.render(participant=participant, project=project, uid=uid)
     send_mail(subject, message, participant.email)
 
     participant.status_id = Participant.STATUS['ACCOUNT_CREATED_EMAIL_SENT']
@@ -46,7 +54,7 @@ def fetch_old_ldap_details(participant):
     retval = False
     details = None
     try:
-        details = get_ldap_details(participant.email)
+        details = get_ivec_ldap_details(participant.email)
     except Exception, e:
         logger.warning("Could not fetch ldap details for %s: %s" % (participant.email, e)); 
     #only create the participant account if we successfully 
@@ -58,6 +66,7 @@ def fetch_old_ldap_details(participant):
                 participant_account = participant.participantaccount
             except ParticipantAccount.DoesNotExist:
                 participant_account = ParticipantAccount(participant=participant)
+            
             participant_account.old_ldap_details = simplejson.dumps(details)
             participant_account.first_name = details.get('givenName', [''])[0]
             participant_account.last_name = details.get('sn', [''])[0]
@@ -78,7 +87,7 @@ def send_mail(subject, message, to):
     assert 'ccg.murdoch.edu.au' in to, "Can send email just to a ccg.murdoch.edu.au address"    
     django_mail.send_mail(subject, message, settings.DEFAULT_FROM_EMAIL, [to])
 
-def get_ldap_details(emailaddress):
+def get_ivec_ldap_details(emailaddress):
     ld = ldap_helper.LDAPHandler(userdn     = settings.IVEC_LDAP_USERDN, 
                                  password   = settings.IVEC_LDAP_PASSWORD, 
                                  server     = settings.IVEC_LDAP_SERVER, 
@@ -330,8 +339,29 @@ def update_user_account(ldaph, participant):
     res = True
     return res
 
-def get_user_accounts_details(participant_id_list):
+def get_user_accounts_CSV(participant_id_list):
     returnlist = []
+    #so the format we will do is:
+    #username, emailaddress, homedir, shell, uidnum, gidnum, institution, groups (space separated)
+    returnlist.append("#UID, EMAIL, HOMEDIR, SHELL, UIDNUM, GIDNUM, INSTITUTION, GROUPS")
+    for id in participant_id_list:
+        p = Participant.objects.get(id=id)
+        pa = p.participantaccount
+        try:
+            detailsdict = get_user_accounts_details(pa.uid)
+            ldap_details = detailsdict['details']
+            groups = detailsdict['groups'] 
+            institution = pa.institution.ldap_ou_name
+            groupsstr = " ".join(groups)
+            summarystr = "%s,%s,%s,%s,%s,%s,%s,%s" % (pa.uid,p.email,ldap_details['homeDirectory'][0], ldap_details['loginShell'][0], ldap_details['uidNumber'][0], ldap_details['gidNumber'][0], institution, groupsstr)
+        except Exception, e:
+            summarystr = "Error occurred getting ldap details for uid %s:%s" % (pa.uid, e)
+        
+        returnlist.append(summarystr)
+    
+    return returnlist
+
+def get_user_account_details(uid):
     ldaph = ldap_helper.LDAPHandler(userdn     = settings.EPIC_LDAP_USERDN, 
                                  password   = settings.EPIC_LDAP_PASSWORD, 
                                  server     = settings.EPIC_LDAP_SERVER, 
@@ -344,27 +374,12 @@ def get_user_accounts_details(participant_id_list):
     usercontainer = settings.EPIC_LDAP_USER_OU
     userdn = settings.EPIC_LDAP_COMPANY
     basedn = settings.EPIC_LDAP_DOMAIN
-   
-    #so the format we will do is:
-    #username, emailaddress, homedir, shell, uidnum, gidnum, institution, groups (space separated)
-    returnlist.append("#UID, EMAIL, HOMEDIR, SHELL, UIDNUM, GIDNUM, INSTITUTION, GROUPS")
-    for id in participant_id_list:
-        p = Participant.objects.get(id=id)
-        pa = p.participantaccount
-        try:
-            ldap_details = ldaph.ldap_get_user_details(pa.uid)
-            institution = pa.institution.ldap_ou_name
-            groups = ldaph.ldap_get_user_groups(pa.uid)
-            groupsstr = " ".join(groups)
-            summarystr = "%s,%s,%s,%s,%s,%s,%s,%s" % (pa.uid,p.email,ldap_details['homeDirectory'][0], ldap_details['loginShell'][0], ldap_details['uidNumber'][0], ldap_details['gidNumber'][0], institution, groupsstr)
-        except Exception, e:
-            summarystr = "Error occurred getting ldap details for uid %s:%s" % (pa.uid, e)
-        
-        returnlist.append(summarystr)
-    
+
+    ldap_details = ldaph.ldap_get_user_details(uid)
+    groups = ldaph.ldap_get_user_groups(uid)
 
     ldaph.close()
-    return returnlist
+    return {'details': ldap_details, 'groups': groups}
 
 def hash_password(newpassword, pwencoding='md5'):
     return ldap_helper.createpassword(newpassword, pwencoding=pwencoding)
