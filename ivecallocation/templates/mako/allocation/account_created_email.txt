@@ -1,11 +1,30 @@
 
 Dear ${participant.name},
 
-Your account for access to Pawsey funded iVEC resources has been created.
+Your account at iVEC has been created.  Your user name is ${participant.name} and
+your project is ${participant.project}.
 
-TODO details
+You should be able to;
+  ssh -Y ${participant.name}@epic.ivec.org
 
-If you experience difficulties following the above link or believe you received this email in error please contact help@ivec.org.
+When you have logged in, you can change your password by typing;
+
+passwd
+
+and follow the prompts.
+
+You have a project directory on epic called /scratch/${participant.project}/${participant.name}.
+
+You can create whatever directory structure you like here and this is where you should run your jobs from. Please note that /home and /scratch are NOT backed up, so don't leave your data here.
+
+
+Online help can be found at:
+
+http://www.ivec.org/Supercomputing/Facilities/iVEC%40Murdoch/Epic%40Murdoch
+
+
+Additionaly, you can email help@ivec.org if you have any questions.
+
 
 Regards,
 
