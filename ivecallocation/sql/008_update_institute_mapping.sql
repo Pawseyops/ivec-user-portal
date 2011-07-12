@@ -1,4 +1,5 @@
 BEGIN;
-ALTER TABLE "allocation_application" ADD COLUMN "ldap_project_name" varchar(256);
+UPDATE "allocation_institution" SET "ldap_ou_name"='University of Western Australia' WHERE "display_name" = 'University of Western Australia';
+UPDATE "allocation_institution" SET "ldap_ou_name"='National' WHERE "display_name" = 'External';
 COMMIT;
 
