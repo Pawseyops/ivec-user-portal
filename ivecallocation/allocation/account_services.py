@@ -116,15 +116,13 @@ def get_application_area(participant):
         area = 'National'
     else:
         area = 'Other'  # should not happen
-    print "participant %s area: %s areanum: %s" % (participant.email, area, areanum)
+    #print "participant %s area: %s areanum: %s" % (participant.email, area, areanum)
     return (area, areanum)
 
 def create_user_accounts(participant_id_list):
-    # #################################################
     '''
-    Create the account in LDAP
-    if the user account doesn't exist, create it
-    else update it.
+    Create the account in LDAP and add it to the group
+    if the user account doesn't exist, create it else update it.
     Update means update the attributes already in the LDAP entry
     and add the ones from the old LDAP entry that are not the in the new LDAP
     '''
@@ -143,15 +141,6 @@ def create_user_accounts(participant_id_list):
                                  admin_base = settings.EPIC_LDAP_ADMINBASE,
                                  dont_require_cert=True, debug=True)
 
-    '''
-    # test code: it works
-    create_group(ldaphandler = ldaph, parentou = 'Gastronomy', groupname='Gastronomy101')
-    ldaph.ldap_add_user_to_group(username='Ratatouille', groupname = 'Gastronomy101')
-    # the username (uid) must exists
-    ldaph.ldap_add_user_to_group(username='ahunter', groupname = 'Gastronomy101')
-    return result
-    '''
-
     # needed for ldap_helper.ldap_add_user: dn = 'uid=%s,%s,%s,%s' % (username, usercontainer, userdn, basedn)
     usercontainer = settings.EPIC_LDAP_USER_OU
     userdn = settings.EPIC_LDAP_COMPANY
@@ -163,8 +152,9 @@ def create_user_accounts(participant_id_list):
             institution = participant.participantaccount.institution.ldap_ou_name
             logger.debug("\nParticipant: %s institution: %s" % (participant.email, institution) )
 
-            #if participant.status != 3: # TODO: change this!
-            #    continue # account not ready yet
+            if participant.status_id != Participant.STATUS['DETAILS_FILLED']:   # account not ready yet
+                result['errors'] += 1
+                continue # next participant
 
             try:
                 participant_account = participant.participantaccount
@@ -182,18 +172,13 @@ def create_user_accounts(participant_id_list):
                         # user entry does not exist in the new ldap, create it
                         done = create_user_account(ldaph, participant, usercontainer, userdn, basedn)
                         if done:
-                            #TODO: update the account status
-                            # participant.status = 4 # what number should that be??
                             result['created'] += 1
                     else:
-                        # user entry does not exist in the new ldap, create it
                         done = update_user_account(ldaph, participant)
                         if done:
-                            #TODO: update the account status
-                            # participant.status = 4
                             result['updated'] += 1
 
-                    done = True
+                    done = True # force the addition to the group even if there is an error
                     if done:
                         # user added or updated to the ldap directory, add the user to the group, create the group if it doesn't exist
                         (area, areanum) = get_application_area(participant)
@@ -201,8 +186,11 @@ def create_user_accounts(participant_id_list):
                         groupname = '%s-%s' % (area, areanum)
                         create_group(ldaphandler = ldaph, parentou = area, groupname = groupname, description = str(participant.application.project_title))
                         uid = participant_account.uid
-                        #done = add_user_to_group(ldaphandler = ldaph, uid = uid, groupname = areanum)
                         done = ldaph.ldap_add_user_to_group(uid, groupname)
+
+                        participant.status_id = Participant.STATUS['ACCOUNT_CREATED']
+                        participant.save()
+
             except ParticipantAccount.DoesNotExist, e:
                 logger.debug("ParticipantAccount.DoesNotExist %s error: %s" % (participant.email, e) )
                 result['errors'] += 1
@@ -210,27 +198,11 @@ def create_user_accounts(participant_id_list):
     return result
 
 def create_group(ldaphandler, parentou, groupname, description):
-    """
-    # Group creation test: it works.
-    area = 'Area'
-    cn = 'Area51'
-    parent = 'ou=%s,%s' % (area, settings.EPIC_LDAP_GROUPBASE)
-
-    ou = 'Area'
-    parentdn = settings.EPIC_LDAP_GROUPBASE
-    ldaph.create_ou(name = ou, parentdn = parentdn)
-
-    # can't create the group if the parent doesn't exist
-    ldaph.ldap_add_group_with_parent(groupname = cn, parentdn = parent)
-    #ldaph.ldap_add_group('cn=Area51,ou=Area')
-    return result
-    """
-
     # create the OU for this group like 'Astronomy'
     ldaphandler.create_ou(name = parentou, parentdn = settings.EPIC_LDAP_GROUPBASE) # 'ou=Projects,ou=Groups,%s' % (EPIC_LDAP_BASE)
 
     # can't create the group if the parent doesn't exist
-    # the group name would be like 'Astronomy01'
+    # the group name would be like 'Astronomy-01'
     groupparent = 'ou=%s,%s' % (parentou, settings.EPIC_LDAP_GROUPBASE)
     ldaphandler.ldap_add_group_with_parent(groupname = groupname, parentdn = groupparent, description = description)
     return
@@ -255,10 +227,9 @@ def set_user_ldap_dict(participant):
 
     detailsdict["givenName"] = [participantaccount.first_name]
     detailsdict["sn"] = [participantaccount.last_name]
-    detailsdict["cn"] = [participantaccount.first_name + ',' + participantaccount.last_name] # required attribute
+    detailsdict["cn"] = [participantaccount.first_name + ' ' + participantaccount.last_name] # required attribute
     detailsdict['telephoneNumber'] = [participantaccount.phone]
     detailsdict['userPassword'] = [participantaccount.password_hash]
-
 
     uid =  str(participantaccount.uid)
     detailsdict['uid'] = [uid]
