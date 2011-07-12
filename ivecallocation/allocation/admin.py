@@ -9,6 +9,7 @@ from django.contrib.auth.models import User, Group
 from django.db.models import Q
 from ivecallocation.allocation.utils import get_querylist
 from ivecallocation.allocation import account_services
+from django.http import HttpResponse
 
 class ResearchClassificationInline(admin.TabularInline):
     model = ResearchClassification
@@ -244,7 +245,7 @@ class ParticipantAdmin(admin.ModelAdmin):
     list_display = ['name', 'email', 'department_institute', 'application_id', 'status', 'account', 'has_account_details', 'fetched_from_ldap', 'hours_allocated']
     list_filter = ['account', 'admin', 'student', 'status', 'range:application__hours_allocated']
     search_fields = ['name', 'email']
-    actions = ['fetch_ldap_details', 'send_account_creation_email', 'create_user_account', 'send_account_created_email']
+    actions = ['fetch_ldap_details', 'send_account_creation_email', 'create_user_account', 'send_account_created_email', 'CSV_summary_of_LDAP_accounts']
 
     def fetch_ldap_details(self, request, queryset):
         selected = request.POST.getlist(admin.ACTION_CHECKBOX_NAME)
@@ -272,7 +273,6 @@ class ParticipantAdmin(admin.ModelAdmin):
 
     send_account_creation_email.short_description = "Send account creation email to selected Participants."
 
-    # FJ start
     def create_user_account(self, request, queryset):
         selected = request.POST.getlist(admin.ACTION_CHECKBOX_NAME)
         result = account_services.create_user_accounts(selected)
@@ -283,7 +283,6 @@ class ParticipantAdmin(admin.ModelAdmin):
         self.message_user(request, message)
         
     create_user_account.short_description = "Create selected participant account(s) in ldap"
-    # FJ end
 
     def send_account_created_email(self, request, queryset):
         selected = request.POST.getlist(admin.ACTION_CHECKBOX_NAME)
@@ -294,6 +293,17 @@ class ParticipantAdmin(admin.ModelAdmin):
             
         message = "Account created notification email sent to %s participant(s)" % len(selected)
         self.message_user(request, message)
+
+    send_account_created_email.short_description = "Send account created notification email to selected Participants."
+
+    def CSV_summary_of_LDAP_accounts(self, request, queryset):
+        selected = request.POST.getlist(admin.ACTION_CHECKBOX_NAME)
+
+        for id in selected:
+            participant = Participant.objects.get(id=id)
+            details = account_services.get_user_accounts_details(selected)
+            
+        return HttpResponse("</br>".join(details))
 
     send_account_created_email.short_description = "Send account created notification email to selected Participants."
 

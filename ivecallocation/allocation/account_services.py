@@ -311,6 +311,42 @@ def update_user_account(ldaph, participant):
     res = True
     return res
 
+def get_user_accounts_details(participant_id_list):
+    returnlist = []
+    ldaph = ldap_helper.LDAPHandler(userdn     = settings.EPIC_LDAP_USERDN, 
+                                 password   = settings.EPIC_LDAP_PASSWORD, 
+                                 server     = settings.EPIC_LDAP_SERVER, 
+                                 user_base  = settings.EPIC_LDAP_USERBASE, 
+                                 group      = None, 
+                                 group_base = settings.EPIC_LDAP_GROUPBASE, 
+                                 admin_base = settings.EPIC_LDAP_ADMINBASE,
+                                 dont_require_cert=True, debug=True)
+
+    usercontainer = settings.EPIC_LDAP_USER_OU
+    userdn = settings.EPIC_LDAP_COMPANY
+    basedn = settings.EPIC_LDAP_DOMAIN
+   
+    #so the format we will do is:
+    #username, emailaddress, homedir, shell, uidnum, gidnum, institution, groups (space separated)
+    returnlist.append("#UID, EMAIL, HOMEDIR, SHELL, UIDNUM, GIDNUM, INSTITUTION, GROUPS")
+    for id in participant_id_list:
+        p = Participant.objects.get(id=id)
+        pa = p.participantaccount
+        try:
+            ldap_details = ldaph.ldap_get_user_details(pa.uid)
+            institution = pa.institution.ldap_ou_name
+            groups = ldaph.ldap_get_user_groups(pa.uid)
+            groupsstr = " ".join(groups)
+            summarystr = "%s,%s,%s,%s,%s,%s,%s,%s" % (pa.uid,p.email,ldap_details['homeDirectory'][0], ldap_details['loginShell'][0], ldap_details['uidNumber'][0], ldap_details['gidNumber'][0], institution, groupsstr)
+        except Exception, e:
+            summarystr = "Error occurred getting ldap details for uid %s:%s" % (pa.uid, e)
+        
+        returnlist.append(summarystr)
+    
+
+    ldaph.close()
+    return returnlist
+
 def hash_password(newpassword, pwencoding='md5'):
     return ldap_helper.createpassword(newpassword, pwencoding=pwencoding)
 

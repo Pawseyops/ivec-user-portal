@@ -35,7 +35,7 @@ import logging
 LOG_DIRECTORY = os.path.join(PROJECT_DIRECTORY,"logs")
 LOGGING_LEVEL = logging.CRITICAL
 LOGGING_FORMATTER = logging.Formatter('[%(name)s:%(levelname)s:%(filename)s:%(lineno)s:%(funcName)s] %(message)s')
-LOGS = ['ivecallocation']
+LOGS = ['ivecallocation', 'mango_ldap']
 
 
 # registration app settings
