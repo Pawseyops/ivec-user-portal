@@ -244,7 +244,7 @@ class ParticipantAdmin(admin.ModelAdmin):
     list_display = ['name', 'email', 'department_institute', 'status', 'account', 'account_email_on', 'has_account_details', 'fetched_from_ldap', 'account_created_on']
     list_filter = ['account', 'admin', 'student', 'status']
     search_fields = ['name', 'email']
-    actions = ['fetch_ldap_details', 'send_account_creation_email', 'create_user_account']
+    actions = ['fetch_ldap_details', 'send_account_creation_email', 'create_user_account', 'send_account_created_email']
 
     def fetch_ldap_details(self, request, queryset):
         selected = request.POST.getlist(admin.ACTION_CHECKBOX_NAME)
@@ -284,6 +284,18 @@ class ParticipantAdmin(admin.ModelAdmin):
         
     create_user_account.short_description = "Create selected participant account(s) in ldap"
     # FJ end
+
+    def send_account_created_email(self, request, queryset):
+        selected = request.POST.getlist(admin.ACTION_CHECKBOX_NAME)
+
+        for id in selected:
+            participant = Participant.objects.get(id=id)
+            account_services.send_account_created_notification_mail(participant, request)
+            
+        message = "Account created notification email sent to %s participant(s)" % len(selected)
+        self.message_user(request, message)
+
+    send_account_created_email.short_description = "Send account created notification email to selected Participants."
 
 def register(site):
     site.register(Application, ApplicationAdmin)

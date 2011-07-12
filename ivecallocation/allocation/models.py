@@ -113,7 +113,8 @@ class Participant(models.Model):
         'NEW': 1,
         'EMAIL_SENT': 2,
         'DETAILS_FILLED': 3,
-        'ACCOUNT_CREATED': 4
+        'ACCOUNT_CREATED': 4,
+        'ACCOUNT_CREATED_EMAIL_SENT': 5,
     }
 
     application = models.ForeignKey(Application)
@@ -129,6 +130,7 @@ class Participant(models.Model):
     account_email_on = models.DateTimeField(null=True, blank=True)
     details_filled_on = models.DateTimeField(null=True, blank=True)
     account_created_on = models.DateTimeField(null=True, blank=True)
+    account_created_email_on = models.DateTimeField(null=True, blank=True)
 
     def has_account_details(self):
         try:

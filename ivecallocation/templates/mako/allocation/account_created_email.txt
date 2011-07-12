@@ -1,0 +1,23 @@
+
+Dear ${participant.name},
+
+Your account for access to Pawsey funded iVEC resources has been created.
+
+TODO details
+
+If you experience difficulties following the above link or believe you received this email in error please contact help@ivec.org.
+
+Regards,
+
+iVEC
+
+--
+iVEC, 'Home of the Pawsey Centre'
+26 Dick Perry Avenue, Technology Park
+Kensington WA 6151
+Australia
+
+Phone: +61 8 6436 8831
+Fax: +61 8 6436 8555
+Email: help@ivec.org
+WWW:  http://www.ivec.org

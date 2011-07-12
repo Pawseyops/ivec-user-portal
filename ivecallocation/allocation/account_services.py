@@ -31,6 +31,17 @@ def send_account_creation_mail(participant, request):
     participant.account_email_on = datetime.datetime.now()
     participant.save()
 
+def send_account_created_notification_mail(participant, request):
+    subject = "Account created for Pawsey funded iVEC infrastructure"
+    message_template = TEMPLATE_LOOKUP.get_template('allocation/account_created_email.txt')
+
+    message = message_template.render(participant=participant)
+    send_mail(subject, message, participant.email)
+
+    participant.status_id = Participant.STATUS['ACCOUNT_CREATED_EMAIL_SENT']
+    participant.account_created_email_on = datetime.datetime.now()
+    participant.save()
+
 def fetch_old_ldap_details(participant):
     retval = False
     details = None
