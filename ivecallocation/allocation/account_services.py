@@ -90,6 +90,24 @@ def get_ldap_details(emailaddress):
     else:
         return dict(usermatch[0].get_attributes())
 
+def get_application_area(participant):
+    app = participant.application
+    areanum = str(app.id)
+    if app.priority_area_radio_astronomy:
+        area = 'Astronomy'
+    elif app.priority_area_geosciences:
+        area = 'Geosciences'
+    elif app.priority_area_directors:
+        area = 'Geosciences'
+    elif app.priority_area_partner:
+        area = 'Partners'
+    elif app.priority_area_national:
+        area = 'National'
+    else:
+        area = 'Other'  # should not happen
+    print "participant %s area: %s areanum: %s" % (participant.email, area, areanum)
+    return (area, areanum)
+
 def create_user_accounts(participant_id_list):
     # #################################################
     '''
@@ -102,7 +120,7 @@ def create_user_accounts(participant_id_list):
     created_count = 0
     error_count = 0
     result = {'created':0, 'errors':0, 'updated':0, 'msg': ''}
-
+    
     #connect to the 'new' ldap repo, where we create all the accounts
     #print "ldap bind with: server: %s userdn: %s password: %s" % (settings.EPIC_LDAP_SERVER, settings.EPIC_LDAP_USERDN, settings.EPIC_LDAP_PASSWORD)
     ldaph = ldap_helper.LDAPHandler(userdn     = settings.EPIC_LDAP_USERDN, 
@@ -113,6 +131,15 @@ def create_user_accounts(participant_id_list):
                                  group_base = settings.EPIC_LDAP_GROUPBASE, 
                                  admin_base = settings.EPIC_LDAP_ADMINBASE,
                                  dont_require_cert=True, debug=True)
+
+    '''
+    # test code: it works
+    create_group(ldaphandler = ldaph, parentou = 'Gastronomy', groupname='Gastronomy101')
+    ldaph.ldap_add_user_to_group(username='Ratatouille', groupname = 'Gastronomy101')
+    # the username (uid) must exists
+    ldaph.ldap_add_user_to_group(username='ahunter', groupname = 'Gastronomy101')
+    return result
+    '''
 
     # needed for ldap_helper.ldap_add_user: dn = 'uid=%s,%s,%s,%s' % (username, usercontainer, userdn, basedn)
     usercontainer = settings.EPIC_LDAP_USER_OU
@@ -155,11 +182,62 @@ def create_user_accounts(participant_id_list):
                             # participant.status = 4
                             result['updated'] += 1
 
+                    done = True
+                    if done:
+                        # user added or updated to the ldap directory, add the user to the group, create the group if it doesn't exist
+                        (area, areanum) = get_application_area(participant)
+                        # TODO: add description of the application to the group
+                        groupname = '%s-%s' % (area, areanum)
+                        create_group(ldaphandler = ldaph, parentou = area, groupname = groupname)
+                        uid = participant_account.uid
+                        #done = add_user_to_group(ldaphandler = ldaph, uid = uid, groupname = areanum)
+                        done = ldaph.ldap_add_user_to_group(uid, groupname)
             except ParticipantAccount.DoesNotExist, e:
                 #print "\nParticipantAccount.DoesNotExist %s error: %s" % (participant.email, e)
                 result['errors'] += 1
         ldaph.close()
     return result
+
+def create_group(ldaphandler, parentou, groupname):
+    """
+    # Group creation test: it works.
+    area = 'Area'
+    cn = 'Area51'
+    parent = 'ou=%s,%s' % (area, settings.EPIC_LDAP_GROUPBASE)
+
+    ou = 'Area'
+    parentdn = settings.EPIC_LDAP_GROUPBASE
+    ldaph.create_ou(name = ou, parentdn = parentdn)
+
+    # can't create the group if the parent doesn't exist
+    ldaph.ldap_add_group_with_parent(groupname = cn, parentdn = parent)
+    #ldaph.ldap_add_group('cn=Area51,ou=Area')
+    return result
+    """
+
+    # create the OU for this group like 'Astronomy'
+    ldaphandler.create_ou(name = parentou, parentdn = settings.EPIC_LDAP_GROUPBASE) # 'ou=Projects,ou=Groups,%s' % (EPIC_LDAP_BASE)
+
+    # can't create the group if the parent doesn't exist
+    # the group name would be like 'Astronomy01'
+    groupparent = 'ou=%s,%s' % (parentou, settings.EPIC_LDAP_GROUPBASE)
+    ldaphandler.ldap_add_group_with_parent(groupname = groupname, parentdn = groupparent)
+    return
+
+def add_user_to_group(ldaphandler, uid, groupname):
+    done = False
+    # find or create the group, should be ou=Astronomy01,ou=Astronomy,ou=Projects,ou=Groups,dc=ivec,dc=org
+    '''
+    project_title = models.CharField(max_length=100, help_text=help_text_project_title)
+    project_summary = models.CharField(max_length=1000, help_text=help_text_project_summary, null=True, blank=True)
+    priority_area_radio_astronomy = models.BooleanField()
+    priority_area_geosciences = models.BooleanField()
+    priority_area_directors = models.BooleanField()
+    priority_area_partner = models.BooleanField()
+    priority_area_national = models.BooleanField()    
+    '''
+    done = ldaph.ldap_add_user_to_group(uid, groupname)
+    return done
 
 def set_user_ldap_dict(participant):
     '''set the user attributes from the old dictionary and add/'override the attributes we really need'''
@@ -199,7 +277,7 @@ def set_user_ldap_dict(participant):
     detailsdict['loginShell'] = loginshell
 
 
-    # conver the unicode strings in strings for ldap, will be done in ldap_handler in the future
+    # convert the unicode strings in strings for ldap, will be done in ldap_handler in the future
     for attr in detailsdict:
         valuelist = detailsdict[attr] # list of attributes in unicode strings
         #print 'valuelist: %s' % valuelist
