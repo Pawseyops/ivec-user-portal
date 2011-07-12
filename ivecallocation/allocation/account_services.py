@@ -199,7 +199,7 @@ def create_user_accounts(participant_id_list):
                         (area, areanum) = get_application_area(participant)
                         # TODO: add description of the application to the group
                         groupname = '%s-%s' % (area, areanum)
-                        create_group(ldaphandler = ldaph, parentou = area, groupname = groupname)
+                        create_group(ldaphandler = ldaph, parentou = area, groupname = groupname, description = str(participant.application.project_title))
                         uid = participant_account.uid
                         #done = add_user_to_group(ldaphandler = ldaph, uid = uid, groupname = areanum)
                         done = ldaph.ldap_add_user_to_group(uid, groupname)
@@ -209,7 +209,7 @@ def create_user_accounts(participant_id_list):
         ldaph.close()
     return result
 
-def create_group(ldaphandler, parentou, groupname):
+def create_group(ldaphandler, parentou, groupname, description):
     """
     # Group creation test: it works.
     area = 'Area'
@@ -232,21 +232,11 @@ def create_group(ldaphandler, parentou, groupname):
     # can't create the group if the parent doesn't exist
     # the group name would be like 'Astronomy01'
     groupparent = 'ou=%s,%s' % (parentou, settings.EPIC_LDAP_GROUPBASE)
-    ldaphandler.ldap_add_group_with_parent(groupname = groupname, parentdn = groupparent)
+    ldaphandler.ldap_add_group_with_parent(groupname = groupname, parentdn = groupparent, description = description)
     return
 
 def add_user_to_group(ldaphandler, uid, groupname):
     done = False
-    # find or create the group, should be ou=Astronomy01,ou=Astronomy,ou=Projects,ou=Groups,dc=ivec,dc=org
-    '''
-    project_title = models.CharField(max_length=100, help_text=help_text_project_title)
-    project_summary = models.CharField(max_length=1000, help_text=help_text_project_summary, null=True, blank=True)
-    priority_area_radio_astronomy = models.BooleanField()
-    priority_area_geosciences = models.BooleanField()
-    priority_area_directors = models.BooleanField()
-    priority_area_partner = models.BooleanField()
-    priority_area_national = models.BooleanField()    
-    '''
     done = ldaph.ldap_add_user_to_group(uid, groupname)
     return done
 
