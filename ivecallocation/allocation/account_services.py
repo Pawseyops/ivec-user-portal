@@ -79,7 +79,7 @@ def fetch_old_ldap_details(participant):
     return retval
 
 def send_mail(subject, message, to):
-    #assert 'ccg.murdoch.edu.au' in to, "Can send email just to a ccg.murdoch.edu.au address"    
+    assert 'ccg.murdoch.edu.au' in to, "Can send email just to a ccg.murdoch.edu.au address"    
     django_mail.send_mail(subject, message, settings.DEFAULT_FROM_EMAIL, [to])
 
 def get_ivec_ldap_details(emailaddress):
