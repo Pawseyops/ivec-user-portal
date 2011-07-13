@@ -193,10 +193,13 @@ def create_user_accounts(participant_id_list):
                         (area, areanum) = get_application_area(participant)
 
                         groupname = '%s%s' % (area, areanum)
-                        gidnumber = str(30010 + application.id)
-                        create_group(ldaphandler = ldaph, parentou = area, groupname = groupname, description = str(participant.application.project_title))
+                        gidnumber = str(30010 + participant.application.id)
+                        description = str(participant.application.project_title)
+                        create_group(ldaphandler = ldaph, parentou = area, groupname = groupname, description = description, gidnumber = gidnumber)
                         uid = participant_account.uid
-                        done = ldaph.ldap_add_user_to_group(uid, groupname, gidnumber)
+                        print "Adding user uid: %s to group: %s" % (uid, groupname)
+                        done = ldaph.ldap_add_user_to_group(uid, groupname)
+                        print "Adding user uid: %s to group: %s RESULT: %s" % (uid, groupname, done)
 
                         # create a posixGroup with cn=uid
                         posixgroupname = participant_account.uid
