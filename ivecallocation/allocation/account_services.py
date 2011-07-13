@@ -42,7 +42,7 @@ def send_account_created_notification_mail(participant, request):
             project = group
             break;
     
-    assert(project is not None, "Project could not be retrieved at time of 'account created' email")
+    assert project is not None, "Project could not be retrieved at time of 'account created' email"
     message = message_template.render(participant=participant, project=project, uid=uid)
     send_mail(subject, message, participant.email)
 
@@ -198,7 +198,7 @@ def create_user_accounts(participant_id_list):
                         create_group(ldaphandler = ldaph, parentou = area, groupname = groupname, description = description, gidnumber = gidnumber)
                         uid = participant_account.uid
                         print "Adding user uid: %s to group: %s" % (uid, groupname)
-                        done = ldaph.ldap_add_user_to_group(uid, groupname)
+                        done = ldaph.ldap_add_user_to_group(uid, groupname, objectclass='posixgroup', membershipattr='memberUid')
                         print "Adding user uid: %s to group: %s RESULT: %s" % (uid, groupname, done)
 
                         # create a posixGroup with cn=uid

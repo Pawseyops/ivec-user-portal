@@ -663,7 +663,7 @@ class LDAPHandler(object):
         logger.debug('***ldap_search_users : exit***')
         return users
 
-    def ldap_add_user_to_group(self, username, groupname):
+    def ldap_add_user_to_group(self, username, groupname, objectclass='groupofuniquenames', membershipattr="uniqueMember"):
         '''adds a user to a group
            returns true on success
            returns false on fail (user didnt exist, group didn't exist)'''
@@ -679,37 +679,43 @@ class LDAPHandler(object):
                 #does the new group exist?
                 if groupname in self.ldap_list_groups():
                     logger.debug('\tCandidate group existed')
-                    #add the user to the group
-                    #get group dn:
-                    gresult = self.ldap_query(base=self.GROUP_BASE, filter='(&(objectclass=groupofuniquenames) (cn=%s))' % groupname)
-                    if len(gresult) != 0:
-                        try:
-                            gdn = gresult[0].get_dn()
-                            udn = self.ldap_get_user_dn(username)
-                            #modify the group's attrubutes so as to add this entry
-                            import ldap.modlist as modlist
-                            old = gresult[0]
-                            oldattrs = old.get_attributes()
-                            import copy
-                            newattrs = copy.deepcopy(oldattrs)
-                            logger.debug('oldattrs: %s' % ( str( old.get_attributes() ) ) )
-                            #catch code for empty groups (no 'uniquemmembers')
-                            if not newattrs.has_key('uniqueMember'):
-                                newattrs['uniqueMember'] = []
-                            newattrs['uniqueMember'].append(udn) 
-                            mods = modlist.modifyModlist(oldattrs, newattrs, ignore_oldexistent=1)
-                            logger.debug('MODS:%s' % (str(mods)))
-                            if len(mods) > 0:
-                                r = self.l.modify_ext_s(gdn, mods)
-                            retval = True
-                        except ldap.LDAPError, e:
-                            logger.debug('Exception adding user %s to group %s: %s' % (username, groupname, str(e)))
-                            print 'Exception adding user %s to group %s: %s' % (username, groupname, str(e))
-
-                    else:
-                        logger.debug('\tCouldn\'t get group dn')
                 else:
-                    logger.debug('\tCandidate group didn\'t exist. Aborting')
+                    logger.warning("Candidate group didn't seem to exist, but I will attempt adding anyway")
+
+                #add the user to the group
+                #get group dn:
+                gresult = self.ldap_query(base=self.GROUP_BASE, filter='(&(objectclass=%s) (cn=%s))' % (objectclass, groupname))
+                if len(gresult) != 0:
+                    try:
+                        gdn = gresult[0].get_dn()
+                        #groupofuniquenames usually uses the full udn as the membership name
+                        #posixgroup (for example) just uses the uid.
+                        if objectclass=='groupofuniquenames':
+                            udn = self.ldap_get_user_dn(username)
+                        else:
+                            udn = str(username)
+                        #modify the group's attrubutes so as to add this entry
+                        import ldap.modlist as modlist
+                        old = gresult[0]
+                        oldattrs = old.get_attributes()
+                        import copy
+                        newattrs = copy.deepcopy(oldattrs)
+                        logger.debug('oldattrs: %s' % ( str( old.get_attributes() ) ) )
+                        #catch code for empty groups (no 'uniquemmembers')
+                        if not newattrs.has_key(membershipattr):
+                            newattrs[membershipattr] = []
+                        newattrs[membershipattr].append(udn) 
+                        mods = modlist.modifyModlist(oldattrs, newattrs, ignore_oldexistent=1)
+                        logger.debug('MODS:%s' % (str(mods)))
+                        if len(mods) > 0:
+                            r = self.l.modify_ext_s(gdn, mods)
+                        retval = True
+                    except ldap.LDAPError, e:
+                        logger.debug('Exception adding user %s to group %s: %s' % (username, groupname, str(e)))
+                        print 'Exception adding user %s to group %s: %s' % (username, groupname, str(e))
+
+                else:
+                    logger.debug('\tCouldn\'t get group dn')
 
         logger.debug('***ldap_add_user_to_group*** : exit') 
         return retval
