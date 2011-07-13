@@ -302,7 +302,7 @@ class ParticipantAdmin(admin.ModelAdmin):
 
         for id in selected:
             participant = Participant.objects.get(id=id)
-            details = account_services.get_user_accounts_details(selected)
+            details = account_services.get_user_accounts_CSV(selected)
             
         return HttpResponse("</br>".join(details))
 
