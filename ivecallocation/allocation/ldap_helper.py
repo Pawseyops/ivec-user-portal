@@ -572,13 +572,15 @@ class LDAPHandler(object):
 
         return True
 
-    def ldap_get_user_groups(self, username):
+    def ldap_get_user_groups(self, username, use_udn=True):
         
         logger.debug('***ldap_get_user_groups:enter***')
-        udn = self.ldap_get_user_dn(username)
-        if udn is None:
-            return None
-        
+        if use_udn:
+            udn = self.ldap_get_user_dn(username)
+            if udn is None:
+                return None
+        else:
+            udn = username
         f = '(&(objectClass=%s)(%s=%s))' % (self.GROUPOC, self.MEMBERATTR, udn)    
         result_data = self.ldap_query(base=self.GROUP_BASE,filter=f)            
         groups = []

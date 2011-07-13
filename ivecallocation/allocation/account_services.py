@@ -257,7 +257,9 @@ def set_user_ldap_dict(participant):
     detailsdict["givenName"] = [participantaccount.first_name]
     detailsdict["sn"] = [participantaccount.last_name]
     detailsdict["cn"] = [participantaccount.first_name + ' ' + participantaccount.last_name] # required attribute
-    detailsdict['telephoneNumber'] = [participantaccount.phone]
+    #only want non blank telephone nums
+    if participantaccount.phone is not None and len(participantaccount.phone) > 0: 
+        detailsdict['telephoneNumber'] = [participantaccount.phone]
     detailsdict['userPassword'] = [participantaccount.password_hash]
     detailsdict['mail'] = [participant.email]
 
@@ -377,8 +379,17 @@ def get_user_account_details(uid):
     userdn = settings.EPIC_LDAP_COMPANY
     basedn = settings.EPIC_LDAP_DOMAIN
 
+    #try a bunch of stuff to capture all their group info
+    ldaph.GROUP_BASE = settings.EPIC_LDAP_GROUPBASE
+    ldaph.GROUPOC = 'posixgroup'
     ldap_details = ldaph.ldap_get_user_details(uid)
-    groups = ldaph.ldap_get_user_groups(uid)
+    groups = ldaph.ldap_get_user_groups(uid, use_udn=False)
+    ldaph.MEMBERATTR = 'memberUid'
+    groups += ldaph.ldap_get_user_groups(uid, use_udn=False)
+    #ldaph.GROUPOC = 'posixgroup'
+    ldaph.GROUP_BASE = settings.EPIC_LDAP_POSIXGROUPBASE
+    groups += ldaph.ldap_get_user_groups(uid, use_udn=False)
+
 
     ldaph.close()
     return {'details': ldap_details, 'groups': groups}
