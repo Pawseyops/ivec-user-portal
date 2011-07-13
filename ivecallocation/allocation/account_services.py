@@ -197,10 +197,12 @@ def create_user_accounts(participant_id_list):
                         posixgroupname = participant_account.uid
                         gidnumber = str(participant_account.gid_number)
                         parentou = settings.EPIC_LDAP_POSIXGROUPBASE # 'ou=POSIX,ou=Groups,dc=ivec,dc=org'
-                        posixdone = create_POSIX_group(ldaphandler = ldaph, parentou = parentou, groupname = posixgroupname, gidnumber = gidnumber)
+                        
+                        
+                        posixdone = ldaph.ldap_add_group_with_parent(groupname = posixgroupname, parentdn = parentou, objectClasses = ['top','posixGroup'], attributes = [('gidNumber',gidnumber)])
 
                         # update the user status only if all the steps went through
-                        #print "groupdone %s usergroupdone %s posixdone %s" % (groupdone, usergroupdone, posixdone)
+                        logger.debug( "groupdone %s usergroupdone %s posixdone %s" % (groupdone, usergroupdone, posixdone) )
                         if groupdone and usergroupdone and posixdone:
                             participant.status_id = Participant.STATUS['ACCOUNT_CREATED']
                             participant.account_created_on = datetime.datetime.now()
@@ -216,10 +218,6 @@ def create_user_accounts(participant_id_list):
                 result['errors'] += 1
         ldaph.close()
     return result
-
-def create_POSIX_group(ldaphandler, parentou, groupname, gidnumber):
-    res = ldaphandler.ldap_add_group_with_parent(groupname = groupname, parentdn = parentou, objectClasses = ['top','posixGroup'], attributes = [('gidNumber',gidnumber)])
-    return res
 
 def create_group(ldaphandler, parentou, groupname, description, gidnumber):
     '''

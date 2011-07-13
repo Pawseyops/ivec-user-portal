@@ -525,8 +525,12 @@ class LDAPHandler(object):
         dn = 'cn=%s,%s' % (groupname, parentdn)
         logger.debug('calling ldap_add: %s AND %s' % (str(dn), str(newattrs) ) )
         #print('calling ldap_add: %s attrs: %s' % (str(dn), str(newattrs) ) )
+        res = True
         try:
             res = self.l.add_s(dn, newattrs)
+        except ldap.ALREADY_EXISTS, e:
+            #this is ok, if you are trying to add a group and it already exists
+            logger.debug("Group we are trying to add already existed. Ok")
         except ldap.LDAPError, e:
             logger.debug('ldap_add_group: Exception in ldap_add: %s' % ( str(e) ) )
             #print('ldap_add_group: Exception in ldap_add: %s' % ( str(e) ) )
@@ -707,6 +711,10 @@ class LDAPHandler(object):
                         if len(mods) > 0:
                             r = self.l.modify_ext_s(gdn, mods)
                         retval = True
+                    except ldap.TYPE_OR_VALUE_EXISTS, e:
+                        #trying to add to a group when we already are a member is ok
+                        logger.debug('Trying to add value that already exists: Ok.')
+                        retval = True 
                     except ldap.LDAPError, e:
                         logger.debug('Exception adding user %s to group %s: %s' % (username, groupname, str(e)))
                         #print 'Exception adding user %s to group %s: %s' % (username, groupname, str(e))
