@@ -113,20 +113,9 @@ def get_ivec_ldap_details(emailaddress):
 def get_application_area(participant):
     app = participant.application
     areanum = str(app.id)
-    if app.priority_area_radio_astronomy:
-        area = 'astronomy'
-    elif app.priority_area_geosciences:
-        area = 'geosciences'
-    elif app.priority_area_directors:
-        area = 'directors'
-    elif app.priority_area_partner:
-        area = 'partners'
-    elif app.priority_area_national:
-        area = 'national'
-    else:
-        area = 'Other'  # should not happen
-    #print "participant %s area: %s areanum: %s" % (participant.email, area, areanum)
-    return (area, areanum)
+    parentarea = app.priority_area
+    childarea = app.posix_area
+    return (parentarea, childarea, areanum)
 
 def create_user_accounts(participant_id_list):
     '''
@@ -191,13 +180,13 @@ def create_user_accounts(participant_id_list):
 
                     if userdone:
                         # user added or updated to the ldap directory, add the user to the group, create the group if it doesn't exist
-                        (area, areanum) = get_application_area(participant)
+                        (parentarea, childarea, areanum) = get_application_area(participant)
 
-                        groupname = '%s%s' % (area, areanum)
+                        groupname = '%s%s' % (childarea, areanum)
                         gidnumber = str(30010 + participant.application.id)
                         description = str(participant.application.project_title)
-                        groupdone = create_group(ldaphandler = ldaph, parentou = area, groupname = groupname, description = description, gidnumber = gidnumber)
-
+                        create_group(ldaphandler = ldaph, parentou = parentarea, groupname = groupname, description = description, gidnumber = gidnumber)
+                        
                         uid = participant_account.uid
                         print "Adding user uid: %s to group: %s" % (uid, groupname)
                         # ldap_add_user_to_group(username, groupname, objectclass='groupofuniquenames', membershipattr="uniqueMember"):
