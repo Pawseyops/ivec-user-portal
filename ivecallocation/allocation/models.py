@@ -208,10 +208,14 @@ class ParticipantAccount(models.Model):
             if uid is None or len(uid) == 0:
                 return False
             qs = ParticipantAccount.objects.filter(uid = uid)
-            if len(qs) > 1:
-                return False
-            else:
+            if len(qs) == 0:
+                #There were none. OK!
                 return True
+            elif (len(qs) == 1) and qs[0].id == self.id:
+                #There was one, but it was me.
+                return True
+            else:s
+                return False
         
         #Check to see if we have the same uid as anyone else.
         #if so, try for a uid using firstname + lastname[0]
