@@ -55,20 +55,30 @@ class Application(models.Model):
 
     @property
     def priority_area(self):
+        return self.get_area_mapping()
+
+    @property
+    def posix_area(self):
+        return self.get_area_mapping(posix=True)
+
+    def get_area_mapping(self, posix=False):
+        ret = [None, None]
         if self.priority_area_radio_astronomy:
-            return 'Radio Astronomy'
+            ret = ['Radio Astronomy', 'astronomy']
         elif self.priority_area_geosciences:
-            return 'Geosciences'
+            ret = ['Geosciences', 'geosciences']
         elif self.priority_area_directors:
-            return 'Directors'
+            ret = ['Directors', 'directors']
         elif self.priority_area_partner:
-            return 'Partner'
+            ret = ['Partner', 'partner']
         elif self.priority_area_national:
-            return 'National'
+            ret = ['National', 'national']
+
+        if posix:
+            return ret[1]
         else:
-            return None
-
-
+            return ret[0]
+    
 
 
 class ReviewerScore(models.Model):
