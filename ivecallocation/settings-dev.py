@@ -65,3 +65,8 @@ SESSION_COOKIE_AGE = 8*60*60
 
 # applications open, controls whether the login redirects to the Application Change Page or the main Admin site
 APPLICATIONS_OPEN = False
+
+#TODO: add this to ccg-apps-settings
+# ou=POSIX,ou=Groups,dc=ivec,dc=org
+# needs objectClass = 'top' and 'posixGroup'
+EPIC_LDAP_POSIXGROUPBASE = 'ou=POSIX,ou=Groups,%s' % (EPIC_LDAP_BASE)
