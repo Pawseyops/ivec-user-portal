@@ -214,7 +214,7 @@ class ParticipantAccount(models.Model):
             elif (len(qs) == 1) and qs[0].id == self.id:
                 #There was one, but it was me.
                 return True
-            else:s
+            else:
                 return False
         
         #Check to see if we have the same uid as anyone else.
