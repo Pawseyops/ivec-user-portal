@@ -36,13 +36,8 @@ def send_account_created_notification_mail(participant, request):
     message_template = TEMPLATE_LOOKUP.get_template('allocation/account_created_email.txt')
     uid = participant.participantaccount.uid
     account_details = get_user_account_details(uid)
-    project = None
-    for group in account_details['groups']:
-        if group != uid:
-            project = group
-            break;
-    
-    assert project is not None, "Project could not be retrieved at time of 'account created' email"
+    project = participant.application.ldap_project_name 
+    assert project is not None and len(project)>0, "Project could not be retrieved at time of 'account created' email"
     message = message_template.render(participant=participant, project=project, uid=uid)
     send_mail(subject, message, participant.email)
 
