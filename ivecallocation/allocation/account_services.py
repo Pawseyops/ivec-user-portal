@@ -168,12 +168,12 @@ def create_user_accounts(participant_id_list):
 
                     if not userdetails:
                         # user entry does not exist in the new ldap, create it
-                        print "creating user in LDAP"
+                        #print "creating user in LDAP"
                         userdone = create_user_account(ldaph, participant, usercontainer, userdn, basedn)
                         if userdone:
                             result['created'] += 1
                     else:
-                        print "updating user in LDAP"
+                        #print "updating user in LDAP"
                         userdone = update_user_account(ldaph, participant)
                         if userdone:
                             result['updated'] += 1
@@ -185,13 +185,13 @@ def create_user_accounts(participant_id_list):
                         groupname = '%s%s' % (childarea, areanum)
                         gidnumber = str(30010 + participant.application.id)
                         description = str(participant.application.project_title)
-                        create_group(ldaphandler = ldaph, parentou = parentarea, groupname = groupname, description = description, gidnumber = gidnumber)
+                        groupdone = create_group(ldaphandler = ldaph, parentou = parentarea, groupname = groupname, description = description, gidnumber = gidnumber)
                         
                         uid = participant_account.uid
-                        print "Adding user uid: %s to group: %s" % (uid, groupname)
+                        #print "Adding user uid: %s to group: %s" % (uid, groupname)
                         # ldap_add_user_to_group(username, groupname, objectclass='groupofuniquenames', membershipattr="uniqueMember"):
                         usergroupdone = ldaph.ldap_add_user_to_group(uid, groupname, objectclass='posixgroup', membershipattr='memberUid')
-                        print "Adding user uid: %s to group: %s RESULT: %s" % (uid, groupname, usergroupdone)
+                        #print "Adding user uid: %s to group: %s RESULT: %s" % (uid, groupname, usergroupdone)
 
                         # create a posixGroup with cn=uid
                         posixgroupname = participant_account.uid
@@ -200,6 +200,7 @@ def create_user_accounts(participant_id_list):
                         posixdone = create_POSIX_group(ldaphandler = ldaph, parentou = parentou, groupname = posixgroupname, gidnumber = gidnumber)
 
                         # update the user status only if all the steps went through
+                        #print "groupdone %s usergroupdone %s posixdone %s" % (groupdone, usergroupdone, posixdone)
                         if groupdone and usergroupdone and posixdone:
                             participant.status_id = Participant.STATUS['ACCOUNT_CREATED']
                             participant.account_created_on = datetime.datetime.now()
@@ -217,8 +218,8 @@ def create_user_accounts(participant_id_list):
     return result
 
 def create_POSIX_group(ldaphandler, parentou, groupname, gidnumber):
-    ldaphandler.ldap_add_group_with_parent(groupname = groupname, parentdn = parentou, objectClasses = ['top','posixGroup'], attributes = [('gidNumber',gidnumber)])
-    return
+    res = ldaphandler.ldap_add_group_with_parent(groupname = groupname, parentdn = parentou, objectClasses = ['top','posixGroup'], attributes = [('gidNumber',gidnumber)])
+    return res
 
 def create_group(ldaphandler, parentou, groupname, description, gidnumber):
     '''
@@ -227,20 +228,19 @@ def create_group(ldaphandler, parentou, groupname, description, gidnumber):
     # create the OU for this group like 'Astronomy'
     oudescription = None
     parentdn = settings.EPIC_LDAP_GROUPBASE
-    print "create_group create_ou: parentou: %s parentdn: %s" % (parentou, parentdn)
+    #print "create_group create_ou: parentou: %s parentdn: %s" % (parentou, parentdn)
     res = ldaphandler.create_ou(name = parentou, parentdn = parentdn) # 'ou=Projects,ou=Groups,%s' % (EPIC_LDAP_BASE)
-    print "create_group: create_ou res: %s" % res
-    if not res: return res
+    # ignore the result, the OU can exist already
+    #print "create_group: create_ou res: %s" % res
 
     # can't create the group if the parent doesn't exist
     # the group name would be like 'Astronomy18' where 18 is the application number
     groupparent = 'ou=%s,%s' % (parentou, settings.EPIC_LDAP_GROUPBASE)
-    print "create_group ldap_add_group_with_parent: groupname: %s parentou: %s, gidnumber: %s" % (groupname, groupparent, gidnumber)
+    #print "create_group ldap_add_group_with_parent: groupname: %s parentou: %s, gidnumber: %s" % (groupname, groupparent, gidnumber)
     res = ldaphandler.ldap_add_group_with_parent(groupname = groupname, parentdn = groupparent, description = description,  objectClasses = ['top','posixGroup'], attributes = [('gidNumber',gidnumber)])
     return res
 
 def add_user_to_group(ldaphandler, uid, groupname):
-    done = False
     done = ldaph.ldap_add_user_to_group(uid, groupname)
     return done
 
