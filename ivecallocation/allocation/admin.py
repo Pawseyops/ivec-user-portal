@@ -314,7 +314,7 @@ class ParticipantAccountAdminForm(forms.ModelForm):
 
     def clean_uid(self):
         data = self.cleaned_data['uid']
-        unique_uid = self.instance.get_unique_uid()
+        unique_uid = self.instance.get_unique_uid(test_uid=data)
         if data != unique_uid:
             raise forms.ValidationError('Non unique uid "%s": I suggest "%s".' % (data, unique_uid))
         return data

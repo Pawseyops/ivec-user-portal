@@ -202,12 +202,15 @@ class ParticipantAccount(models.Model):
     old_ldap_details = models.CharField(max_length=2000, null=True, blank=True)
     data_fetched_on = models.DateTimeField(null=True, blank=True)
     
-    def get_unique_uid(self):
-        
+    def get_unique_uid(self, test_uid = None):
+        '''This function checks to make sure a uid is unique.
+           You can either pass one in (test_uid) or it will
+           use self.uid '''
         def check_unique_uid(uid):
             if uid is None or len(uid) == 0:
                 return False
             qs = ParticipantAccount.objects.filter(uid = uid)
+            print qs
             if len(qs) == 0:
                 #There were none. OK!
                 return True
@@ -220,21 +223,23 @@ class ParticipantAccount(models.Model):
         #Check to see if we have the same uid as anyone else.
         #if so, try for a uid using firstname + lastname[0]
         #and if that still conflicts, use self.uid + 1,2,3 etc
-        original_uid = self.uid
-        if original_uid is None or len(original_uid) == 0:
-            original_uid = ("%s%s" % (self.first_name[0], self.last_name)).lower()
+        if test_uid is None:
+            test_uid = self.uid
+
+        if test_uid is None or len(test_uid) == 0:
+            test_uid = ("%s%s" % (self.first_name[0], self.last_name)).lower()
 
 
         #catch uid's that have somehow come with a capitalisation (from LDAP perhaps).
-        if original_uid.lower() != original_uid:
-            original_uid = original_uid.lower()
+        if test_uid.lower() != test_uid:
+            test_uid = test_uid.lower()
 
-        candidate_uid = original_uid 
+        candidate_uid = test_uid 
         if not check_unique_uid(candidate_uid):
             candidate_uid = ("%s%s" % (self.first_name[0], self.last_name)).lower()
             counter = 1
             while not check_unique_uid(candidate_uid):
-                candidate_uid = ("%s%s" % (original_uid, str(counter))).lower()
+                candidate_uid = ("%s%s" % (test_uid, str(counter))).lower()
                 counter +=1
 
         return candidate_uid

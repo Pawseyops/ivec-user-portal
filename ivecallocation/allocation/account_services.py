@@ -37,7 +37,9 @@ def send_account_created_notification_mail(participant, request):
     uid = participant.participantaccount.uid
     account_details = get_user_account_details(uid)
     project = participant.application.ldap_project_name 
-    assert project is not None and len(project)>0, "Project could not be retrieved at time of 'account created' email"
+    hours_allocated = participant.application.hours_allocated
+    assert project is not None and len(project)>0, "Project could not be retrieved at time of 'account created' email for user %s" % (uid) 
+    assert (hours_allocated is not None) and (hours_allocated > 0), "Invalid hours allocated (%s) at time of 'account created' email" % (str(hours_allocated) )
     message = message_template.render(participant=participant, project=project, uid=uid)
     send_mail(subject, message, participant.email)
 
@@ -157,8 +159,9 @@ def create_user_accounts(participant_id_list):
                     logger.debug("participant: %s %s email:%s" % (participant_account.first_name, participant_account.last_name, email) )
                     # get the user entry in the new ldap repo if it exists
 
-                    userdetails = ldaph.get_user_details_from_attribute(attribute = 'mail', value = email)
-                    logger.debug("user email: %s details: %s" % (email, userdetails) )
+                    #userdetails = ldaph.get_user_details_from_attribute(attribute = 'mail', value = email)
+                    userdetails = ldaph.get_user_details_from_attribute(attribute = 'uid', value = participant_account.uid)
+                    logger.debug("user uid: %s details: %s" % (participant_account.uid, userdetails) )
                     done = False
 
                     if not userdetails:
@@ -209,7 +212,7 @@ def create_user_accounts(participant_id_list):
                         application.save()
 
             except ParticipantAccount.DoesNotExist, e:
-                logger.debug("ParticipantAccount.DoesNotExist %s error: %s" % (participant.email, e) )
+                logger.debug("ParticipantAccount.DoesNotExist %s error: %s" % (participant_account.uid, e) )
                 result['errors'] += 1
         ldaph.close()
     return result
@@ -290,6 +293,7 @@ def set_user_ldap_dict(participant):
 def create_user_account(ldaph, participant, usercontainer, userdn, basedn):
     res = False
     participant_account = participant.participantaccount
+    participant_account.constrain_uidgid()
     uid = participant_account.uid
     unique_uid = participant_account.get_unique_uid()
     if uid != unique_uid:
