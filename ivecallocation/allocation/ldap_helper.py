@@ -527,15 +527,15 @@ class LDAPHandler(object):
 
         dn = 'cn=%s,%s' % (groupname, parentdn)
         logger.debug('calling ldap_add: %s AND %s' % (str(dn), str(newattrs) ) )
-        #print('calling ldap_add: %s AND %s' % (str(dn), str(newattrs) ) )
+        print('calling ldap_add: %s attrs: %s' % (str(dn), str(newattrs) ) )
         try:
             res = self.l.add_s(dn, newattrs)
         except ldap.LDAPError, e:
             logger.debug('ldap_add_group: Exception in ldap_add: %s' % ( str(e) ) )
-            #print('ldap_add_group: Exception in ldap_add: %s' % ( str(e) ) )
+            print('ldap_add_group: Exception in ldap_add: %s' % ( str(e) ) )
             return False
         logger.debug('the response from the add command was: %s' % (str(res) ) )
-        #print('the response from the add command was: %s' % (str(res) ) )
+        print('the response from the add command was: %s' % (str(res) ) )
 
         return True
     # FJ end
@@ -704,7 +704,7 @@ class LDAPHandler(object):
                             retval = True
                         except ldap.LDAPError, e:
                             logger.debug('Exception adding user %s to group %s: %s' % (username, groupname, str(e)))
-                            #print 'Exception adding user %s to group %s: %s' % (username, groupname, str(e))
+                            print 'Exception adding user %s to group %s: %s' % (username, groupname, str(e))
 
                     else:
                         logger.debug('\tCouldn\'t get group dn')
