@@ -53,26 +53,35 @@ class Application(models.Model):
     def reviews(self):
         return self.reviewerscore_set.all().count()        
 
+    #This gets the area name that should be used as an OU in LDAP
     @property
     def priority_area(self):
         return self.get_area_mapping()
 
+    #This gets the area name that should be used as a posix group name in LDAP
     @property
     def posix_area(self):
         return self.get_area_mapping(posix=True)
 
+
+    #This is a mapping of area names and posix group names. 
+    #DO NOT modify this unless you know what you are doing, as it has
+    #repurcussions for the LDAP tree. You need to have spoken to 
+    #one of the SysAdmins and verified any changes you are making with them.
+    #
+    # This mapping certified canonical by D.Schibeci on Wed 13 Jul 2011
     def get_area_mapping(self, posix=False):
         ret = [None, None]
         if self.priority_area_radio_astronomy:
-            ret = ['Radio Astronomy', 'astronomy']
+            ret = ['Astronomy', 'astronomy']
         elif self.priority_area_geosciences:
             ret = ['Geosciences', 'geosciences']
         elif self.priority_area_directors:
-            ret = ['Directors', 'directors']
+            ret = ['Director', 'director']
         elif self.priority_area_partner:
-            ret = ['Partner', 'partner']
+            ret = ['iVEC Partners', 'partner']
         elif self.priority_area_national:
-            ret = ['National', 'national']
+            ret = ['National Merit', 'national']
 
         if posix:
             return ret[1]
