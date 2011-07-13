@@ -346,7 +346,7 @@ def get_user_accounts_CSV(participant_id_list):
         p = Participant.objects.get(id=id)
         pa = p.participantaccount
         try:
-            detailsdict = get_user_accounts_details(pa.uid)
+            detailsdict = get_user_account_details(pa.uid)
             ldap_details = detailsdict['details']
             groups = detailsdict['groups'] 
             institution = pa.institution.ldap_ou_name
