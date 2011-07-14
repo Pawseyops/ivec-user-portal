@@ -144,8 +144,7 @@ def create_user_accounts(participant_id_list):
     if ldaph:
         for id in participant_id_list:
             participant = Participant.objects.get(id=id)
-            institution = participant.participantaccount.institution.ldap_ou_name
-            logger.debug("\nParticipant: %s institution: %s" % (participant.email, institution) )
+            logger.debug("\nParticipant: %s" % (participant.email,) )
 
             if participant.status_id != Participant.STATUS['DETAILS_FILLED']:   # account not ready yet
                 result['errors'] += 1
