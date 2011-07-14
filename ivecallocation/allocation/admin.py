@@ -58,6 +58,7 @@ class ApplicationAdmin(admin.ModelAdmin):
                SupportingFundingInline, SupercomputerJobInline, LibraryInline, ReviewerScoreInline, ReviewerCommentInline] 
     form = ApplicationForm
     search_fields = ['project_title']
+    actions = ['CSV_summary_of_LDAP_accounts']
 
     fieldsets = [
         ('Part A - Summary', 
@@ -191,7 +192,12 @@ class ApplicationAdmin(admin.ModelAdmin):
         
     ]
 
+    def CSV_summary_of_LDAP_accounts(self, request, queryset):
+        selected = request.POST.getlist(admin.ACTION_CHECKBOX_NAME)
+        details = account_services.get_applications_CSV(selected)
+        return HttpResponse("</br>".join(details))
 
+    CSV_summary_of_LDAP_accounts.short_description = "Generate an LDAP account summary (CSV) for selected Applications."
 
 ##    ## this may work seems to have caching issues
 ##    def change_view(self, request, obj_id):
@@ -300,9 +306,7 @@ class ParticipantAdmin(admin.ModelAdmin):
     def CSV_summary_of_LDAP_accounts(self, request, queryset):
         selected = request.POST.getlist(admin.ACTION_CHECKBOX_NAME)
 
-        for id in selected:
-            participant = Participant.objects.get(id=id)
-            details = account_services.get_user_accounts_CSV(selected)
+        details = account_services.get_user_accounts_CSV(selected)
             
         return HttpResponse("</br>".join(details))
 

@@ -397,6 +397,22 @@ def get_user_account_details(uid):
 def hash_password(newpassword, pwencoding='md5'):
     return ldap_helper.createpassword(newpassword, pwencoding=pwencoding)
 
+def get_applications_CSV(id_list):
+    returnlist = []
+
+    # first line with column names
+    returnlist.append("PROJECTNAME,HOURSALLOCATED,PROJECTTITLE")
+
+    for id in id_list:
+        app = Application.objects.get(id=id)
+        if app.ldap_project_name:
+            if not app.hours_allocated:
+                app.hours_allocated = 0
+            summarystr = '%s,%s,"%s"' % (app.ldap_project_name, app.hours_allocated, app.project_title)
+            returnlist.append(summarystr)
+    
+    return returnlist
+
 @transaction.commit_on_success
 def save_account_details(participant_account):
     participant = participant_account.participant
