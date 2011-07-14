@@ -58,7 +58,7 @@ class ApplicationAdmin(admin.ModelAdmin):
                SupportingFundingInline, SupercomputerJobInline, LibraryInline, ReviewerScoreInline, ReviewerCommentInline] 
     form = ApplicationForm
     search_fields = ['project_title']
-    actions = ['CSV_summary_of_LDAP_accounts']
+    actions = ['CSV_summary_of_LDAP_accounts', 'create_ldap_groups']
 
     fieldsets = [
         ('Part A - Summary', 
@@ -198,6 +198,14 @@ class ApplicationAdmin(admin.ModelAdmin):
         return HttpResponse("</br>".join(details))
 
     CSV_summary_of_LDAP_accounts.short_description = "Generate an LDAP account summary (CSV) for selected Applications."
+
+    def create_ldap_groups(self, request, queryset):
+        selected = request.POST.getlist(admin.ACTION_CHECKBOX_NAME)
+        result = account_services.create_applications_groups(selected)
+        message = "Created %s group(s) of the total of %s selected. Errors: %s" % (result['created'], len(selected), result['errors'])
+        self.message_user(request, message)
+        
+    create_ldap_groups.short_description = "Create LDAP groups for selected application(s)"
 
 ##    ## this may work seems to have caching issues
 ##    def change_view(self, request, obj_id):

@@ -107,12 +107,63 @@ def get_ivec_ldap_details(emailaddress):
     else:
         return dict(usermatch[0].get_attributes())
 
-def get_application_area(participant):
-    app = participant.application
-    areanum = str(app.id)
-    parentarea = app.priority_area
-    childarea = app.posix_area
+#TODO: remove when create_user_accounts calls create_application_group
+def get_application_area(ldaphandler, application):
+    areanum = str(application.id)
+    parentarea = application.priority_area
+    childarea = application.posix_area
     return (parentarea, childarea, areanum)
+
+def create_application_group(ldaphandler, application):
+    '''
+    Create the group in LDAP for the application. Create the parent area if needed
+    return the project name if successful else None
+    '''
+    groupname = '%s%s' % (application.posix_area, str(application.id))
+    gidnumber = str(30010 + application.id)     # TODO: CAUTION: the offset is hard coded here
+    description = str(application.project_title)
+
+    groupdone = create_group(ldaphandler = ldaphandler, parentou = application.priority_area, groupname = groupname, description = description, gidnumber = gidnumber)
+    if groupdone:
+        res = groupname
+    else:
+        res = None
+    return res
+
+def create_applications_groups(applicationidlist):
+    '''
+    Create the goups in LDAP for the application ids passed in
+    returns a dict with the count created and errors.
+    '''
+
+    result = {'created': 0, 'errors': 0}
+    
+    #connect to the 'new' ldap repo, where we create all the accounts
+    logger.debug("ldap bind with: server: %s userdn: %s" % (settings.EPIC_LDAP_SERVER, settings.EPIC_LDAP_USERDN) )
+    ldaph = ldap_helper.LDAPHandler(userdn     = settings.EPIC_LDAP_USERDN, 
+                                 password   = settings.EPIC_LDAP_PASSWORD, 
+                                 server     = settings.EPIC_LDAP_SERVER, 
+                                 user_base  = settings.EPIC_LDAP_USERBASE, 
+                                 group      = None, 
+                                 group_base = settings.EPIC_LDAP_GROUPBASE, 
+                                 admin_base = settings.EPIC_LDAP_ADMINBASE,
+                                 dont_require_cert=True, debug=True)
+
+    for id in applicationidlist:
+        app = Application.objects.get(id=id)
+        logger.debug("Application: %s" % (app.project_title,) )
+
+        groupname = create_application_group(ldaph, app) # returns groupname or None
+        if groupname:
+            # save the groupname like 'Astronomy23' in the application
+            logger.debug("Application: %s ldap group created: %s" % (app.project_title, groupname) )
+            app.ldap_project_name = groupname
+            app.save()
+            result['created'] += 1
+        else: result['errors'] += 1
+
+    ldaph.close()
+    return result    
 
 def create_user_accounts(participant_id_list):
     '''
@@ -177,7 +228,7 @@ def create_user_accounts(participant_id_list):
 
                     if userdone:
                         # user added or updated to the ldap directory, add the user to the group, create the group if it doesn't exist
-                        (parentarea, childarea, areanum) = get_application_area(participant)
+                        (parentarea, childarea, areanum) = get_application_area(participant.application)
 
                         groupname = '%s%s' % (childarea, areanum)
                         gidnumber = str(30010 + participant.application.id)
