@@ -108,7 +108,7 @@ def get_ivec_ldap_details(emailaddress):
         return dict(usermatch[0].get_attributes())
 
 #TODO: remove when create_user_accounts calls create_application_group
-def get_application_area(ldaphandler, application):
+def get_application_area(application):
     areanum = str(application.id)
     parentarea = application.priority_area
     childarea = application.posix_area
