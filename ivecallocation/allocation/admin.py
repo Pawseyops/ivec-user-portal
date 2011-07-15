@@ -54,6 +54,8 @@ class ReviewerCommentInline(admin.TabularInline):
 class ApplicationAdmin(admin.ModelAdmin):
     save_on_top = True
     list_display = ['project_title', 'created_by', 'core_hours_requested', 'priority_area', 'submitted']
+    list_filter = ['complete', 'priority_area_radio_astronomy', 'priority_area_geosciences', 'priority_area_directors',
+                   'priority_area_partner', 'priority_area_national', 'range:hours_allocated']
     inlines = [ResearchClassificationInline, ParticipantInline, PublicationInline, ResearchFundingInline,
                SupportingFundingInline, SupercomputerJobInline, LibraryInline, ReviewerScoreInline, ReviewerCommentInline] 
     form = ApplicationForm
