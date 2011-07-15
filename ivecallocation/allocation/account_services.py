@@ -152,16 +152,17 @@ def create_applications_groups(applicationidlist):
     for id in applicationidlist:
         app = Application.objects.get(id=id)
         logger.debug("Application: %s" % (app.project_title,) )
-
-        groupname = create_application_group(ldaph, app) # returns groupname or None
-        if groupname:
-            # save the groupname like 'Astronomy23' in the application
-            logger.debug("Application: %s ldap group created: %s" % (app.project_title, groupname) )
-            app.ldap_project_name = groupname
-            app.save()
-            result['created'] += 1
-        else: result['errors'] += 1
-
+        if app.complete and app.hours_allocated and app.hours_allocated > 0:
+            groupname = create_application_group(ldaph, app) # returns groupname or None
+            if groupname:
+                # save the groupname like 'Astronomy23' in the application
+                logger.debug("Application: %s ldap group created: %s" % (app.project_title, groupname) )
+                app.ldap_project_name = groupname
+                app.save()
+                result['created'] += 1
+            else: result['errors'] += 1
+        else:
+            result['errors'] += 1   # don't create the group for a project not submitted or with no hours allocated
     ldaph.close()
     return result    
 
