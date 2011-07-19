@@ -87,8 +87,6 @@ class Application(models.Model):
             return ret[1]
         else:
             return ret[0]
-    
-
 
 class ReviewerScore(models.Model):
     application = models.ForeignKey(Application)    
@@ -146,7 +144,7 @@ class Participant(models.Model):
     student = models.BooleanField()
     eft = models.FloatField(null=True, blank=True, verbose_name="EFT %")
     status = models.ForeignKey(ParticipantStatus)
-    account_email_hash = models.CharField(max_length=50, null=True, blank=True) 
+    account_email_hash = models.CharField(max_length=50, null=True, blank=True)
     account_email_on = models.DateTimeField(null=True, blank=True)
     details_filled_on = models.DateTimeField(null=True, blank=True)
     account_created_on = models.DateTimeField(null=True, blank=True)
@@ -177,6 +175,12 @@ class Participant(models.Model):
     def hours_allocated(self):
         return self.application.hours_allocated
     hours_allocated.admin_order_field = 'application__hours_allocated'
+
+    # FJ to add a filter in the participant admin interface
+    def application_complete(self):
+        return self.application.complete
+    #application_complete.admin_order_field = 'application__complete'
+    application_complete.boolean = True
 
     def __unicode__(self):
         return "%s" % self.name
