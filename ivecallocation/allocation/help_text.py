@@ -40,12 +40,12 @@ help_text_storage_pbstore="""The iVEC Petascale Data Store is intended for longe
 
 help_text_data_transfers="""Please outline what data (if any) will be transferred from remote systems to the iVEC systems. Please describe the size and geographical location of the remote data and the expected frequency of transfers. (512 chars max.)"""
 
-help_text_research_classifications = """<h4>Research Classifications</h4><br/>&bull; List up to three 6-digit Field of Research codes for the project, and their weightings totalling 100%.<br/>
+help_text_research_classifications = """<h4>Research Classifications</h4><br/>&bull; List between one and three 6-digit Field of Research codes for the project, and their weightings totalling 100%.<br/>
 &bull; Codes are available from the <a href="http://www.abs.gov.au/ausstats/abs@.nsf/0/6BB427AB9696C225CA2574180004463E?opendocument" target="blank">ABS website</a>."""
 
 help_text_project_participants = """<h4>Project Participants</h4><br/>
 &bull; Enter the details of people actively participating in the project.<br/>
-&bull; <b>List the person responsible for the project (Project Leader) first</b>. This person must be a staff member
+&bull; <b>List the person responsible for the project (Project Leader) first</b>. This person must be a non-student staff member
 at an Australian university or CSIRO and obtain an iVEC login account (which will be done once the application is
 approved) and will be responsible for approving additional users to the project, ensuring that appropriate progress
 reports are submitted and be the primary conduit between the project team members and iVEC.<br/>
