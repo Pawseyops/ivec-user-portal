@@ -2,7 +2,7 @@
 ^ivecallocation/virt_ivecallocation$
 ^ivecallocation/appsettings$
 ^ivecallocation/scratch$
-^ivecallocation/logs$
+^ivecallocation/logs/.*$
 ^ivecallocation/bootstrap.sh$
 ^ivecallocation/settings.py$
 .*\.pyc$
