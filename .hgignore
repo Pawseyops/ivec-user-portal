@@ -1,5 +1,8 @@
 ^ivecallocation/virtualenv-.*$
 ^ivecallocation/virt_ivecallocation$
-^ivecallocation/bootstrap.sh$
 ^ivecallocation/appsettings$
+^ivecallocation/scratch$
+^ivecallocation/logs$
+^ivecallocation/bootstrap.sh$
 ^ivecallocation/settings.py$
+.*\.pyc$
