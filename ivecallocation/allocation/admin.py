@@ -57,7 +57,7 @@ class ApplicationAdmin(admin.ModelAdmin):
     list_filter = ['complete', 'priority_area_radio_astronomy', 'priority_area_geosciences', 'priority_area_directors',
                    'priority_area_partner', 'priority_area_national', 'range:hours_allocated']
     inlines = [ResearchClassificationInline, ParticipantInline, PublicationInline, ResearchFundingInline,
-               SupportingFundingInline, SupercomputerJobInline, LibraryInline, ReviewerScoreInline, ReviewerCommentInline] 
+               SupportingFundingInline, SupercomputerJobInline, LibraryInline, ReviewerScoreInline, ReviewerCommentInline]
     form = ApplicationForm
     search_fields = ['project_title']
     actions = ['CSV_summary_of_LDAP_accounts', 'create_ldap_groups']
@@ -173,25 +173,24 @@ class ApplicationAdmin(admin.ModelAdmin):
           'description': help_text_libraries
           }
         ),
-        ('Submit', 
-         {'fields': 
-              (
-              'complete',              
-              )
-          }
-        ),
-        ('', 
-         {'fields': 
-              (
-              'ReviewerScoreInline',              
-              'ReviewerCommentInline',
-              'hours_allocated',
-              'ldap_project_name',
-              ),
-          'description': ''
-          }
-        ),
-        
+       ('Review', 
+          {'fields': 
+               (
+               'ReviewerScoreInline',              
+               'ReviewerCommentInline',
+               #'hours_allocated',
+               #'ldap_project_name',
+               ),
+           'description': ''
+           }
+         ),
+         ('Submit', 
+          {'fields': 
+               (
+               'complete',              
+               )
+           }
+         ),  
     ]
 
     def CSV_summary_of_LDAP_accounts(self, request, queryset):
@@ -209,17 +208,17 @@ class ApplicationAdmin(admin.ModelAdmin):
         
     create_ldap_groups.short_description = "Create LDAP groups for selected application(s)"
 
-##    ## this may work seems to have caching issues
-##    def change_view(self, request, obj_id):
-##        if not request.user.is_superuser:
-##            restricted_inlines = [ReviewerScoreInline, ReviewerCommentInline] 
-##            inlines_to_remove = []
-##            for i in self.inline_instances:
-##                if i.__class__ in restricted_inlines:
-##                    inlines_to_remove.append(i)
-##            for i in inlines_to_remove:
-##                self.inline_instances.remove(i)
-##        return super(ApplicationAdmin, self).change_view(request, obj_id)
+    # ## this may work seems to have caching issues
+    # def change_view(self, request, obj_id):
+    #    if not request.user.is_superuser:
+    #        restricted_inlines = [ReviewerScoreInline, ReviewerCommentInline] 
+    #        inlines_to_remove = []
+    #        for i in self.inline_instances:
+    #            if i.__class__ in restricted_inlines:
+    #                inlines_to_remove.append(i)
+    #        for i in inlines_to_remove:
+    #            self.inline_instances.remove(i)
+    #    return super(ApplicationAdmin, self).change_view(request, obj_id)
 
 
 
@@ -254,7 +253,30 @@ class ApplicationAdmin(admin.ModelAdmin):
         if not change:
             obj.created_by = request.user
         obj.save()
-
+    
+    def add_view(self, request, form_url='', extra_context=None): 
+        self.exclude_review_fields(request.user, ('allocation.add_reviewerscore', 'allocation.add_reviewercomment')) 
+        return super(ApplicationAdmin, self).add_view(request, form_url=form_url, extra_context=extra_context)
+    
+    def change_view(self, request, object_id, extra_context=None): 
+        self.exclude_review_fields(request.user, ('allocation.change_reviewerscore', 'allocation.change_reviewercomment'))
+        return super(ApplicationAdmin, self).change_view(request, object_id, extra_context=extra_context)
+    
+    # remove the entire Review fieldset (including the inlines) if permissions aren't met
+    def exclude_review_fields(self, user, permissions):
+        restricted_inlines = [ReviewerScoreInline, ReviewerCommentInline] 
+        inlines_to_remove = []
+        for permission in permissions:
+            if permission not in user.get_all_permissions():
+                for i in self.inline_instances:
+                    if i.__class__ in restricted_inlines:
+                        inlines_to_remove.append(i)
+                        self.inline_instances.remove(i)
+                for i in self.fieldsets:
+                    if i[0] == 'Review':
+                        self.fieldsets.remove(i)
+                self.exclude = ['hours_allocated', 'ldap_project_name']
+                break
 
 class ParticipantAdmin(admin.ModelAdmin):
     save_on_top = True
