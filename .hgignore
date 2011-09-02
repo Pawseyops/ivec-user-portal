@@ -6,3 +6,4 @@
 ^ivecallocation/bootstrap.sh$
 ^ivecallocation/settings.py$
 .*\.pyc$
+\.DS_Store$
