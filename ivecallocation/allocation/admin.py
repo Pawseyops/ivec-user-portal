@@ -208,20 +208,6 @@ class ApplicationAdmin(admin.ModelAdmin):
         
     create_ldap_groups.short_description = "Create LDAP groups for selected application(s)"
 
-    # ## this may work seems to have caching issues
-    # def change_view(self, request, obj_id):
-    #    if not request.user.is_superuser:
-    #        restricted_inlines = [ReviewerScoreInline, ReviewerCommentInline] 
-    #        inlines_to_remove = []
-    #        for i in self.inline_instances:
-    #            if i.__class__ in restricted_inlines:
-    #                inlines_to_remove.append(i)
-    #        for i in inlines_to_remove:
-    #            self.inline_instances.remove(i)
-    #    return super(ApplicationAdmin, self).change_view(request, obj_id)
-
-
-
     def queryset(self, request):
 
         # superuser - return all
@@ -276,7 +262,30 @@ class ApplicationAdmin(admin.ModelAdmin):
                     if i[0] == 'Review':
                         self.fieldsets.remove(i)
                 self.exclude = ['hours_allocated', 'ldap_project_name']
-                break
+                return
+                
+        # This instance is persistent between http requests.
+        # If we didn't exclude the review fields on this request, then we may have done so previously.
+        # If permissions have been changed in the meantime, we should actually do the opposite and add
+        # these fields back in!
+        for i in self.fieldsets:
+            if i[0] == 'Review':
+                return
+        self.exclude = []
+        self.fieldsets.insert(-1, ('Review', 
+                                    {'fields': 
+                                        (
+                                        'ReviewerScoreInline',              
+                                        'ReviewerCommentInline',
+                                        'hours_allocated',
+                                        'ldap_project_name',
+                                        ),
+                                    'description': ''
+                                    }
+                                  )
+                             )
+        self.inline_instances += [inline(self.model, self.admin_site) for inline in restricted_inlines]
+        
 
 class ParticipantAdmin(admin.ModelAdmin):
     save_on_top = True
