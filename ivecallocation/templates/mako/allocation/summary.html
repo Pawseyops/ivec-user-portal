@@ -7,9 +7,17 @@ ${self.block_breadcrumbs()}<%def name="block_breadcrumbs()"><div class="breadcru
 % endif
 
 
+
+
+
+
 ${self.block_content()}<%def name="block_content()">
 <div id="content-main">
 
+<% show_review = False
+if all(permission in user.get_all_permissions() for permission in ['allocation.add_reviewerscore', 'allocation.add_reviewercomment']):
+    show_review = True
+%>
 
 <table>
 % for priority in display_order:
@@ -27,7 +35,9 @@ ${self.block_content()}<%def name="block_content()">
         <th>Overall Score</th>
         <th>Hours Requested</th>
         <th>Hours Allocated</th>
+        % if show_review:
         <th>Reviews</th>
+        % endif
         <th>&nbsp;</th>
         </tr>
 
@@ -41,7 +51,9 @@ ${self.block_content()}<%def name="block_content()">
             <td>${app.overall_score()}</td>
             <td align="right">${app.core_hours_requested}</td>
             <td align="right">${app.hours_allocated}</td>
+            % if show_review:
             <td align="right">${app.reviews()}</td>
+            % endif
             <td><a href="${urlresolvers.reverse('admin:allocation_application_change', args=(app.id,))}">View Application</a></td>
         </tr>
         <% if app.core_hours_requested:
