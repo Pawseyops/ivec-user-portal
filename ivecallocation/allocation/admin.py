@@ -178,8 +178,8 @@ class ApplicationAdmin(admin.ModelAdmin):
                (
                'ReviewerScoreInline',              
                'ReviewerCommentInline',
-               #'hours_allocated',
-               #'ldap_project_name',
+               'hours_allocated',
+               'ldap_project_name',
                ),
            'description': ''
            }
