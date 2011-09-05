@@ -6,18 +6,8 @@
 ${self.block_breadcrumbs()}<%def name="block_breadcrumbs()"><div class="breadcrumbs"><a href="${root_path}">${trans("Home")}</a> &rsaquo; ${title}</div></%def>
 % endif
 
-
-
-
-
-
 ${self.block_content()}<%def name="block_content()">
 <div id="content-main">
-
-<% show_review = False
-if all(permission in user.get_all_permissions() for permission in ['allocation.add_reviewerscore', 'allocation.add_reviewercomment']):
-    show_review = True
-%>
 
 <table>
 % for priority in display_order:

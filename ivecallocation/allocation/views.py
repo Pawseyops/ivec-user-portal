@@ -54,6 +54,11 @@ def summary(request):
         if not has_priority:
             all_apps['other'].append(a)
 
+    # Flag to show/hide the review column based on user permissions
+    show_review = False
+    reviewer_permissions = ['allocation.add_reviewerscore', 'allocation.add_reviewercomment']
+    if all(permission in request.user.get_all_permissions() for permission in reviewer_permissions):
+        show_review = True
 
     return render_to_response('allocation/summary.html', {
 #        'tool': tool,
@@ -64,6 +69,7 @@ def summary(request):
         'display_order':['radio astronomy', 'geosciences', 'directors', 'partner', 'national', 'other'],
         'edit_url': urlresolvers.reverse('admin:allocation_application_change', args=(1,)),
         'urlresolvers':urlresolvers,
+        'show_review':show_review,
 #        'edit_url': urlresolvers.reverse('admin:yabi_tool_change', args=(tool.id,)),
 #        'json_url': webhelpers.url('/ws/tool/' + quote(tool.name)),
 #        'tool_params': format_params(tool.toolparameter_set.order_by('id')),

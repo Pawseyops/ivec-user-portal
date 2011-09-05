@@ -249,6 +249,7 @@ class ApplicationAdmin(admin.ModelAdmin):
         return super(ApplicationAdmin, self).change_view(request, object_id, extra_context=extra_context)
     
     # remove the entire Review fieldset (including the inlines) if permissions aren't met
+    # necessary due to a known Django issue: https://code.djangoproject.com/ticket/8060
     def exclude_review_fields(self, user, permissions):
         restricted_inlines = [ReviewerScoreInline, ReviewerCommentInline] 
         inlines_to_remove = []
