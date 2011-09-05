@@ -95,6 +95,7 @@ def activate(request, backend,
 def register(request, backend, success_url=None, form_class=None,
              disallowed_url='registration_disallowed',
              template_name='registration/registration_form.html',
+             usertype='',
              extra_context=None):
     """
     Allow a new user to register an account.
@@ -177,7 +178,7 @@ def register(request, backend, success_url=None, form_class=None,
     """
     remote_ip = request.META['REMOTE_ADDR'] if 'REMOTE_ADDR' in request.META else request.META['HTTP_X_FORWARDED_HOST']
     backend = get_backend(backend)
-    if not backend.registration_allowed(request):
+    if not backend.registration_allowed(request, usertype):
         return redirect(disallowed_url)
     if form_class is None:
         form_class = backend.get_form_class(request)

@@ -112,7 +112,7 @@ class IVECBackend(object):
                                         request=request)
         return activated
 
-    def registration_allowed(self, request):
+    def registration_allowed(self, request, usertype):
         """
         Indicate whether account registration is currently permitted,
         based on the value of the setting ``REGISTRATION_OPEN``. This
@@ -123,8 +123,15 @@ class IVECBackend(object):
 
         * If ``REGISTRATION_OPEN`` is both specified and set to
           ``False``, registration is not permitted.
+
+        * Additional argument usertype may be set to "director" to permit
+          registration even when "REGISTRATION_OPEN"=False. This is set via
+          a special URL pattern that is published only to Directors.
         
         """
+        if usertype=='director':
+            return True
+        
         return getattr(settings, 'REGISTRATION_OPEN', True)
 
     def get_form_class(self, request):
