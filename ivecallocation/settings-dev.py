@@ -39,24 +39,6 @@ LOGS = ['ivecallocation', 'mango_ldap']
 # registration app settings
 ACCOUNT_ACTIVATION_DAYS = 14
 
-
-##
-## CAPTCHA settings
-##
-
-# Captcha image directory
-CAPTCHA_IMAGES = os.path.join(WRITABLE_DIRECTORY, "captcha")
-
-# the filesystem space to write the captchas into
-CAPTCHA_ROOT = os.path.join(MEDIA_ROOT, 'captchas')
-
-# the URL base that points to that directory served out
-CAPTCHA_URL = os.path.join(MEDIA_URL, 'captchas')
-
-
-RECAPTCHA_PUBLIC_KEY = "6LcB0sQSAAAAAJv_KVDzDjRbAMpJfc9b2t6rlOdV"
-RECAPTCHA_PRIVATE_KEY = "6LcB0sQSAAAAAPy2brzHv_A6i3Atft6rmrfC32-g"
-
 # this does not have an effect presently
 #LOGIN_REDIRECT_URL = url('/admin/allocation/application/add/')
 
