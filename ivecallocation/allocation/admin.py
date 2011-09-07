@@ -72,7 +72,7 @@ class ApplicationAdmin(admin.ModelAdmin):
           }
         ),
 
-        ('', 
+        ('Priority Areas', 
          {'fields': 
               (
               'priority_area_radio_astronomy',
@@ -235,17 +235,48 @@ class ApplicationAdmin(admin.ModelAdmin):
 
 
     # add the user to created_by on save
-    def save_model(self, request, obj, form, change):
+    def save_model(self, request, obj, form, change):            
         if not change:
             obj.created_by = request.user
+            
+            # if the user is a director, force that priority area
+            # (the option isn't on the form in this case)
+            directors = Group.objects.get(name='directors')
+            if directors in request.user.groups.all():
+                obj.priority_area_directors = True
+            
         obj.save()
     
     def add_view(self, request, form_url='', extra_context=None): 
-        self.exclude_review_fields(request.user, ('allocation.add_reviewerscore', 'allocation.add_reviewercomment')) 
+        self.exclude_review_fields(request.user, ('allocation.add_reviewerscore', 'allocation.add_reviewercomment'))
+        directors = Group.objects.get(name='directors')
+        if directors in request.user.groups.all():            
+            for i in self.fieldsets:
+                if i[0] == 'Priority Areas':
+                    self.fieldsets.remove(i)
+                    self.exclude = ['priority_area_radio_astronomy',
+                                    'priority_area_geosciences',
+                                    'priority_area_directors',
+                                    'priority_area_partner',
+                                    'priority_area_national']
         return super(ApplicationAdmin, self).add_view(request, form_url=form_url, extra_context=extra_context)
     
-    def change_view(self, request, object_id, extra_context=None): 
+    def change_view(self, request, object_id, extra_context=None):
         self.exclude_review_fields(request.user, ('allocation.change_reviewerscore', 'allocation.change_reviewercomment'))
+        
+        # do we let directors change the priority area on existing applications?
+        # for now I'm guessing we do...
+        # directors = Group.objects.get(name='directors')
+        #         if directors in request.user.groups.all():            
+        #             for i in self.fieldsets:
+        #                 if i[0] == 'Priority Areas':
+        #                     self.fieldsets.remove(i)
+        #                     self.exclude = ['priority_area_radio_astronomy',
+        #                                     'priority_area_geosciences',
+        #                                     'priority_area_directors',
+        #                                     'priority_area_partner',
+        #                                     'priority_area_national']
+                                    
         return super(ApplicationAdmin, self).change_view(request, object_id, extra_context=extra_context)
     
     # remove the entire Review fieldset (including the inlines) if permissions aren't met

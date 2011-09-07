@@ -186,7 +186,7 @@ def register(request, backend, success_url=None, form_class=None,
     if request.method == 'POST':
         form = form_class(remote_ip,data=request.POST, files=request.FILES)
         if form.is_valid():
-            new_user = backend.register(request, **form.cleaned_data)
+            new_user = backend.register(request, usertype, **form.cleaned_data)
             if new_user is None:
                 return redirect('already_registered')
             if success_url is None:
@@ -205,7 +205,8 @@ def register(request, backend, success_url=None, form_class=None,
         context[key] = callable(value) and value() or value
 
     return render_to_response(template_name,
-                              {'form': form},
+                              {'form': form,
+                               'usertype': usertype},
                               context_instance=context)
 
 

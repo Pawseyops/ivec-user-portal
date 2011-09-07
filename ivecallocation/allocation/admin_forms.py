@@ -12,6 +12,7 @@ class ApplicationForm(forms.ModelForm):
         self.fields["computational_methodology"].widget = forms.Textarea(attrs={'rows':16, 'cols':100})
 
         self.fields["data_transfers"].widget = forms.Textarea(attrs={'rows':6, 'cols':100}) #field is 512 chars max in model
+        
 
     class Meta:
         model = Application

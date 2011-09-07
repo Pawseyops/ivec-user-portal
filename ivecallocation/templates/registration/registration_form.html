@@ -3,7 +3,7 @@
 
 <%def name="title()">2011 Application for Resources on Pawsey-Funded iVEC Infrastructure</%def>
 
-<form action="${url('/accounts/register/')}" method="POST">${ csrf_tag(csrf_token) }
+<form action="${url('/accounts/register/')}${usertype}" method="POST">${ csrf_tag(csrf_token) }
     <p>
         To commence your application, please enter your e-mail address and
         desired password below. (Please do not use your iVEC password.)

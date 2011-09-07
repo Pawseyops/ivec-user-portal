@@ -2,6 +2,7 @@ from django.conf import settings
 from django.contrib.sites.models import RequestSite
 from django.contrib.sites.models import Site
 from django.contrib.auth.models import User
+from django.contrib.auth.models import Group
 
 from registration import signals
 from registration.forms import RegistrationForm
@@ -47,7 +48,7 @@ class IVECBackend(object):
     fields and supported operations.
     
     """
-    def register(self, request, **kwargs):
+    def register(self, request, usertype, **kwargs):
         """
         Given a username, email address and password, register a new
         user account, which will initially be inactive.
@@ -92,6 +93,13 @@ class IVECBackend(object):
         signals.user_registered.send(sender=self.__class__,
                                      user=new_user,
                                      request=request)
+        
+        # Add to directors group if registering via a director URL                             
+        if usertype == 'director':
+            directors = Group.objects.get(name='directors')
+            new_user.groups.add(directors)
+            new_user.save()
+                                     
         return new_user
 
     def activate(self, request, activation_key):
