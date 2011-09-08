@@ -176,6 +176,9 @@ def register(request, backend, success_url=None, form_class=None,
     argument.
     
     """
+    if usertype is None:
+        usertype=''
+    
     remote_ip = request.META['REMOTE_ADDR'] if 'REMOTE_ADDR' in request.META else request.META['HTTP_X_FORWARDED_HOST']
     backend = get_backend(backend)
     if not backend.registration_allowed(request, usertype):
