@@ -5,7 +5,7 @@ env.app_root = '/usr/local/python/ccgapps/'
 env.app_name = 'ivecallocation'
 env.app_install_names = ['ivecallocation'] # use app_name or list of names for each install
 env.vc = 'mercurial'
-env.repo_path = 'ivecallocation'
+env.repo_path = '' # empty for mercurial
 
 env.writeable_dirs.extend(["scratch"]) # add directories you wish to have created and made writeable
 env.content_excludes.extend([]) # add quoted patterns here for extra rsync excludes
