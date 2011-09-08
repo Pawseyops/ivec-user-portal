@@ -296,7 +296,7 @@ class ApplicationAdmin(admin.ModelAdmin):
                 self.exclude = ['hours_allocated', 'ldap_project_name']
                 return
                 
-        # This instance is persistent between http requests.
+        # This instance may be persistent between http requests.
         # If we didn't exclude the review fields on this request, then we may have done so previously.
         # If permissions have been changed in the meantime, we should actually do the opposite and add
         # these fields back in!
