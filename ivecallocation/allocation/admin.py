@@ -10,6 +10,8 @@ from django.db.models import Q
 from ivecallocation.allocation.utils import get_querylist
 from ivecallocation.allocation import account_services
 from django.http import HttpResponse
+from django.core.mail import mail_admins
+from django.template.loader import render_to_string
 
 class ResearchClassificationInline(admin.TabularInline):
     model = ResearchClassification
@@ -233,6 +235,13 @@ class ApplicationAdmin(admin.ModelAdmin):
     def submitted(self, obj):
         return "Submitted" if obj.complete else "Not yet submitted"
 
+    # send an email notification of the new application
+    def mail_notification(self, request, obj):
+        body = render_to_string('registration/application_notification_email.txt',
+            {'id': obj.id,
+             'username': request.user.username,
+             'project_title': obj.project_title})
+        mail_admins("New allocation application", body)
 
     # add the user to created_by on save
     def save_model(self, request, obj, form, change):            
@@ -245,6 +254,9 @@ class ApplicationAdmin(admin.ModelAdmin):
             if directors in request.user.groups.all():
                 obj.priority_area_directors = True
             
+            # mail our admins about the new application
+            self.mail_notification(request, obj)
+
         obj.save()
     
     def add_view(self, request, form_url='', extra_context=None): 
