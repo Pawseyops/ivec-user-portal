@@ -289,6 +289,7 @@ class ApplicationAdmin(admin.ModelAdmin):
                 for i in self.inline_instances:
                     if i.__class__ in restricted_inlines:
                         inlines_to_remove.append(i)
+                for i in inlines_to_remove:
                         self.inline_instances.remove(i)
                 for i in self.fieldsets:
                     if i[0] == 'Review':
