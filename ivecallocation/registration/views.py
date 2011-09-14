@@ -176,6 +176,9 @@ def register(request, backend, success_url=None, form_class=None,
     argument.
     
     """
+    
+    if usertype=='director':
+        template_name = 'registration/registration_form_director.html'
     if usertype is None:
         usertype=''
     
