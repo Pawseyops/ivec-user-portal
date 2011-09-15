@@ -1,9 +1,8 @@
 ^ivecallocation/virtualenv-.*$
-^ivecallocation/virt_ivecallocation$
+^ivecallocation/virt_.*$
 ^ivecallocation/appsettings$
 ^ivecallocation/scratch$
 ^ivecallocation/logs/.*$
-^ivecallocation/bootstrap.sh$
 ^ivecallocation/settings.py$
 .*\.pyc$
 \.DS_Store$
