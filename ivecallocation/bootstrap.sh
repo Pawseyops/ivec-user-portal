@@ -136,33 +136,6 @@ then
         rm -Rf tmp
     fi
 
-    mkdir tmp
-    cd tmp
-    rm -rf ccgapps-settings
-
-    SSH_USER=""
-    if [ "$USER" = "vagrant" ]
-    then
-        read -p "You're in a Vagrant environment, so you need to provide your SVN+SSH username: " SSH_USER;
-        SSH_USER="${SSH_USER}@";
-    fi
- 
-    svn export svn+ssh://${SSH_USER}ccg.murdoch.edu.au/store/techsvn/ccg/ccgapps-settings
-    # the directory has the wrong name, so create a sym link with the name we need
-    ln -s ccgapps-settings appsettings
-    # the setup.py is at the wrong level
-    mv appsettings/setup.py .
-    ../$VPYTHON_DIR/bin/python setup.py bdist_egg
-    ../$VPYTHON_DIR/bin/easy_install dist/*.egg
-    rm -rf appsettings ccgapps-settings 
-    cd ..
-
-    #remove temp dir
-    if [ -d tmp ]
-    then
-        rm -Rf tmp
-    fi
-
     # hack activate to set some environment we need
     echo "PROJECT_DIRECTORY=`pwd`;" >>  $VPYTHON_DIR/bin/activate
     echo "export PROJECT_DIRECTORY " >>  $VPYTHON_DIR/bin/activate
@@ -183,7 +156,6 @@ then
 fi
 echo " * fabric is also installed"
 echo " * and mercurial"
-echo " * and ccgapps-settings"
 
 
 # tell the (l)user how to activate this python install
