@@ -2,6 +2,5 @@
 ^ivecallocation/virt_.*$
 ^ivecallocation/appsettings$
 ^ivecallocation/scratch$
-^ivecallocation/settings.py$
 .*\.pyc$
 \.DS_Store$
