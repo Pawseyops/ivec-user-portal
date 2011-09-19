@@ -143,8 +143,8 @@ then
     SSH_USER=""
     if [ "$USER" = "vagrant" ]
     then
-	read -p "You're in a Vagrant environment, so you need to provide your SVN+SSH username: " SSH_USER;
-	SSH_USER="${SSH_USER}@";
+        read -p "You're in a Vagrant environment, so you need to provide your SVN+SSH username: " SSH_USER;
+        SSH_USER="${SSH_USER}@";
     fi
  
     svn export svn+ssh://${SSH_USER}ccg.murdoch.edu.au/store/techsvn/ccg/ccgapps-settings
