@@ -135,7 +135,7 @@ MEMCACHE_KEYSPACE = "ivecallocation"
 
 # email server
 DEFAULT_FROM_EMAIL = 'noreply@yourdomain.com'
-EMAIL_HOST = 'mail.yourdomain.com'
+EMAIL_HOST = 'localhost'
 EMAIL_APP_NAME = "iVEC Allocation "
 SERVER_EMAIL = "apache@yourdomain.com"                      # from address
 EMAIL_SUBJECT_PREFIX = ""
