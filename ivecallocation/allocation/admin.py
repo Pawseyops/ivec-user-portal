@@ -52,10 +52,18 @@ class ReviewerCommentInline(admin.TabularInline):
     model = ReviewerComment
     extra = 1
     form = ReviewerCommentForm
+   
+class SystemAdmin(admin.ModelAdmin):
+    list_display = ['name', 'description']
+    form = SystemForm
+    
+class AllocationRoundAdmin(admin.ModelAdmin):
+    list_display = ('system', 'start_date', 'end_date')
+    form = AllocationRoundForm
 
 class ApplicationAdmin(admin.ModelAdmin):
     save_on_top = True
-    list_display = ['project_title', 'created_by', 'core_hours_requested', 'priority_area', 'submitted']
+    list_display = ['project_title', 'created_by', 'core_hours_requested', 'priority_area', 'submitted', 'system', 'allocation_round']
     list_filter = ['complete', 'priority_area_radio_astronomy', 'priority_area_geosciences', 'priority_area_directors',
                    'priority_area_partner', 'priority_area_national', 'range:hours_allocated']
     inlines = [ResearchClassificationInline, ParticipantInline, PublicationInline, ResearchFundingInline,
@@ -64,7 +72,16 @@ class ApplicationAdmin(admin.ModelAdmin):
     search_fields = ['project_title']
     actions = ['CSV_summary_of_LDAP_accounts', 'create_ldap_groups']
 
+    allocation_round_fieldset = ('Allocation round',
+                                    {'fields':
+                                        (
+                                        'allocation_round',
+                                        )
+                                    }
+                                 )
+
     fieldsets = [
+        allocation_round_fieldset,
         ('Part A - Summary', 
          {'fields': 
               (
@@ -259,7 +276,9 @@ class ApplicationAdmin(admin.ModelAdmin):
 
         obj.save()
     
-    def add_view(self, request, form_url='', extra_context=None): 
+    def add_view(self, request, form_url='', extra_context=None):
+        #self.fieldsets.insert(0, self.allocation_round_fieldset)
+        
         self.exclude_review_fields(request.user, ('allocation.add_reviewerscore', 'allocation.add_reviewercomment'))
         directors = Group.objects.get(name='directors')
         if directors in request.user.groups.all():            
@@ -274,6 +293,11 @@ class ApplicationAdmin(admin.ModelAdmin):
         return super(ApplicationAdmin, self).add_view(request, form_url=form_url, extra_context=extra_context)
     
     def change_view(self, request, object_id, extra_context=None):
+
+        #ar = self.get_form(request).declared_fields['allocation_round']
+        #ar.widget.widget.attrs['disabled'] = True
+        #assert(False)
+        
         self.exclude_review_fields(request.user, ('allocation.change_reviewerscore', 'allocation.change_reviewercomment'))
         
         # do we let directors change the priority area on existing applications?
@@ -422,6 +446,8 @@ def register(site):
     site.register(Participant, ParticipantAdmin)
     site.register(ParticipantAccount, ParticipantAccountAdmin)
     site.register(Institution)
+    site.register(System, SystemAdmin)
+    site.register(AllocationRound, AllocationRoundAdmin)
 ##    site.register(Publication)
 ##    site.register(ResearchFunding)
 ##    site.register(SupercomputerJob)

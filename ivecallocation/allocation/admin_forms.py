@@ -2,6 +2,17 @@ from django import forms
 from django.contrib.auth.models import User
 from models import *
 
+class SystemForm(forms.ModelForm):
+    def __init__(self, *args, **kwargs):
+        super(SystemForm, self).__init__(*args, **kwargs)
+        self.fields["name"].widget = forms.TextInput(attrs={'size':'100'})
+    class Meta:
+        model = System
+
+class AllocationRoundForm(forms.ModelForm):
+    class Meta:
+        model = AllocationRound
+
 class ApplicationForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super(ApplicationForm, self).__init__(*args, **kwargs)
@@ -10,10 +21,29 @@ class ApplicationForm(forms.ModelForm):
         self.fields["research_record"].widget = forms.Textarea(attrs={'rows':16, 'cols':120})
         self.fields["research_significance"].widget = forms.Textarea(attrs={'rows':16, 'cols':100})
         self.fields["computational_methodology"].widget = forms.Textarea(attrs={'rows':16, 'cols':100})
-
         self.fields["data_transfers"].widget = forms.Textarea(attrs={'rows':6, 'cols':100}) #field is 512 chars max in model
         
-
+        instance = getattr(self, 'instance', None)
+        if instance and instance.id:
+            self.fields['allocation_round'].widget.widget.attrs['disabled'] = True
+            self.fields['allocation_round'].widget.attrs['readonly'] = True
+        else:
+            self.fields["allocation_round"].widget.widget = forms.Select(attrs={})
+    
+    def clean(self):
+        instance = getattr(self, 'instance', None)
+        if instance and instance.id and 'allocation_round' in self._errors:
+            del self._errors['allocation_round']
+            #assert(False)
+        return self.cleaned_data
+    
+    def clean_allocation_round(self):
+        instance = getattr(self, 'instance', None)
+        if instance and instance.id:
+            return self.instance.allocation_round
+        else:
+            return self.cleaned_data['allocation_round']
+    
     class Meta:
         model = Application
 

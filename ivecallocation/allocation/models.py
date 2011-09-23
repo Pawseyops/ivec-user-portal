@@ -12,6 +12,21 @@ from help_text import *
 #import logging
 #logger = logging.getLogger('ivecallocation')
 
+class System(models.Model):
+    name = models.CharField(max_length=100)
+    description = models.CharField(max_length=1000)
+    
+    def __unicode__(self):
+        return "%s" % self.name
+    
+class AllocationRound(models.Model):
+    system = models.ForeignKey(System)
+    start_date = models.DateField()
+    end_date = models.DateField()
+    
+    def __unicode__(self):
+        return "%s: %s to %s" % (self.system, self.start_date, self.end_date)
+
 class Application(models.Model):
     project_title = models.CharField(max_length=100, help_text=help_text_project_title)
     project_summary = models.CharField(max_length=1000, help_text=help_text_project_summary, null=True, blank=True)
@@ -33,6 +48,7 @@ class Application(models.Model):
     created_by = models.ForeignKey(DjangoUser, editable=False, related_name="%(class)s_creators",null=True)
     created_on = models.DateTimeField(auto_now_add=True, editable=False)
     complete =  models.BooleanField(verbose_name="ready to submit application")
+    allocation_round = models.ForeignKey(AllocationRound)
 
     def __cmp__(self, other):
         if self.overall_score() < other.overall_score():
@@ -52,6 +68,10 @@ class Application(models.Model):
 
     def reviews(self):
         return self.reviewerscore_set.all().count()        
+
+    @property
+    def system(self):
+        return self.allocation_round.system
 
     #This gets the area name that should be used as an OU in LDAP
     @property

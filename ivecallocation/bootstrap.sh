@@ -24,8 +24,7 @@ help() {
     echo >&2 "Usage $0 [-p targetpython] [-c configname]"
             echo >&2 "target python is the interpreter you want your virtual python to be based on (default=python)"
             echo >&2 "configname is the name of a subdir of eggs containing custom eggs for your environment"
-            exit 1;
-    
+            exit 1;  
 }
 
 if [ $# -eq 1 ]
@@ -89,13 +88,21 @@ VPYTHON_DIR="$PRE$BASE_DIR"
 VIRTUALENV='virtualenv-1.6.1'
 VIRTUALENV_TARBALL='virtualenv-1.6.1.tar.gz'
 
+# get the path of any locally installed virtualenv
+# (present in some vagrant environments)
+VIRTUALENV_PATH=$(which virtualenv)
+if [ VIRTUALENV_PATH="" ]
+then
+    VIRTUALENV_PATH=$VIRTUALENV/build/lib*/virtualenv.py
+fi
+
 # only install if we dont already exist
 if [ ! -d $VPYTHON_DIR ]
 then
     echo -e '\n\nNo virtual python dir, lets create one\n\n'
 
     # only install virtual env if its not hanging around
-    if [ ! -d $VIRTUALENV ]
+    if [ ! -f $VIRTUALENV_PATH ]
     then
         echo -e '\n\nNo virtual env, creating\n\n'
   
@@ -114,13 +121,21 @@ then
     fi
        
     # create a virtual python in the current directory
-    $TARGET_PYTHON $VIRTUALENV/build/lib*/virtualenv.py --no-site-packages $VPYTHON_DIR
+    $TARGET_PYTHON $VIRTUALENV/build/lib*/virtualenv.py $VPYTHON_DIR
 
     # we use fab for deployments
-    ./$VPYTHON_DIR/bin/pip install fabric
+    FAB=$(which fab)
+    if [ $FAB = "" ]
+    then
+        ./$VPYTHON_DIR/bin/pip install fabric
+    fi
 
     # install Mercurial
-    ./$VPYTHON_DIR/bin/pip install mercurial
+    HG=$(which hg)
+    if [ $HG = "" ]
+    then
+        ./$VPYTHON_DIR/bin/pip install mercurial
+    fi
 
     # install all the eggs in this app
     if [ $INSTALL_EGGS -eq 1 ]  
