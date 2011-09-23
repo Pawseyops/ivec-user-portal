@@ -1,0 +1,74 @@
+<%inherit file="admin/base_site.html"/>
+<%namespace name="admin" module="django.contrib.admin.templatetags.adminmedia" />
+
+
+% if not is_popup:
+${self.block_breadcrumbs()}<%def name="block_breadcrumbs()"><div class="breadcrumbs"><a href="${root_path}">${trans("Home")}</a> &rsaquo; ${title}</div></%def>
+% endif
+
+${self.block_content()}<%def name="block_content()">
+<div id="content-main">
+
+<table>
+% for priority in display_order:
+        <tr>
+            <th>&nbsp;</th>
+        </tr>
+
+        <tr>
+            <th>${priority.upper()}</th>
+        </tr>
+
+        <tr>
+        <th>Title</th>
+        <th>Created By</th>
+        <th>Overall Score</th>
+        <th>Hours Requested</th>
+        <th>Hours Allocated</th>
+        % if show_review:
+        <th>Reviews</th>
+        % endif
+        <th>&nbsp;</th>
+        </tr>
+
+        <% total_hours = 0 %>
+        <% total_allocated_hours = 0 %>
+        % for app in sorted(all_apps[priority]):
+
+        <tr>
+            <td>${app.project_title}</td>
+            <td>${app.created_by}</td>
+            <td>${app.overall_score()}</td>
+            <td align="right">${app.core_hours_requested}</td>
+            <td align="right">${app.hours_allocated}</td>
+            % if show_review:
+            <td align="right">${app.reviews()}</td>
+            % endif
+            <td><a href="${urlresolvers.reverse('admin:allocation_application_change', args=(app.id,))}">View Application</a></td>
+        </tr>
+        <% if app.core_hours_requested:
+          total_hours += app.core_hours_requested
+        %>
+        <% if app.hours_allocated:
+          total_allocated_hours += app.hours_allocated
+        %>
+
+        % endfor
+
+        <tr>
+            <td colspan="3"><b>Total Hours</b></td>
+            <td align="right">
+              <b>${total_hours}</b>
+            </td>
+            <td align="right">
+              <b>${total_allocated_hours}</b>
+            </td>
+        </tr>
+
+% endfor
+</table>
+
+
+
+</div>
+</%def>

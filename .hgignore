@@ -1,0 +1,6 @@
+^ivecallocation/virtualenv-.*$
+^ivecallocation/virt_.*$
+^ivecallocation/appsettings$
+^ivecallocation/scratch$
+.*\.pyc$
+\.DS_Store$

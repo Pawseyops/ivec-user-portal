@@ -1,0 +1,33 @@
+<%inherit file="registration/base.html" />
+<% from django.utils.webhelpers import url %>
+
+<%def name="title()">2011 Application for Resources on Pawsey-Funded iVEC Infrastructure</%def>
+
+<h3>
+Thank you!
+</h3>
+<p>
+Thank you for completing the details required to process your application. </p>
+
+<h2>
+Summary
+</h2>
+% if error is not None:
+    An account summary could not be displayed: ${error}
+% else:
+    <div style="margin: 10px">
+    % for item in participantdetails:
+        <div style="width: 15em; font-weight:bold; float:left;">${item[0]}:</div> ${item[1]}</br>
+    % endfor
+    </div>    
+% endif
+
+</p>
+You will be contacted once your account has been activated. <u>Please allow several days for this process.</u>
+</p>
+
+
+<p>
+Should you have any queries please contact <a href="mailto:help@ivec.org">help@ivec.org</a>.
+</p>
+

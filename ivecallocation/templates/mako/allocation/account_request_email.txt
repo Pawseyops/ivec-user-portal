@@ -1,0 +1,29 @@
+
+Dear ${participant.name},
+
+Recently iVEC received an application for access to Pawsey funded iVEC resources titled:  
+
+"${participant.application.project_title}"
+
+This application has been successful, details about the size of your allocation and how to access your account will be provided after your account has been activated.
+
+Please click the following link to progress with your account creation process:
+
+${link}
+
+If you experience difficulties following the above link or believe you received this email in error please contact help@ivec.org.
+
+Regards,
+
+iVEC
+
+--
+iVEC, 'Home of the Pawsey Centre'
+26 Dick Perry Avenue, Technology Park
+Kensington WA 6151
+Australia
+
+Phone: +61 8 6436 8831
+Fax: +61 8 6436 8555
+Email: help@ivec.org
+WWW:  http://www.ivec.org
