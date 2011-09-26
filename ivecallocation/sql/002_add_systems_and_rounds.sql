@@ -18,8 +18,6 @@ CREATE TABLE "allocation_allocationround" (
 
 INSERT INTO allocation_allocationround (name, system_id, start_date, end_date) VALUES
     ('Epic legacy', (SELECT id from allocation_system where name='Epic'), '1970-01-01', '2011-09-01');
-INSERT INTO allocation_allocationround (name, system_id, start_date, end_date) VALUES    
-    ('Test open round', (SELECT id from allocation_system where name='Epic'), '2011-09-01', '2021-09-01');
 
 ALTER TABLE "allocation_application" ADD COLUMN "allocation_round_id" integer;
 UPDATE allocation_application SET allocation_round_id=(SELECT id from allocation_allocationround WHERE
