@@ -3,6 +3,7 @@ from django.db import models
 from django.contrib.auth.models import User as DjangoUser
 from django.db.models import Avg
 from django.core.urlresolvers import reverse
+from datetime import date
 
 #from choices import *
 from help_text import *
@@ -23,9 +24,23 @@ class AllocationRound(models.Model):
     system = models.ForeignKey(System)
     start_date = models.DateField()
     end_date = models.DateField()
+    name = models.CharField(max_length=512, null=True, blank=True)
+    
+    @property
+    def status(self):
+        today = date.today()
+        if today >= self.start_date and today <= self.end_date:
+            return "open"
+        elif today <= self.start_date:
+            return "pending"
+        else:
+            return "closed"
     
     def __unicode__(self):
-        return "%s: %s to %s" % (self.system, self.start_date, self.end_date)
+        if self.name and len(self.name):
+            return self.name
+        else:
+            return "%s: %s to %s" % (self.system, self.start_date, self.end_date)
 
 class Application(models.Model):
     project_title = models.CharField(max_length=100, help_text=help_text_project_title)

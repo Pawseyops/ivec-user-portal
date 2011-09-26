@@ -58,7 +58,7 @@ class SystemAdmin(admin.ModelAdmin):
     form = SystemForm
     
 class AllocationRoundAdmin(admin.ModelAdmin):
-    list_display = ('system', 'start_date', 'end_date')
+    list_display = ('__unicode__', 'system', 'start_date', 'end_date', 'status')
     form = AllocationRoundForm
 
 class ApplicationAdmin(admin.ModelAdmin):
@@ -246,8 +246,6 @@ class ApplicationAdmin(admin.ModelAdmin):
         # show none
         else:
             return Application.objects.none()
-
-
     
     def submitted(self, obj):
         return "Submitted" if obj.complete else "Not yet submitted"

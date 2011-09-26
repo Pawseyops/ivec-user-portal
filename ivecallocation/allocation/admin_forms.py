@@ -1,6 +1,7 @@
 from django import forms
 from django.contrib.auth.models import User
 from models import *
+from datetime import datetime
 
 class SystemForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
@@ -22,6 +23,10 @@ class ApplicationForm(forms.ModelForm):
         self.fields["research_significance"].widget = forms.Textarea(attrs={'rows':16, 'cols':100})
         self.fields["computational_methodology"].widget = forms.Textarea(attrs={'rows':16, 'cols':100})
         self.fields["data_transfers"].widget = forms.Textarea(attrs={'rows':6, 'cols':100}) #field is 512 chars max in model
+        
+        now = datetime.now()
+        self.fields["allocation_round"].empty_label = "-- select allocation round --"
+        self.fields["allocation_round"].queryset = AllocationRound.objects.filter(start_date__lte=now, end_date__gte=now)
         
         instance = getattr(self, 'instance', None)
         if instance and instance.id:
