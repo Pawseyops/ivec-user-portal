@@ -110,8 +110,8 @@ def get_ivec_ldap_details(emailaddress):
 #TODO: remove when create_user_accounts calls create_application_group
 def get_application_area(application):
     areanum = str(application.id)
-    parentarea = application.priority_area
-    childarea = application.posix_area
+    parentarea = application.priority_area.name
+    childarea = application.priority_area.code
     return (parentarea, childarea, areanum)
 
 def create_application_group(ldaphandler, application):
@@ -119,7 +119,7 @@ def create_application_group(ldaphandler, application):
     Create the group in LDAP for the application. Create the parent area if needed
     return the project name if successful else None
     '''
-    groupname = '%s%s' % (application.posix_area, str(application.id))
+    groupname = '%s%s' % (application.priority_area.code, str(application.id))
     gidnumber = str(30010 + application.id)     # TODO: CAUTION: the offset is hard coded here
     description = str(application.project_title)
 

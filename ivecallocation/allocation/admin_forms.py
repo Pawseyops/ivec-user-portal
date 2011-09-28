@@ -34,6 +34,9 @@ class ApplicationForm(forms.ModelForm):
             self.fields['allocation_round'].widget.attrs['readonly'] = True
         else:
             self.fields["allocation_round"].widget.widget = forms.Select(attrs={})
+        
+        if "priority_area" in self.fields.keys():
+            self.fields["priority_area"].empty_label = "-- select priority area --"
     
     def clean(self):
         instance = getattr(self, 'instance', None)
