@@ -38,11 +38,19 @@ class ApplicationForm(forms.ModelForm):
         if "priority_area" in self.fields.keys():
             self.fields["priority_area"].empty_label = "-- select priority area --"
     
-    def clean(self):
+    def clean(self):   
+        # Allocation round is expected to be absent on change...
         instance = getattr(self, 'instance', None)
         if instance and instance.id and 'allocation_round' in self._errors:
             del self._errors['allocation_round']
-            #assert(False)
+        
+        # priority area must be among those valid for the allocation round          
+        allocation_round = self.cleaned_data.get("allocation_round")
+        priority_area = self.cleaned_data.get("priority_area")
+        if priority_area not in allocation_round.priority_area.all():
+            error = "Priority area %s is not available for allocation round %s" % (priority_area, allocation_round)
+            self._errors["priority_area"] = self.error_class([error])
+            
         return self.cleaned_data
     
     def clean_allocation_round(self):
