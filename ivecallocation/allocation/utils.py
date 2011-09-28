@@ -45,18 +45,19 @@ def get_querylist(request=None):
 
     # build up query objects and test if user is a reviewer in any area
     if reviewers_astronomy and reviewers_astronomy in request.user.groups.all():
-        query_list.append(Q(priority_area_radio_astronomy=True))
+        query_list.append(Q(priority_area__code='astronomy'))
 
     if reviewers_geosciences and reviewers_geosciences in request.user.groups.all():
-        query_list.append(Q(priority_area_geosciences=True))
+        query_list.append(Q(priority_area__code='geosciences'))
 
     if reviewers_directors and reviewers_directors in request.user.groups.all():
-        query_list.append(Q(priority_area_directors=True))
+        query_list.append(Q(priority_area__code='director'))
 
     if reviewers_partner and reviewers_partner in request.user.groups.all():
-        query_list.append(Q(priority_area_partner=True))
+        query_list.append(Q(priority_area__code='partner'))
 
     if reviewers_national and reviewers_national in request.user.groups.all():
-        query_list.append(Q(priority_area_national=True))
+        query_list.append(Q(priority_area__code='national'))
 
+    #assert(False)
     return query_list

@@ -61,11 +61,10 @@ class AllocationRoundAdmin(admin.ModelAdmin):
     list_display = ('__unicode__', 'system', 'start_date', 'end_date', 'status')
     form = AllocationRoundForm
 
-class ApplicationAdmin(admin.ModelAdmin):
+class ApplicationAdmin(admin.ModelAdmin):    
     save_on_top = True
     list_display = ['project_title', 'created_by', 'core_hours_requested', 'priority_area', 'submitted', 'system', 'allocation_round']
-    list_filter = ['complete', 'priority_area_radio_astronomy', 'priority_area_geosciences', 'priority_area_directors',
-                   'priority_area_partner', 'priority_area_national', 'range:hours_allocated']
+    list_filter = ['complete', 'priority_area', 'allocation_round__system', 'allocation_round', 'range:hours_allocated']
     inlines = [ResearchClassificationInline, ParticipantInline, PublicationInline, ResearchFundingInline,
                SupportingFundingInline, SupercomputerJobInline, LibraryInline, ReviewerScoreInline, ReviewerCommentInline]
     form = ApplicationForm
@@ -94,11 +93,7 @@ class ApplicationAdmin(admin.ModelAdmin):
         ('Priority Areas', 
          {'fields': 
               (
-              'priority_area_radio_astronomy',
-              'priority_area_geosciences',
-              'priority_area_directors',
-              'priority_area_partner',
-              'priority_area_national',              
+              'priority_area',             
               ),
           'description': help_text_priority_areas
           }
@@ -212,6 +207,8 @@ class ApplicationAdmin(admin.ModelAdmin):
          ),  
     ]
 
+    
+
     def CSV_summary_of_LDAP_accounts(self, request, queryset):
         selected = request.POST.getlist(admin.ACTION_CHECKBOX_NAME)
         details = account_services.get_applications_CSV(selected)
@@ -267,7 +264,7 @@ class ApplicationAdmin(admin.ModelAdmin):
             # (the option isn't on the form in this case)
             directors = Group.objects.get(name='directors')
             if directors in request.user.groups.all():
-                obj.priority_area_directors = True
+                obj.priority_area = PriorityArea.objects.get(code='director')
             
             # mail our admins about the new application
             self.mail_notification(request, obj)
@@ -279,15 +276,13 @@ class ApplicationAdmin(admin.ModelAdmin):
         
         self.exclude_review_fields(request.user, ('allocation.add_reviewerscore', 'allocation.add_reviewercomment'))
         directors = Group.objects.get(name='directors')
-        if directors in request.user.groups.all():            
+        if directors in request.user.groups.all():
+            #self.form.base_fields['priority_area'].widget.attrs['disabled'] = True
+            #assert(False)
             for i in self.fieldsets:
-                if i[0] == 'Priority Areas':
-                    self.fieldsets.remove(i)
-                    self.exclude = ['priority_area_radio_astronomy',
-                                    'priority_area_geosciences',
-                                    'priority_area_directors',
-                                    'priority_area_partner',
-                                    'priority_area_national']
+                 if i[0] == 'Priority Areas':
+                     self.fieldsets.remove(i)
+                     self.exclude = ['priority_area']
         return super(ApplicationAdmin, self).add_view(request, form_url=form_url, extra_context=extra_context)
     
     def change_view(self, request, object_id, extra_context=None):

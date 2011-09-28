@@ -19,13 +19,22 @@ class System(models.Model):
     
     def __unicode__(self):
         return "%s" % self.name
+
+class PriorityArea(models.Model):
+    name = models.CharField(max_length=32)
+    code = models.CharField(max_length=32)
+    description = models.CharField(max_length=1000)
     
+    def __unicode__(self):
+        return self.name
+
 class AllocationRound(models.Model):
     system = models.ForeignKey(System)
     start_date = models.DateField()
     end_date = models.DateField()
     name = models.CharField(max_length=512, null=True, blank=True)
-    
+    priority_area = models.ManyToManyField(PriorityArea)
+
     @property
     def status(self):
         today = date.today()
@@ -35,21 +44,17 @@ class AllocationRound(models.Model):
             return "pending"
         else:
             return "closed"
-    
+
     def __unicode__(self):
         if self.name and len(self.name):
-            return self.name
+            label = self.name
         else:
-            return "%s: %s to %s" % (self.system, self.start_date, self.end_date)
+            label = self.system
+        return "%s: %s to %s" % (label, self.start_date, self.end_date)
 
 class Application(models.Model):
     project_title = models.CharField(max_length=100, help_text=help_text_project_title)
-    project_summary = models.CharField(max_length=1000, help_text=help_text_project_summary, null=True, blank=True)
-    priority_area_radio_astronomy = models.BooleanField()
-    priority_area_geosciences = models.BooleanField()
-    priority_area_directors = models.BooleanField()
-    priority_area_partner = models.BooleanField()
-    priority_area_national = models.BooleanField()    
+    project_summary = models.CharField(max_length=1000, help_text=help_text_project_summary, null=True, blank=True)    
     research_record = models.CharField(max_length=5000, help_text=help_text_research_record, null=True, blank=True)
     research_significance = models.CharField(max_length=5000, help_text=help_text_research_significance, null=True, blank=True)
     computational_methodology = models.CharField(max_length=5000, help_text=help_text_computational_methodology, null=True, blank=True)
@@ -64,6 +69,7 @@ class Application(models.Model):
     created_on = models.DateTimeField(auto_now_add=True, editable=False)
     complete =  models.BooleanField(verbose_name="ready to submit application")
     allocation_round = models.ForeignKey(AllocationRound)
+    priority_area = models.ForeignKey(PriorityArea)
 
     def __cmp__(self, other):
         if self.overall_score() < other.overall_score():
@@ -84,44 +90,9 @@ class Application(models.Model):
     def reviews(self):
         return self.reviewerscore_set.all().count()        
 
-    @property
     def system(self):
         return self.allocation_round.system
-
-    #This gets the area name that should be used as an OU in LDAP
-    @property
-    def priority_area(self):
-        return self.get_area_mapping()
-
-    #This gets the area name that should be used as a posix group name in LDAP
-    @property
-    def posix_area(self):
-        return self.get_area_mapping(posix=True)
-
-
-    #This is a mapping of area names and posix group names. 
-    #DO NOT modify this unless you know what you are doing, as it has
-    #repurcussions for the LDAP tree. You need to have spoken to 
-    #one of the SysAdmins and verified any changes you are making with them.
-    #
-    # This mapping certified canonical by D.Schibeci on Wed 13 Jul 2011
-    def get_area_mapping(self, posix=False):
-        ret = [None, None]
-        if self.priority_area_radio_astronomy:
-            ret = ['Astronomy', 'astronomy']
-        elif self.priority_area_geosciences:
-            ret = ['Geosciences', 'geosciences']
-        elif self.priority_area_directors:
-            ret = ['Director', 'director']
-        elif self.priority_area_partner:
-            ret = ['iVEC Partners', 'partner']
-        elif self.priority_area_national:
-            ret = ['National Merit', 'national']
-
-        if posix:
-            return ret[1]
-        else:
-            return ret[0]
+    system.admin_order_field='allocation_round__system'
 
 class ReviewerScore(models.Model):
     application = models.ForeignKey(Application)    
