@@ -272,40 +272,17 @@ class ApplicationAdmin(admin.ModelAdmin):
         obj.save()
     
     def add_view(self, request, form_url='', extra_context=None):
-        #self.fieldsets.insert(0, self.allocation_round_fieldset)
-        
         self.exclude_review_fields(request.user, ('allocation.add_reviewerscore', 'allocation.add_reviewercomment'))
         directors = Group.objects.get(name='directors')
         if directors in request.user.groups.all():
-            #self.form.base_fields['priority_area'].widget.attrs['disabled'] = True
-            #assert(False)
             for i in self.fieldsets:
                  if i[0] == 'Priority Areas':
                      self.fieldsets.remove(i)
                      self.exclude = ['priority_area']
         return super(ApplicationAdmin, self).add_view(request, form_url=form_url, extra_context=extra_context)
     
-    def change_view(self, request, object_id, extra_context=None):
-
-        #ar = self.get_form(request).declared_fields['allocation_round']
-        #ar.widget.widget.attrs['disabled'] = True
-        #assert(False)
-        
-        self.exclude_review_fields(request.user, ('allocation.change_reviewerscore', 'allocation.change_reviewercomment'))
-        
-        # do we let directors change the priority area on existing applications?
-        # for now I'm guessing we do...
-        # directors = Group.objects.get(name='directors')
-        #         if directors in request.user.groups.all():            
-        #             for i in self.fieldsets:
-        #                 if i[0] == 'Priority Areas':
-        #                     self.fieldsets.remove(i)
-        #                     self.exclude = ['priority_area_radio_astronomy',
-        #                                     'priority_area_geosciences',
-        #                                     'priority_area_directors',
-        #                                     'priority_area_partner',
-        #                                     'priority_area_national']
-                                    
+    def change_view(self, request, object_id, extra_context=None):        
+        self.exclude_review_fields(request.user, ('allocation.change_reviewerscore', 'allocation.change_reviewercomment'))                           
         return super(ApplicationAdmin, self).change_view(request, object_id, extra_context=extra_context)
     
     # remove the entire Review fieldset (including the inlines) if permissions aren't met
@@ -326,7 +303,7 @@ class ApplicationAdmin(admin.ModelAdmin):
                 self.exclude = ['hours_allocated', 'ldap_project_name']
                 return
                 
-        # This instance may be persistent between http requests.
+        # This instance may be persistent between http requests (under runserver?).
         # If we didn't exclude the review fields on this request, then we may have done so previously.
         # If permissions have been changed in the meantime, we should actually do the opposite and add
         # these fields back in!
