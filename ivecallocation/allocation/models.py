@@ -14,8 +14,8 @@ from help_text import *
 #logger = logging.getLogger('ivecallocation')
 
 class System(models.Model):
-    name = models.CharField(max_length=100)
-    description = models.CharField(max_length=1000)
+    name = models.CharField(max_length=100, help_text=help_text_system_name)
+    description = models.CharField(max_length=1000, help_text=help_text_system_description)
     
     def __unicode__(self):
         return "%s" % self.name
@@ -29,11 +29,11 @@ class PriorityArea(models.Model):
         return self.name
 
 class AllocationRound(models.Model):
-    system = models.ForeignKey(System)
-    start_date = models.DateField()
-    end_date = models.DateField()
-    name = models.CharField(max_length=512, null=True, blank=True)
-    priority_area = models.ManyToManyField(PriorityArea)
+    system = models.ForeignKey(System, help_text=help_text_allocationround_system)
+    start_date = models.DateField(help_text=help_text_allocationround_start_date)
+    end_date = models.DateField(help_text=help_text_allocationround_end_date)
+    name = models.CharField(max_length=512, null=True, blank=True, help_text=help_text_allocationround_name)
+    priority_area = models.ManyToManyField(PriorityArea, help_text=help_text_allocationround_priority_area)
 
     @property
     def status(self):
@@ -69,7 +69,7 @@ class Application(models.Model):
     created_on = models.DateTimeField(auto_now_add=True, editable=False)
     complete =  models.BooleanField(verbose_name="ready to submit application")
     allocation_round = models.ForeignKey(AllocationRound)
-    priority_area = models.ForeignKey(PriorityArea)
+    priority_area = models.ForeignKey(PriorityArea, help_text=help_text_available_priority_areas)
 
     def __cmp__(self, other):
         if self.overall_score() < other.overall_score():

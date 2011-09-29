@@ -2,6 +2,7 @@ from django import forms
 from django.contrib.auth.models import User
 from models import *
 from datetime import datetime
+from django.db.models import Q
 
 class SystemForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
@@ -26,13 +27,17 @@ class ApplicationForm(forms.ModelForm):
         
         now = datetime.now()
         self.fields["allocation_round"].empty_label = "-- select allocation round --"
-        self.fields["allocation_round"].queryset = AllocationRound.objects.filter(start_date__lte=now, end_date__gte=now)
         
         instance = getattr(self, 'instance', None)
         if instance and instance.id:
+            self.fields["allocation_round"].queryset = AllocationRound.objects.filter(
+                Q(start_date__lte=now, end_date__gte=now) | Q(id=instance.allocation_round.id))
             self.fields['allocation_round'].widget.widget.attrs['disabled'] = True
             self.fields['allocation_round'].widget.attrs['readonly'] = True
+            self.fields["priority_area"].queryset = PriorityArea.objects.filter(allocationround=instance.allocation_round)
         else:
+            self.fields["allocation_round"].queryset = AllocationRound.objects.filter(
+                start_date__lte=now, end_date__gte=now)
             self.fields["allocation_round"].widget.widget = forms.Select(attrs={})
         
         if "priority_area" in self.fields.keys():
