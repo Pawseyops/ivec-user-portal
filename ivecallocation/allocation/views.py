@@ -133,3 +133,10 @@ def account_details_thanks(request):
             error = "Unable to retrieve participant by hash: %s" % (str(participant_email_hash))
     return render_to_response('allocation/account_details_thanks.html', {"participantdetails": participantdetails, "error":error})
 
+def priority_areas(request, allocationround_id):
+    allocation_round = AllocationRound.objects.get(id=allocationround_id)
+    priority_areas = allocation_round.priority_area.all()
+    return render_to_response('allocation/priority_areas.html',
+                              {'ajax': request.is_ajax(),
+                               'priority_areas': priority_areas})
+    

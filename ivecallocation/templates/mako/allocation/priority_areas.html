@@ -1,0 +1,10 @@
+% if not ajax:
+<select name='test'>
+% endif
+<option value="" selected="selected">-- select priority area --</option>
+% for p in priority_areas:
+<option value="${p.id}">${p.name}</option>
+% endfor
+% if not ajax:
+</select>
+% endif
