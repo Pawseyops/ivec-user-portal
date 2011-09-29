@@ -12,7 +12,7 @@ radio astronomy and the geosciences.<br/>
 Note that your application will also be considered under the other allocation schemes."""
 
 help_text_available_priority_areas = """
-You may only select a priority area which is available under the chosen allocation round."""
+Only priority areas available for the chosen allocation round are presented here."""
 
 help_text_research_record = """Relevant significant contributions to the research field.<br/>
 Include supercomputing experience.<br/>
