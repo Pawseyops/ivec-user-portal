@@ -266,11 +266,10 @@ class ApplicationAdmin(admin.ModelAdmin):
             directors = Group.objects.get(name='directors')
             if directors in request.user.groups.all():
                 obj.priority_area = PriorityArea.objects.get(code='director')
-            
-            # mail our admins about the new application
-            self.mail_notification(request, obj)
 
         obj.save()
+        # mail our admins about the new application
+        if not change: self.mail_notification(request, obj)
     
     def add_view(self, request, form_url='', extra_context=None):
         self.exclude_review_fields(request.user, ('allocation.add_reviewerscore', 'allocation.add_reviewercomment'))
