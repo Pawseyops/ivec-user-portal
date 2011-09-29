@@ -1,3 +1,7 @@
+help_text_allocation_round = """
+To apply for an allocation on a system, the system must have an open allocation round. Please choose the applicable application
+round for the resources you require. If the system isn't available it means applications are closed for that system."""
+
 help_text_project_title = "Please make it informative, it may be published (100 characters max)"
 
 help_text_project_summary = "Please make this suitable for a general audience, and highlight the aims, novelty, and significance of the outcomes.  Again, assume that the project summary will be published. (1000 characters max)."
@@ -5,8 +9,10 @@ help_text_project_summary = "Please make this suitable for a general audience, a
 help_text_priority_areas = """
 There are currently two priority areas that each gain independent access to 25% of the Pawsey-funded infrastructure;
 radio astronomy and the geosciences.<br/>
-Please check the boxes below if you wish your application to be considered for these priority areas.<br/>
-Note that even if you tick a box, your application will also be considered under the other allocation schemes."""
+Note that your application will also be considered under the other allocation schemes."""
+
+help_text_available_priority_areas = """
+You may only select a priority area which is available under the chosen allocation round."""
 
 help_text_research_record = """Relevant significant contributions to the research field.<br/>
 Include supercomputing experience.<br/>
@@ -80,3 +86,14 @@ help_text_libraries = """<h4>Applications, Tools or Libraries</h4><br/>
 &bull; If you build your own applications, libraries and/or tools please indicate which compilers you use.<br/>
 &bull; For all software please include version numbers.<br/>
 """
+help_text_system_name = """The common name of a shared resource."""
+help_text_system_description = """Optional description field for this system."""
+
+help_text_allocationround_system = """This round will allocate resources on this system."""
+help_text_allocationround_start_date = """Applications are open as of this date..."""
+help_text_allocationround_end_date = """...and closed as of this date"""
+help_text_allocationround_name = """An optional label for the round to differentiate it in listings.
+If left blank, the system name will be used instead."""
+help_text_allocationround_priority_area = """Applications for this round can only be made for these priority areas."""
+
+

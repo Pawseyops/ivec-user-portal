@@ -75,7 +75,8 @@ class ApplicationAdmin(admin.ModelAdmin):
                                     {'fields':
                                         (
                                         'allocation_round',
-                                        )
+                                        ),
+                                    'description': help_text_allocation_round
                                     }
                                  )
 
