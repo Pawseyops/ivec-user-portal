@@ -27,12 +27,10 @@ BEGIN
             UPDATE allocation_application SET
                 priority_area_id=(SELECT id FROM allocation_priorityarea WHERE name='iVEC Partners')
                 WHERE id=app.id;
-        ELSIF app.priority_area_national IS TRUE THEN
+        ELSE app.priority_area_national IS TRUE THEN
             UPDATE allocation_application SET
                 priority_area_id=(SELECT id FROM allocation_priorityarea WHERE name='National Merit')
                 WHERE id=app.id;
-        ELSE
-            RAISE EXCEPTION 'Application %s has no priority area set, can''t migrate. Please fix manually and try again.', app.id;
         END IF;
     
     END LOOP;
