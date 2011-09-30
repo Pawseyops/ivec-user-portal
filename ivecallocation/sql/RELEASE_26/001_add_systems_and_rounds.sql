@@ -1,4 +1,3 @@
-BEGIN;
 
 CREATE TABLE "allocation_system" (
     "id" serial NOT NULL PRIMARY KEY,
@@ -26,5 +25,3 @@ ALTER TABLE allocation_application ALTER COLUMN allocation_round_id SET NOT NULL
 
 ALTER TABLE "allocation_application" ADD CONSTRAINT allocation_allocation_round_id_fkey
     FOREIGN KEY (allocation_round_id) REFERENCES "allocation_allocationround" ("id") DEFERRABLE INITIALLY DEFERRED;
-
-COMMIT;

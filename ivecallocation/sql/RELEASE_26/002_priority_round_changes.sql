@@ -1,8 +1,5 @@
--- Just before the transaction, make sure plpgsql is available
--- (if it wasn't installed already, this will install it permanently)
-CREATE LANGUAGE plpgsql;
 
-BEGIN;
+CREATE LANGUAGE plpgsql;
 
 -- Temporary procedure to migrate 5 boolean columns to a one-to-one relationship
 -- This gets destroyed again before we commit the transaction.
@@ -95,5 +92,3 @@ INSERT INTO allocation_allocationround_priority_area (allocationround_id, priori
                                                         
 -- Done with the procedure, so drop it before the commit            
 DROP FUNCTION migrate_priorityarea();
-
-COMMIT;
