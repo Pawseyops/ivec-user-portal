@@ -21,6 +21,12 @@ INSERT INTO allocation_allocationround (name, system_id, start_date, end_date) V
 ALTER TABLE "allocation_application" ADD COLUMN "allocation_round_id" integer;
 UPDATE allocation_application SET allocation_round_id=(SELECT id from allocation_allocationround WHERE
     name='Epic legacy') ;
+    
+-- For postgresql 8.1 at least, need to throw a commit here otherwise the alter will
+-- fail due to pending triggers we have in our live databases
+COMMIT;
+BEGIN;
+    
 ALTER TABLE allocation_application ALTER COLUMN allocation_round_id SET NOT NULL;
 
 ALTER TABLE "allocation_application" ADD CONSTRAINT allocation_allocation_round_id_fkey
