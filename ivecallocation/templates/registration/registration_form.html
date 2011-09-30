@@ -25,25 +25,6 @@
     <a href="mailto:help@ivec.org">help@ivec.org</a> .
 </p>
 
-<h3>Allocation Rounds</h3>
-These rounds are currently available for resource allocation.
-
-<BR><BR>
-<table id='rounds' width=45%>
-<tr><th>Resource</th><th>Round Name</th><th>Opens</th><th>Closes</th><th>Status</th></tr>
-% for round in allocation_rounds:
-    <% closed = 'class="closed"' if round.status=='closed' else ''%>
-    <tr ${closed}>
-        <td>${round.system}</td>
-        <td>${round.name}</td>
-        <td>${round.start_date}</td>
-        <td>${round.end_date}</td>
-        <td>${round.status}</td>
-    </tr>
-% endfor
-</table>
-<BR>
-
 <h3>Background</h3>
 
 
@@ -145,4 +126,24 @@ These rounds are currently available for resource allocation.
     and that unused allocations will not roll over to the next allocation
     period.
 </p>
+
+<h3>Allocation Rounds</h3>
+<p>
+You can register at any time. Once registered, applications are only available during
+open allocation rounds. Open and recently closed rounds are listed below.
+</p>
+<table id='rounds' width=100%>
+<tr><th>Resource</th><th>Round Name</th><th>Opens</th><th>Closes</th><th>Status</th></tr>
+% for round in allocation_rounds:
+    <% closed = 'class="closed"' if round.status=='closed' else ''%>
+    <tr ${closed}>
+        <td>${round.system}</td>
+        <td>${round.name}</td>
+        <td>${round.start_date}</td>
+        <td>${round.end_date}</td>
+        <td>${round.status}</td>
+    </tr>
+% endfor
+</table>
+<br/>
 

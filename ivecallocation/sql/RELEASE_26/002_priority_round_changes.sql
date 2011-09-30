@@ -27,7 +27,8 @@ BEGIN
             UPDATE allocation_application SET
                 priority_area_id=(SELECT id FROM allocation_priorityarea WHERE name='iVEC Partners')
                 WHERE id=app.id;
-        ELSE app.priority_area_national IS TRUE THEN
+        -- priority_area_national is true
+        ELSE 
             UPDATE allocation_application SET
                 priority_area_id=(SELECT id FROM allocation_priorityarea WHERE name='National Merit')
                 WHERE id=app.id;
@@ -52,10 +53,21 @@ INSERT INTO allocation_priorityarea (name, code, description) VALUES ('Directors
 INSERT INTO allocation_priorityarea (name, code, description) VALUES ('iVEC Partners', 'partner', 'iVEC Partners Priority Area');
 INSERT INTO allocation_priorityarea (name, code, description) VALUES ('National Merit', 'national', 'National Merit Priority Area');
 
+-- For postgresql 8.1 at least, need to throw a commit here otherwise the alter will
+-- fail due to pending triggers we have in our live databases
+COMMIT;
+BEGIN;
+
 -- Find which priority area column is true and migrate that to the new
 -- relational model before dropping the old columns
 ALTER TABLE allocation_application ADD priority_area_id integer;
 SELECT migrate_priorityarea();
+
+-- For postgresql 8.1 at least, need to throw a commit here otherwise the alter will
+-- fail due to pending triggers we have in our live databases
+COMMIT;
+BEGIN;
+
 ALTER TABLE allocation_application ALTER COLUMN priority_area_id SET NOT NULL; 
 ALTER TABLE allocation_application DROP COLUMN priority_area_radio_astronomy;
 ALTER TABLE allocation_application DROP COLUMN priority_area_geosciences;
