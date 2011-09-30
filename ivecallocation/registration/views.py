@@ -10,6 +10,10 @@ from django.template import RequestContext
 from django.db.utils import IntegrityError
 from registration.backends import get_backend
 from registration.signals import user_activated
+from ivecallocation.allocation.models import AllocationRound
+from django.db.models import Q
+from datetime import datetime, timedelta
+from operator import attrgetter
 
 def activate(request, backend,
              template_name='registration/activate.html',
@@ -210,10 +214,18 @@ def register(request, backend, success_url=None, form_class=None,
     for key, value in extra_context.items():
         context[key] = callable(value) and value() or value
 
+    # Show a list of all the open and recently closed allocation rounds
+    today = datetime.today()
+    delta = timedelta(182)
+    allocation_rounds = AllocationRound.objects.filter(
+        Q(start_date__lte=today,end_date__gte=today) | Q(end_date__gte=(today - delta)))
+    allocation_rounds = sorted(allocation_rounds, key=attrgetter('end_date'), reverse=True)
+
     return render_to_response(template_name,
                               {'form': form,
-                               'usertype': usertype},
-                              context_instance=context)
+                               'usertype': usertype,
+                               'allocation_rounds': allocation_rounds},
+                               context_instance=context)
 
 
 from django.contrib.auth.models import User, Group

@@ -88,3 +88,23 @@ form .errorlist {
     font-size: 0.8em;
     font-weight: bold;
 }
+
+table#rounds {
+    border: 1px solid #c3c5c8;
+    border-spacing: 20px;
+}
+
+table#rounds th {
+    background: #1C2F72;
+    color: white;
+    text-align: left;
+    padding: 5px;
+}
+
+table#rounds td {
+    padding: 5px;
+}
+
+table#rounds tr.closed {
+    color: #999999;
+}
