@@ -1,8 +1,12 @@
 <%inherit file="admin/change_form.html"/>
+<%!
+import ivecallocation.allocation.views
+from django.utils.webhelpers import url
+%>
 
 ${self.block_extrahead()}<%def name="block_extrahead()">
 
-<script type="text/javascript" src="/static/admin-media/js/jquery.min.js"></script>
+<script type="text/javascript" src="${url('/static/admin-media/js/jquery.min.js')}"></script>
 
 <script type="text/javascript">
 // update the available list of priority areas as the user
@@ -17,7 +21,7 @@ $(document).ready(function() {
         }
         
         $('#id_priority_area')[0].disabled=true;
-        $.get("/priority_areas/"+this.value+"/", function(data) {
+        $.get('${url('/priority_areas/')}'+this.value+'/', function(data) {
             $('#id_priority_area')[0].innerHTML=data;
         });
         $('#id_priority_area')[0].disabled=false;
