@@ -12,14 +12,12 @@ logger = logging.getLogger('ivecallocation')
 from ivecallocation.allocation.models import *
 from django.db import transaction
 from django.utils import simplejson
+from django.template import loader
 
-
-# TODO use Django's loader
-TEMPLATE_LOOKUP = mako.lookup.TemplateLookup(directories=settings.TEMPLATE_DIRS)
 
 def send_account_creation_mail(participant, request):
     subject = "Successful application for Pawsey funded iVEC infrastructure"
-    message_template = TEMPLATE_LOOKUP.get_template('allocation/account_request_email.txt')
+    message_template = loader.get_template('allocation/account_request_email.txt')
     email_hash = str(uuid.uuid4())
     link = "%s%s/%s" % (siteurl(request), 'account-request', email_hash)
 
@@ -33,7 +31,7 @@ def send_account_creation_mail(participant, request):
 
 def send_account_created_notification_mail(participant, request):
     subject = "Account created for Pawsey funded iVEC infrastructure"
-    message_template = TEMPLATE_LOOKUP.get_template('allocation/account_created_email.txt')
+    message_template = loader.get_template('allocation/account_created_email.txt')
     uid = participant.participantaccount.uid
     account_details = get_user_account_details(uid)
     project = participant.application.ldap_project_name 
