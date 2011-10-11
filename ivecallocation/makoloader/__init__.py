@@ -1,9 +1,9 @@
 import os, re, posixpath
-from django.conf import settings
 from mako.template import Template as makoTemplate
 from mako.lookup import TemplateLookup as makoTemplateLookup
-
-from django.template.defaultfilters import *
+from mako import exceptions
+from django.template import defaultfilters
+from django.template.base import TemplateDoesNotExist
 
 class TemplateLookup(makoTemplateLookup):
     def get_template(self, uri, debug = False):
@@ -25,25 +25,86 @@ class TemplateLookup(makoTemplateLookup):
                     srcfile = posixpath.normpath(posixpath.join(dir, u))
                     if os.path.exists(srcfile):
                         return self._load(srcfile, uri)
-         
-        raise exceptions.TopLevelLookupException("Cant locate template for uri '%s'" % uri)
+        
+        # raise django.template.base.TemplateDoesNotExist instead of Mako's exception
+        # type to cause the next Loader in TEMPLATE_LOADERS to be tried
+        raise TemplateDoesNotExist("Cant locate template for uri '%s'" % uri)
+        
+    def _load(self, filename, uri):
+        self._mutex.acquire()
+        try:
+            try:
+                # try returning from collection one 
+                # more time in case concurrent thread already loaded
+                return self._collection[uri]
+            except KeyError:
+                pass
+            try:
+                if self.modulename_callable is not None:
+                    module_filename = self.modulename_callable(filename, uri)
+                else:
+                    module_filename = None
+                self._collection[uri] = template = Template(
+                                        uri=uri,
+                                        filename=posixpath.normpath(filename),
+                                        lookup=self, 
+                                        module_filename=module_filename,
+                                        **self.template_args)
+                return template
+            except:
+                # if compilation fails etc, ensure 
+                # template is removed from collection,
+                # re-raise
+                self._collection.pop(uri, None)
+                raise
+        finally:
+            self._mutex.release()
+
+def trans(inp):
+    return inp
+
+def url(var):
+    return var
+    
+from django.contrib.admin.templatetags.adminmedia import admin_media_prefix
+from django.contrib.admin.templatetags.log import AdminLogNode
+from django.template.base import compile_string
+
+def get_admin_log(limit, varname, user=None):
+    return AdminLogNode(limit=limit, varname=varname, user=user)
 
 class Template(makoTemplate):
-     def render(self, context):
-         context_dict = {}
-         for d in context.dicts:
-             context_dict.update(d)
-         context_dict['csrf_tag'] = csrf_tag
-         return super(Template, self).render(**context_dict)
+    
+    default_list = ['capfirst', 'center', 'csrf_tag', 'cut', 'date', 'default', 'default_if_none', 'dictsort',
+                    'dictsortreversed', 'divisibleby', 'escape', 'escapejs', 'filesizeformat', 'first', 'fix_ampersands',
+                    'floatformat', 'force_escape', 'get_digit', 'iriencode', 'join', 'last', 'length', 'length_is',
+                    'linebreaks', 'linebreaksbr', 'linenumbers', 'ljust', 'lower', 'make_list', 'phone2numeric',
+                    'pluralize', 'pprint', 'removetags', 'random', 'rjust', 'safe', 'safeseq', 'slugify', 'stringformat',
+                    'striptags', 'time', 'timesince', 'timeuntil', 'title', 'truncatewords', 'truncatewords_html',
+                    'unordered_list', 'upper', 'urlencode', 'urlize', 'urlizetrunc', 'wordcount', 'wordwrap', 'yesno']
+    
+    standard_tags = {}
+    for name in default_list:
+        standard_tags[name] = getattr(defaultfilters,name)
+    
+    def __init__(self, **kwargs):
+        super(Template, self).__init__(**kwargs)
+        self.nodelist = compile_string(self.source, kwargs['uri'])
+   
+    def _render(self, context):
+        return self.render(context)
+    
+    def render(self, context):
+        context_dict = {}
+        for d in context.dicts:
+            context_dict.update(d)
+        context_dict['csrf_tag'] = defaultfilters.csrf_tag
+        context_dict['trans'] = trans
+        context_dict['url'] = url
+        context_dict['admin_media_prefix'] = admin_media_prefix
+        context_dict['LANGUAGE_CODE'] = 'en'
+        context_dict['slice'] = defaultfilters.slice_  
+        context_dict['get_admin_log'] = get_admin_log
+        context_dict.update(self.standard_tags)
+        return super(Template, self).render(**context_dict)
 
-from django.template.loaders import filesystem
-class Loader(filesystem.Loader):
-    is_usable = True
-    mako_lookup = TemplateLookup(directories=settings.TEMPLATE_DIRS, module_directory='/tmp/mako_modules')
-
-    def load_template(self, template_name, template_dirs=None):  
-        filename = self.mako_lookup.get_template(template_name).filename
-        template = Template(filename=filename, lookup=self.mako_lookup)
-        #assert(False)
-        return template, template_name
-        
