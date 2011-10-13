@@ -73,38 +73,61 @@ from django.template.base import compile_string
 def get_admin_log(limit, varname, user=None):
     return AdminLogNode(limit=limit, varname=varname, user=user)
 
+def template_add_tags(dictionary, module):
+    """Adds a whole bunch of tags to the context. pass in a dictionary... and returns a new dictionary with the tags added"""
+    newdict = dictionary.copy()
+    for key in dir(module):
+        newdict[key] = getattr(module,key)
+    return newdict
+    
+from mako import filters
+from django.utils import html, text
+from django.templatetags import i18n
+#standard_tags = template_add_tags(template_add_tags(template_add_tags({},filters),html),i18n)
+standard_tags = {
+    'trans':trans,
+    'url':url,
+    #'load_template_tags':load_template_tags,
+    'LANGUAGE_CODE':'en',
+}
+
+default_list = ['capfirst', 'center', 'csrf_tag', 'cut', 'date', 'default', 'default_if_none', 'dictsort',
+                'dictsortreversed', 'divisibleby', 'escape', 'escapejs', 'filesizeformat', 'first', 'fix_ampersands',
+                'floatformat', 'force_escape', 'get_digit', 'iriencode', 'join', 'last', 'length', 'length_is',
+                'linebreaks', 'linebreaksbr', 'linenumbers', 'ljust', 'lower', 'make_list', 'phone2numeric',
+                'pluralize', 'pprint', 'removetags', 'random', 'rjust', 'safe', 'safeseq', 'slugify', 'stringformat',
+                'striptags', 'time', 'timesince', 'timeuntil', 'title', 'truncatewords', 'truncatewords_html',
+                'unordered_list', 'upper', 'urlencode', 'urlize', 'urlizetrunc', 'wordcount', 'wordwrap', 'yesno']
+
+for name in default_list:
+    standard_tags[name] = getattr(defaultfilters,name)
+
+standard_tags['slice']=defaultfilters.slice_
+
+standard_tags = template_add_tags(template_add_tags(template_add_tags(template_add_tags(standard_tags,filters),html),i18n),text)
+
+standard_tags = {}
+for name in default_list:
+    standard_tags[name] = getattr(defaultfilters,name)
+
 class Template(makoTemplate):
-    
-    default_list = ['capfirst', 'center', 'csrf_tag', 'cut', 'date', 'default', 'default_if_none', 'dictsort',
-                    'dictsortreversed', 'divisibleby', 'escape', 'escapejs', 'filesizeformat', 'first', 'fix_ampersands',
-                    'floatformat', 'force_escape', 'get_digit', 'iriencode', 'join', 'last', 'length', 'length_is',
-                    'linebreaks', 'linebreaksbr', 'linenumbers', 'ljust', 'lower', 'make_list', 'phone2numeric',
-                    'pluralize', 'pprint', 'removetags', 'random', 'rjust', 'safe', 'safeseq', 'slugify', 'stringformat',
-                    'striptags', 'time', 'timesince', 'timeuntil', 'title', 'truncatewords', 'truncatewords_html',
-                    'unordered_list', 'upper', 'urlencode', 'urlize', 'urlizetrunc', 'wordcount', 'wordwrap', 'yesno']
-    
-    standard_tags = {}
-    for name in default_list:
-        standard_tags[name] = getattr(defaultfilters,name)
     
     def __init__(self, **kwargs):
         super(Template, self).__init__(**kwargs)
         self.nodelist = compile_string(self.source, kwargs['uri'])
-   
-    def _render(self, context):
-        return self.render(context)
     
     def render(self, context):
         context_dict = {}
-        for d in context.dicts:
-            context_dict.update(d)
-        context_dict['csrf_tag'] = defaultfilters.csrf_tag
         context_dict['trans'] = trans
         context_dict['url'] = url
         context_dict['admin_media_prefix'] = admin_media_prefix
         context_dict['LANGUAGE_CODE'] = 'en'
         context_dict['slice'] = defaultfilters.slice_  
         context_dict['get_admin_log'] = get_admin_log
-        context_dict.update(self.standard_tags)
+        context_dict.update(standard_tags)
+        # preserved behaviour from Mango-1.2
+        # template variables with the same name as a tag override the tags
+        for d in context.dicts:
+            context_dict.update(d)
         return super(Template, self).render(**context_dict)
 
