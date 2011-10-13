@@ -208,7 +208,7 @@ class ApplicationAdmin(admin.ModelAdmin):
          ),  
     ]
 
-    
+
 
     def CSV_summary_of_LDAP_accounts(self, request, queryset):
         selected = request.POST.getlist(admin.ACTION_CHECKBOX_NAME)
