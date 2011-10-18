@@ -39,8 +39,8 @@ LOGOUT_URL = url('/accounts/logout/')
 ##
 TEMPLATE_LOADERS = [
     'django.template.loaders.makoloader.filesystem.Loader',
-    'django.template.loaders.filesystem.load_template_source',
-    'django.template.loaders.app_directories.load_template_source',
+    'django.template.loaders.filesystem.Loader',
+    'django.template.loaders.app_directories.Loader',
 ]
 
 MIDDLEWARE_CLASSES = [
