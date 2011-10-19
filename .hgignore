@@ -2,5 +2,7 @@
 ^ivecallocation/virt_.*$
 ^ivecallocation/appsettings$
 ^ivecallocation/scratch$
+^ivecallocation/logs/.*.log$
 .*\.pyc$
 \.DS_Store$
+\.vagrant$

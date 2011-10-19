@@ -1,7 +1,7 @@
 <%inherit file="admin/base_site.html"/>
 
 
-${self.block_stylesheet()}<%def name="block_stylesheet()"><%namespace name="admin" module="django.contrib.admin.templatetags.adminmedia" />${admin.admin_media_prefix()}css/login.css</%def>
+${self.block_stylesheet()}<%def name="block_stylesheet()">${admin_media_prefix()}css/login.css</%def>
 
 ${self.block_bodyclass()}<%def name="block_bodyclass()">login</%def>
 

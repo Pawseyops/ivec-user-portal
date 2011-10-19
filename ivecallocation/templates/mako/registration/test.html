@@ -1,0 +1,26 @@
+<% from django.utils.webhelpers import url %>
+<%def name="title()">2011 Application for Resources on Pawsey-Funded iVEC Infrastructure</%def>
+
+
+This is a Mako template. It doesn't do anything.
+
+${url('/accounts/register/')}${usertype}
+
+${ csrf_tag(csrf_token) }
+
+${ form.as_table() }
+
+
+<table id='rounds' width=100%>
+<tr><th>Resource</th><th>Round Name</th><th>Opens</th><th>Closes</th><th>Status</th></tr>
+% for round in allocation_rounds:
+    <% closed = 'class="closed"' if round.status=='closed' else ''%>
+    <tr ${closed}>
+        <td>${round.system}</td>
+        <td>${round.name}</td>
+        <td>${round.start_date}</td>
+        <td>${round.end_date}</td>
+        <td>${round.status}</td>
+    </tr>
+% endfor
+</table>

@@ -38,8 +38,9 @@ LOGOUT_URL = url('/accounts/logout/')
 ## Django Core stuff
 ##
 TEMPLATE_LOADERS = [
-    'django.template.loaders.filesystem.load_template_source',
-    'django.template.loaders.app_directories.load_template_source',
+    'django.template.loaders.makoloader.filesystem.Loader',
+    'django.template.loaders.filesystem.Loader',
+    'django.template.loaders.app_directories.Loader',
 ]
 
 MIDDLEWARE_CLASSES = [
@@ -81,6 +82,7 @@ MAKO_MODULENAME_CALLABLE = ''
 # cookies
 SESSION_COOKIE_AGE = 60*60
 
+#STATIC_ROOT = os.path.join(PROJECT_DIRECTORY,"static")
 MEDIA_ROOT = os.path.join(PROJECT_DIRECTORY,"static","media")
 MEDIA_URL = '/static/media/'
 ADMIN_MEDIA_PREFIX = url('/static/admin-media/')
@@ -169,8 +171,8 @@ RECAPTCHA_PRIVATE_KEY = "6LdDRcgSAAAAAOY7q8rX8rPRbCKNRY6-cxm2WL4q"
 ROOT_URLCONF = 'ivecallocation.urls'
 
 INSTALLED_APPS.extend( [
-    'ivecallocation.allocation',
-    'ivecallocation.registration',
+    'allocation',
+    'registration',
 ] )
 
 AUTHENTICATION_BACKENDS = [

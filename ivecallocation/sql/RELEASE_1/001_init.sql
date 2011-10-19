@@ -19,18 +19,14 @@ SET search_path = public, pg_catalog;
 -- Name: allocation_application_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
 --
 
-CREATE SEQUENCE allocation_application_id_seq
-    INCREMENT BY 1
-    NO MAXVALUE
-    NO MINVALUE
-    CACHE 1;
+-- removed in favour of serial column type
 
 
 --
 -- Name: allocation_application_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('allocation_application_id_seq', 104, true);
+
 
 
 SET default_tablespace = '';
@@ -42,7 +38,7 @@ SET default_with_oids = false;
 --
 
 CREATE TABLE allocation_application (
-    id integer DEFAULT nextval('allocation_application_id_seq'::regclass) NOT NULL,
+    id serial,
     project_title character varying(100) NOT NULL,
     project_summary character varying(1000),
     priority_area_radio_astronomy boolean NOT NULL,
@@ -64,7 +60,7 @@ CREATE TABLE allocation_application (
     hours_allocated integer,
     ldap_project_name character varying(256)
 );
-
+SELECT pg_catalog.setval('allocation_application_id_seq', 104, true);
 
 --
 -- Name: allocation_fieldofresearchcode_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
@@ -82,7 +78,7 @@ CREATE SEQUENCE allocation_fieldofresearchcode_id_seq
 -- Name: allocation_fieldofresearchcode_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('allocation_fieldofresearchcode_id_seq', 1, false);
+
 
 
 --
@@ -90,28 +86,24 @@ SELECT pg_catalog.setval('allocation_fieldofresearchcode_id_seq', 1, false);
 --
 
 CREATE TABLE allocation_fieldofresearchcode (
-    id integer DEFAULT nextval('allocation_fieldofresearchcode_id_seq'::regclass) NOT NULL,
+    id serial,
     code integer,
     description character varying(256)
 );
-
+SELECT pg_catalog.setval('allocation_fieldofresearchcode_id_seq', 1, false);
 
 --
 -- Name: allocation_institution_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
 --
 
-CREATE SEQUENCE allocation_institution_id_seq
-    INCREMENT BY 1
-    NO MAXVALUE
-    NO MINVALUE
-    CACHE 1;
+-- removed in favour of serial column type
 
 
 --
 -- Name: allocation_institution_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('allocation_institution_id_seq', 7, true);
+
 
 
 --
@@ -119,28 +111,24 @@ SELECT pg_catalog.setval('allocation_institution_id_seq', 7, true);
 --
 
 CREATE TABLE allocation_institution (
-    id integer DEFAULT nextval('allocation_institution_id_seq'::regclass) NOT NULL,
+    id serial,
     display_name character varying(256) NOT NULL,
     ldap_ou_name character varying(256) NOT NULL
 );
-
+SELECT pg_catalog.setval('allocation_institution_id_seq', 7, true);
 
 --
 -- Name: allocation_library_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
 --
 
-CREATE SEQUENCE allocation_library_id_seq
-    INCREMENT BY 1
-    NO MAXVALUE
-    NO MINVALUE
-    CACHE 1;
+-- removed in favour of serial column type
 
 
 --
 -- Name: allocation_library_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('allocation_library_id_seq', 321, true);
+
 
 
 --
@@ -148,30 +136,26 @@ SELECT pg_catalog.setval('allocation_library_id_seq', 321, true);
 --
 
 CREATE TABLE allocation_library (
-    id integer DEFAULT nextval('allocation_library_id_seq'::regclass) NOT NULL,
+    id serial,
     application_id integer NOT NULL,
     description character varying(256),
     reference character varying(256),
     licensing character varying(256)
 );
-
+SELECT pg_catalog.setval('allocation_library_id_seq', 321, true);
 
 --
 -- Name: allocation_participant_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
 --
 
-CREATE SEQUENCE allocation_participant_id_seq
-    INCREMENT BY 1
-    NO MAXVALUE
-    NO MINVALUE
-    CACHE 1;
+-- removed in favour of serial column type
 
 
 --
 -- Name: allocation_participant_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('allocation_participant_id_seq', 276, true);
+
 
 
 --
@@ -179,7 +163,7 @@ SELECT pg_catalog.setval('allocation_participant_id_seq', 276, true);
 --
 
 CREATE TABLE allocation_participant (
-    id integer DEFAULT nextval('allocation_participant_id_seq'::regclass) NOT NULL,
+    id serial,
     application_id integer NOT NULL,
     name character varying(256),
     department_institute character varying(128),
@@ -195,24 +179,20 @@ CREATE TABLE allocation_participant (
     account_created_on timestamp with time zone,
     account_created_email_on timestamp with time zone
 );
-
+SELECT pg_catalog.setval('allocation_participant_id_seq', 276, true);
 
 --
 -- Name: allocation_participantaccount_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
 --
 
-CREATE SEQUENCE allocation_participantaccount_id_seq
-    INCREMENT BY 1
-    NO MAXVALUE
-    NO MINVALUE
-    CACHE 1;
+-- removed in favour of serial column type
 
 
 --
 -- Name: allocation_participantaccount_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('allocation_participantaccount_id_seq', 26, true);
+
 
 
 --
@@ -220,7 +200,7 @@ SELECT pg_catalog.setval('allocation_participantaccount_id_seq', 26, true);
 --
 
 CREATE TABLE allocation_participantaccount (
-    id integer DEFAULT nextval('allocation_participantaccount_id_seq'::regclass) NOT NULL,
+    id serial,
     participant_id integer NOT NULL,
     institution_id integer,
     first_name character varying(256) NOT NULL,
@@ -233,7 +213,7 @@ CREATE TABLE allocation_participantaccount (
     old_ldap_details character varying(2000),
     data_fetched_on timestamp with time zone
 );
-
+SELECT pg_catalog.setval('allocation_participantaccount_id_seq', 26, true);
 
 --
 -- Name: allocation_participantstatus; Type: TABLE; Schema: public; Owner: postgres; Tablespace: 
@@ -250,18 +230,14 @@ CREATE TABLE allocation_participantstatus (
 -- Name: allocation_publication_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
 --
 
-CREATE SEQUENCE allocation_publication_id_seq
-    INCREMENT BY 1
-    NO MAXVALUE
-    NO MINVALUE
-    CACHE 1;
+-- removed in favour of serial column type
 
 
 --
 -- Name: allocation_publication_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('allocation_publication_id_seq', 523, true);
+
 
 
 --
@@ -269,29 +245,25 @@ SELECT pg_catalog.setval('allocation_publication_id_seq', 523, true);
 --
 
 CREATE TABLE allocation_publication (
-    id integer DEFAULT nextval('allocation_publication_id_seq'::regclass) NOT NULL,
+    id serial,
     application_id integer NOT NULL,
     reference character varying(256),
     description character varying(256)
 );
-
+SELECT pg_catalog.setval('allocation_publication_id_seq', 523, true);
 
 --
 -- Name: allocation_researchclassification_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
 --
 
-CREATE SEQUENCE allocation_researchclassification_id_seq
-    INCREMENT BY 1
-    NO MAXVALUE
-    NO MINVALUE
-    CACHE 1;
+-- removed in favour of serial column type
 
 
 --
 -- Name: allocation_researchclassification_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('allocation_researchclassification_id_seq', 196, true);
+
 
 
 --
@@ -299,29 +271,25 @@ SELECT pg_catalog.setval('allocation_researchclassification_id_seq', 196, true);
 --
 
 CREATE TABLE allocation_researchclassification (
-    id integer DEFAULT nextval('allocation_researchclassification_id_seq'::regclass) NOT NULL,
+    id serial,
     application_id integer NOT NULL,
     code integer,
     percentage integer
 );
-
+SELECT pg_catalog.setval('allocation_researchclassification_id_seq', 196, true);
 
 --
 -- Name: allocation_researchfunding_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
 --
 
-CREATE SEQUENCE allocation_researchfunding_id_seq
-    INCREMENT BY 1
-    NO MAXVALUE
-    NO MINVALUE
-    CACHE 1;
+-- removed in favour of serial column type
 
 
 --
 -- Name: allocation_researchfunding_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('allocation_researchfunding_id_seq', 257, true);
+
 
 
 --
@@ -329,7 +297,7 @@ SELECT pg_catalog.setval('allocation_researchfunding_id_seq', 257, true);
 --
 
 CREATE TABLE allocation_researchfunding (
-    id integer DEFAULT nextval('allocation_researchfunding_id_seq'::regclass) NOT NULL,
+    id serial,
     application_id integer NOT NULL,
     participant character varying(256),
     funding_source character varying(256),
@@ -337,24 +305,20 @@ CREATE TABLE allocation_researchfunding (
     years character varying,
     total_funding character varying
 );
-
+SELECT pg_catalog.setval('allocation_researchfunding_id_seq', 257, true);
 
 --
 -- Name: allocation_reviewercomment_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
 --
 
-CREATE SEQUENCE allocation_reviewercomment_id_seq
-    INCREMENT BY 1
-    NO MAXVALUE
-    NO MINVALUE
-    CACHE 1;
+-- removed in favour of serial column type
 
 
 --
 -- Name: allocation_reviewercomment_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('allocation_reviewercomment_id_seq', 231, true);
+
 
 
 --
@@ -362,29 +326,25 @@ SELECT pg_catalog.setval('allocation_reviewercomment_id_seq', 231, true);
 --
 
 CREATE TABLE allocation_reviewercomment (
-    id integer DEFAULT nextval('allocation_reviewercomment_id_seq'::regclass) NOT NULL,
+    id serial,
     application_id integer NOT NULL,
     reviewer_comment text,
     reviewer_id integer
 );
-
+SELECT pg_catalog.setval('allocation_reviewercomment_id_seq', 231, true);
 
 --
 -- Name: allocation_reviewerscore_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
 --
 
-CREATE SEQUENCE allocation_reviewerscore_id_seq
-    INCREMENT BY 1
-    NO MAXVALUE
-    NO MINVALUE
-    CACHE 1;
+-- removed in favour of serial column type
 
 
 --
 -- Name: allocation_reviewerscore_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('allocation_reviewerscore_id_seq', 230, true);
+
 
 
 --
@@ -392,31 +352,27 @@ SELECT pg_catalog.setval('allocation_reviewerscore_id_seq', 230, true);
 --
 
 CREATE TABLE allocation_reviewerscore (
-    id integer DEFAULT nextval('allocation_reviewerscore_id_seq'::regclass) NOT NULL,
+    id serial,
     application_id integer NOT NULL,
     research_merit integer,
     computational_merit integer,
     score integer,
     reviewer_id integer
 );
-
+SELECT pg_catalog.setval('allocation_reviewerscore_id_seq', 230, true);
 
 --
 -- Name: allocation_supercomputerjob_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
 --
 
-CREATE SEQUENCE allocation_supercomputerjob_id_seq
-    INCREMENT BY 1
-    NO MAXVALUE
-    NO MINVALUE
-    CACHE 1;
+-- removed in favour of serial column type
 
 
 --
 -- Name: allocation_supercomputerjob_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('allocation_supercomputerjob_id_seq', 176, true);
+
 
 
 --
@@ -424,7 +380,7 @@ SELECT pg_catalog.setval('allocation_supercomputerjob_id_seq', 176, true);
 --
 
 CREATE TABLE allocation_supercomputerjob (
-    id integer DEFAULT nextval('allocation_supercomputerjob_id_seq'::regclass) NOT NULL,
+    id serial,
     application_id integer NOT NULL,
     job_type character varying(1),
     processes integer,
@@ -434,24 +390,20 @@ CREATE TABLE allocation_supercomputerjob (
     total_memory character varying(32),
     data_transfer character varying(32)
 );
-
+SELECT pg_catalog.setval('allocation_supercomputerjob_id_seq', 176, true);
 
 --
 -- Name: allocation_supportingfunding_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
 --
 
-CREATE SEQUENCE allocation_supportingfunding_id_seq
-    INCREMENT BY 1
-    NO MAXVALUE
-    NO MINVALUE
-    CACHE 1;
+-- removed in favour of serial column type
 
 
 --
 -- Name: allocation_supportingfunding_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('allocation_supportingfunding_id_seq', 101, true);
+
 
 
 --
@@ -459,7 +411,7 @@ SELECT pg_catalog.setval('allocation_supportingfunding_id_seq', 101, true);
 --
 
 CREATE TABLE allocation_supportingfunding (
-    id integer DEFAULT nextval('allocation_supportingfunding_id_seq'::regclass) NOT NULL,
+    id serial,
     application_id integer NOT NULL,
     participant character varying(256),
     funding_source character varying(256),
@@ -467,24 +419,20 @@ CREATE TABLE allocation_supportingfunding (
     years character varying,
     total_funding character varying
 );
-
+SELECT pg_catalog.setval('allocation_supportingfunding_id_seq', 101, true);
 
 --
 -- Name: auth_group_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
 --
 
-CREATE SEQUENCE auth_group_id_seq
-    INCREMENT BY 1
-    NO MAXVALUE
-    NO MINVALUE
-    CACHE 1;
+-- removed in favour of serial column type
 
 
 --
 -- Name: auth_group_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('auth_group_id_seq', 13, true);
+
 
 
 --
@@ -492,27 +440,23 @@ SELECT pg_catalog.setval('auth_group_id_seq', 13, true);
 --
 
 CREATE TABLE auth_group (
-    id integer DEFAULT nextval('auth_group_id_seq'::regclass) NOT NULL,
+    id serial,
     name character varying(80) NOT NULL
 );
-
+SELECT pg_catalog.setval('auth_group_id_seq', 13, true);
 
 --
 -- Name: auth_group_permissions_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
 --
 
-CREATE SEQUENCE auth_group_permissions_id_seq
-    INCREMENT BY 1
-    NO MAXVALUE
-    NO MINVALUE
-    CACHE 1;
+-- removed in favour of serial column type
 
 
 --
 -- Name: auth_group_permissions_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('auth_group_permissions_id_seq', 148, true);
+
 
 
 --
@@ -520,28 +464,24 @@ SELECT pg_catalog.setval('auth_group_permissions_id_seq', 148, true);
 --
 
 CREATE TABLE auth_group_permissions (
-    id integer DEFAULT nextval('auth_group_permissions_id_seq'::regclass) NOT NULL,
+    id serial,
     group_id integer NOT NULL,
     permission_id integer NOT NULL
 );
-
+SELECT pg_catalog.setval('auth_group_permissions_id_seq', 148, true);
 
 --
 -- Name: auth_message_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
 --
 
-CREATE SEQUENCE auth_message_id_seq
-    INCREMENT BY 1
-    NO MAXVALUE
-    NO MINVALUE
-    CACHE 1;
+-- removed in favour of serial column type
 
 
 --
 -- Name: auth_message_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('auth_message_id_seq', 1773, true);
+
 
 
 --
@@ -549,28 +489,24 @@ SELECT pg_catalog.setval('auth_message_id_seq', 1773, true);
 --
 
 CREATE TABLE auth_message (
-    id integer DEFAULT nextval('auth_message_id_seq'::regclass) NOT NULL,
+    id serial,
     user_id integer NOT NULL,
     message text NOT NULL
 );
-
+SELECT pg_catalog.setval('auth_message_id_seq', 1773, true);
 
 --
 -- Name: auth_permission_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
 --
 
-CREATE SEQUENCE auth_permission_id_seq
-    INCREMENT BY 1
-    NO MAXVALUE
-    NO MINVALUE
-    CACHE 1;
+-- removed in favour of serial column type
 
 
 --
 -- Name: auth_permission_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('auth_permission_id_seq', 85, true);
+
 
 
 --
@@ -578,29 +514,25 @@ SELECT pg_catalog.setval('auth_permission_id_seq', 85, true);
 --
 
 CREATE TABLE auth_permission (
-    id integer DEFAULT nextval('auth_permission_id_seq'::regclass) NOT NULL,
+    id serial,
     name character varying(50) NOT NULL,
     content_type_id integer NOT NULL,
     codename character varying(100) NOT NULL
 );
-
+SELECT pg_catalog.setval('auth_permission_id_seq', 85, true);
 
 --
 -- Name: auth_user_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
 --
 
-CREATE SEQUENCE auth_user_id_seq
-    INCREMENT BY 1
-    NO MAXVALUE
-    NO MINVALUE
-    CACHE 1;
+-- removed in favour of serial column type
 
 
 --
 -- Name: auth_user_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('auth_user_id_seq', 187, true);
+
 
 
 --
@@ -608,7 +540,7 @@ SELECT pg_catalog.setval('auth_user_id_seq', 187, true);
 --
 
 CREATE TABLE auth_user (
-    id integer DEFAULT nextval('auth_user_id_seq'::regclass) NOT NULL,
+    id serial,
     username character varying(256) NOT NULL,
     first_name character varying(256) NOT NULL,
     last_name character varying(256) NOT NULL,
@@ -620,24 +552,20 @@ CREATE TABLE auth_user (
     last_login timestamp with time zone NOT NULL,
     date_joined timestamp with time zone NOT NULL
 );
-
+SELECT pg_catalog.setval('auth_user_id_seq', 187, true);
 
 --
 -- Name: auth_user_groups_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
 --
 
-CREATE SEQUENCE auth_user_groups_id_seq
-    INCREMENT BY 1
-    NO MAXVALUE
-    NO MINVALUE
-    CACHE 1;
+-- removed in favour of serial column type
 
 
 --
 -- Name: auth_user_groups_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('auth_user_groups_id_seq', 439, true);
+
 
 
 --
@@ -645,11 +573,11 @@ SELECT pg_catalog.setval('auth_user_groups_id_seq', 439, true);
 --
 
 CREATE TABLE auth_user_groups (
-    id integer DEFAULT nextval('auth_user_groups_id_seq'::regclass) NOT NULL,
+    id serial,
     user_id integer NOT NULL,
     group_id integer NOT NULL
 );
-
+SELECT pg_catalog.setval('auth_user_groups_id_seq', 439, true);
 
 --
 -- Name: auth_user_user_permissions_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
@@ -667,7 +595,7 @@ CREATE SEQUENCE auth_user_user_permissions_id_seq
 -- Name: auth_user_user_permissions_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('auth_user_user_permissions_id_seq', 1, false);
+
 
 
 --
@@ -675,28 +603,24 @@ SELECT pg_catalog.setval('auth_user_user_permissions_id_seq', 1, false);
 --
 
 CREATE TABLE auth_user_user_permissions (
-    id integer DEFAULT nextval('auth_user_user_permissions_id_seq'::regclass) NOT NULL,
+    id serial,
     user_id integer NOT NULL,
     permission_id integer NOT NULL
 );
-
+SELECT pg_catalog.setval('auth_user_user_permissions_id_seq', 1, false);
 
 --
 -- Name: django_admin_log_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
 --
 
-CREATE SEQUENCE django_admin_log_id_seq
-    INCREMENT BY 1
-    NO MAXVALUE
-    NO MINVALUE
-    CACHE 1;
+-- removed in favour of serial column type
 
 
 --
 -- Name: django_admin_log_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('django_admin_log_id_seq', 1821, true);
+
 
 
 --
@@ -704,7 +628,7 @@ SELECT pg_catalog.setval('django_admin_log_id_seq', 1821, true);
 --
 
 CREATE TABLE django_admin_log (
-    id integer DEFAULT nextval('django_admin_log_id_seq'::regclass) NOT NULL,
+    id serial,
     action_time timestamp with time zone NOT NULL,
     user_id integer NOT NULL,
     content_type_id integer,
@@ -714,24 +638,20 @@ CREATE TABLE django_admin_log (
     change_message text NOT NULL,
     CONSTRAINT django_admin_log_action_flag_check CHECK ((action_flag >= 0))
 );
-
+SELECT pg_catalog.setval('django_admin_log_id_seq', 1821, true);
 
 --
 -- Name: django_content_type_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
 --
 
-CREATE SEQUENCE django_content_type_id_seq
-    INCREMENT BY 1
-    NO MAXVALUE
-    NO MINVALUE
-    CACHE 1;
+-- removed in favour of serial column type
 
 
 --
 -- Name: django_content_type_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('django_content_type_id_seq', 28, true);
+
 
 
 --
@@ -739,12 +659,12 @@ SELECT pg_catalog.setval('django_content_type_id_seq', 28, true);
 --
 
 CREATE TABLE django_content_type (
-    id integer DEFAULT nextval('django_content_type_id_seq'::regclass) NOT NULL,
+    id serial,
     name character varying(100) NOT NULL,
     app_label character varying(100) NOT NULL,
     model character varying(100) NOT NULL
 );
-
+SELECT pg_catalog.setval('django_content_type_id_seq', 28, true);
 
 --
 -- Name: django_session; Type: TABLE; Schema: public; Owner: postgres; Tablespace: 
@@ -761,18 +681,14 @@ CREATE TABLE django_session (
 -- Name: django_site_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
 --
 
-CREATE SEQUENCE django_site_id_seq
-    INCREMENT BY 1
-    NO MAXVALUE
-    NO MINVALUE
-    CACHE 1;
+-- removed in favour of serial column type
 
 
 --
 -- Name: django_site_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('django_site_id_seq', 2, true);
+
 
 
 --
@@ -780,28 +696,24 @@ SELECT pg_catalog.setval('django_site_id_seq', 2, true);
 --
 
 CREATE TABLE django_site (
-    id integer DEFAULT nextval('django_site_id_seq'::regclass) NOT NULL,
+    id serial,
     "domain" character varying(100) NOT NULL,
     name character varying(50) NOT NULL
 );
-
+SELECT pg_catalog.setval('django_site_id_seq', 2, true);
 
 --
 -- Name: registration_registrationprofile_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
 --
 
-CREATE SEQUENCE registration_registrationprofile_id_seq
-    INCREMENT BY 1
-    NO MAXVALUE
-    NO MINVALUE
-    CACHE 1;
+-- removed in favour of serial column type
 
 
 --
 -- Name: registration_registrationprofile_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('registration_registrationprofile_id_seq', 162, true);
+
 
 
 --
@@ -809,11 +721,11 @@ SELECT pg_catalog.setval('registration_registrationprofile_id_seq', 162, true);
 --
 
 CREATE TABLE registration_registrationprofile (
-    id integer DEFAULT nextval('registration_registrationprofile_id_seq'::regclass) NOT NULL,
+    id serial,
     user_id integer NOT NULL,
     activation_key character varying(40) NOT NULL
 );
-
+SELECT pg_catalog.setval('registration_registrationprofile_id_seq', 162, true);
 
 --
 -- Name: usecaseapp_usecase_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
@@ -831,7 +743,7 @@ CREATE SEQUENCE usecaseapp_usecase_id_seq
 -- Name: usecaseapp_usecase_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('usecaseapp_usecase_id_seq', 1, false);
+
 
 
 --
@@ -839,12 +751,12 @@ SELECT pg_catalog.setval('usecaseapp_usecase_id_seq', 1, false);
 --
 
 CREATE TABLE usecaseapp_usecase (
-    id integer DEFAULT nextval('usecaseapp_usecase_id_seq'::regclass) NOT NULL,
+    id serial,
     description character varying(1024) NOT NULL,
     submitter_id integer NOT NULL,
     created_on timestamp with time zone NOT NULL
 );
-
+SELECT pg_catalog.setval('usecaseapp_usecase_id_seq', 1, false);
 
 --
 -- Data for Name: allocation_application; Type: TABLE DATA; Schema: public; Owner: postgres

@@ -208,7 +208,7 @@ class ApplicationAdmin(admin.ModelAdmin):
          ),  
     ]
 
-    
+
 
     def CSV_summary_of_LDAP_accounts(self, request, queryset):
         selected = request.POST.getlist(admin.ACTION_CHECKBOX_NAME)
@@ -250,7 +250,7 @@ class ApplicationAdmin(admin.ModelAdmin):
 
     # send an email notification of the new application
     def mail_notification(self, request, obj):
-        body = render_to_string('registration/application_notification_email.txt',
+        body = render_to_string('allocation/application_notification_email.txt',
             {'id': obj.id,
              'username': request.user.username,
              'project_title': obj.project_title})
