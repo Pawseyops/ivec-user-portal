@@ -61,6 +61,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.sites',
     'django.contrib.admin',
+    'south',
 ]
 
 # for local development, this is set to the static serving directory. For deployment use Apache Alias
