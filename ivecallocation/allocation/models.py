@@ -68,7 +68,7 @@ class Application(models.Model):
     created_by = models.ForeignKey(DjangoUser, editable=False, related_name="%(class)s_creators",null=True)
     created_on = models.DateTimeField(auto_now_add=True, editable=False)
     complete =  models.BooleanField(verbose_name="ready to submit application")
-    allocation_round = models.ForeignKey(AllocationRound)
+    allocation_round = models.ForeignKey(AllocationRound) # null=True for south
     priority_area = models.ForeignKey(PriorityArea, help_text=help_text_available_priority_areas)
 
     def __cmp__(self, other):
