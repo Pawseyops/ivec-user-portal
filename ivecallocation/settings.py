@@ -52,7 +52,6 @@ MIDDLEWARE_CLASSES = [
     'django.middleware.ssl.SSLRedirect'
 ]
 TEMPLATE_DIRS = [
-    os.path.join(PROJECT_DIRECTORY,"templates","mako"), 
     os.path.join(PROJECT_DIRECTORY,"templates"),
 ]
 INSTALLED_APPS = [
