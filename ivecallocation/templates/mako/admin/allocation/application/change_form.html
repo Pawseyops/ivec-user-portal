@@ -1,0 +1,32 @@
+<%inherit file="admin/change_form.html"/>
+<%!
+import ivecallocation.allocation.views
+from django.utils.webhelpers import url
+%>
+
+${self.block_extrahead()}<%def name="block_extrahead()">
+
+<script type="text/javascript" src="${url('/static/admin-media/js/jquery.min.js')}"></script>
+
+<script type="text/javascript">
+// update the available list of priority areas as the user
+// changes the allocation round
+$(document).ready(function() {
+    $('#id_allocation_round').bind('change', function () {
+
+        if (!this.value) {
+            $('#id_priority_area')[0].value="";
+            $('#id_priority_area')[0].disabled=true;
+            return;
+        }
+        
+        $('#id_priority_area')[0].disabled=true;
+        $.get('${url('/priority_areas/')}'+this.value+'/', function(data) {
+            $('#id_priority_area')[0].innerHTML=data;
+        });
+        $('#id_priority_area')[0].disabled=false;
+    });
+});
+</script>
+
+</%def>

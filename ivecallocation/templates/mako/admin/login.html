@@ -1,0 +1,38 @@
+<%inherit file="admin/base_site.html"/>
+
+
+${self.block_stylesheet()}<%def name="block_stylesheet()">${admin_media_prefix()}css/login.css</%def>
+
+${self.block_bodyclass()}<%def name="block_bodyclass()">login</%def>
+
+${self.block_content_title()}<%def name="block_content_title()"></%def>
+
+${self.block_breadcrumbs()}<%def name="block_breadcrumbs()"></%def>
+
+${self.block_content()}<%def name="block_content()">
+
+% if error_message:
+
+<p class="errornote">${error_message}</p>
+
+% endif
+
+<div id="content-main">
+<form action="${app_path}" method="post" id="login-form">${ csrf_tag(csrf_token) }
+  <div class="form-row">
+    <label for="id_username">${trans('Email:')}</label> <input type="text" name="username" id="id_username" />
+  </div>
+  <div class="form-row">
+    <label for="id_password">${trans('Password:')}</label> <input type="password" name="password" id="id_password" />
+    <input type="hidden" name="this_is_the_login_form" value="1" />
+  </div>
+  <div class="submit-row">
+    <label>&nbsp;</label><input type="submit" value="${trans('Log in')}" />
+  </div>
+</form>
+
+<script type="text/javascript">
+document.getElementById('id_username').focus()
+</script>
+</div>
+</%def>
