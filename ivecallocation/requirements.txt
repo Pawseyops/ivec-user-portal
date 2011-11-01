@@ -1,15 +1,15 @@
-Mako==0.5.0
-Mango-py==1.3.1-ccg-194
-MarkupSafe==0.15
-South==0.7.3
-## FIXME: could not find svn URL in dependency_links for this package:
-Werkzeug==0.8.1dev-20111031
-ccg-django-backends==0.2
-ccg-django-extras==0.1
-distribute==0.6.10
-django-registration-ccg==0.8-alpha-1-ccg2
-egenix-mx-base==3.2.0
-makoloader==0.2
-psycopg2==2.0.8
-python-ldap==2.3.5
-wsgiref==0.1.2
+eggs/Mako==0.5.0
+eggs/Mango-py==1.3.1-ccg-194
+eggs/MarkupSafe==0.15
+eggs/South==0.7.3
+eggs/## FIXME: could not find svn URL in dependency_links for this package:
+eggs/Werkzeug==0.8.1dev-20111031
+eggs/ccg-django-backends==0.2
+eggs/ccg-django-extras==0.1
+eggs/distribute==0.6.10
+eggs/django-registration-ccg==0.8-alpha-1-ccg2
+eggs/egenix-mx-base==3.2.0
+eggs/makoloader==0.2
+eggs/psycopg2==2.0.8
+eggs/python-ldap==2.3.5
+eggs/wsgiref==0.1.2
