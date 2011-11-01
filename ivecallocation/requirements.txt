@@ -1,3 +1,18 @@
+#
+# Requirements for IvecAllocation
+#
+# To see what requirements your current virtualenv is using type:
+#
+# $ pip freeze
+#
+#
+# Requirements can be specified as:
+#  - local files (eggs/ccg-python-build_v2_0.tar.gz)
+#  - http        (http://ccg-python-build.googlecode.com/files/ccg-python-build_v2_0.tar.gz)
+#  - eggs        (python-ldap>=2.3.13)
+#
+# http://www.pip-installer.org/en/latest/requirement-format.html
+#
 eggs/ccg-python-build_v2_0.tar.gz
 eggs/ccg-django-backends-0.2.tar.gz
 eggs/django-registration-ccg-0.8-alpha-1-ccg2.tar.gz  
@@ -15,7 +30,8 @@ Werkzeug>=0.8.1
 distribute>=0.6.10
 wsgiref>=0.1.2
 
-python-ldap>=2.3.13
+#python-ldap>=2.3.13
+eggs/python-ldap-2.3.5.tar.gz
 virtualenv==1.6.4
 Mercurial>=1.9.3
 Fabric>=1.2.2
