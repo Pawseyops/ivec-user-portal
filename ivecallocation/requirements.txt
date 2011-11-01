@@ -18,3 +18,4 @@ wsgiref>=0.1.2
 python-ldap>=2.3.13
 virtualenv==1.6.4
 Mercurial>=1.9.3
+Fabric>=1.2.2
