@@ -1,8 +1,21 @@
 <%inherit file="base.html" />
 <% from django.utils.webhelpers import url %>
 
-<%def name="title()">2011 Application for Resources on Pawsey-Funded iVEC Infrastructure</%def>
+<%def name="title()">
+% if usertype=='director':
+Application for Directors' Share Resources on Pawsey-Funded iVEC Infrastructure
+% else:
+2011 Application for Resources on Pawsey-Funded iVEC Infrastructure
+% endif
+</%def>
 
+<p>
+You can register at any time. Once registered, applications are only available during
+open allocation rounds. Open and recently closed rounds are listed below.
+</p>
+
+
+<p>
 <form action="${url('/accounts/register/')}${usertype}" method="POST">${ csrf_tag(csrf_token) }
     <p>
         To commence your application, please enter your e-mail address and
@@ -21,133 +34,22 @@
         <input type="submit" value="Submit" />
     </p>
 </form>
+</p>
+
+
 
 <p>
-    Applications are invited to access Pawsey-funded iVEC infrastructure for
-    2011. Contained within this web site is the process for application. If you
+% if usertype=='director':
+    Applicants are invited to access Directors' Share of Pawsey-funded iVEC      
+    infrastructure. Contained within this web site is the process for
+    application. If you require any assistance completing this application,
+    please contact <a href="mailto:help@ivec.org">help@ivec.org</a>.
+% else:
+    Applicants are invited to access Pawsey-funded iVEC infrastructure.
+    Contained within this web site is the process for application. If you
     require any assistance completing this application, please contact
-    <a href="mailto:help@ivec.org">help@ivec.org</a> .
+    <a href="mailto:help@ivec.org">help@ivec.org</a>.
+% endif
 </p>
 
-<h3>Background</h3>
-
-
-<p>
-    The Pawsey project is an $80 million Commonwealth Super Science funded
-    infrastructure project to put a petascale supercomputing system in Perth
-    that will be managed by iVEC, and operated through funds from the Western
-    Australian State Government and the iVEC Partners. The allocation of time
-    on this Pawsey-funded infrastructure is determined through mechanisms
-    agreed by iVEC and the Commonwealth.
-</p>
-
-<p>
-    The agreed allocations for July 1 &ndash; December 31, 2011 are:
-
-    <ul>
-        <li>25% Radio Astronomy</li>
-        <li>25% Geosciences</li>
-        <li>30% iVEC Partners</li>
-        <li>15% National Merit Allocation Scheme</li>
-        <li>5% Director's Discretionary Allocation</li>
-    </ul> 
-</p>
-
-<p>
-    These allocations may change in future years. Half of the machine has been
-    initially allocated to radio astronomy and the geosciences, both of which
-    are priority areas for the State and Commonwealth governments. The radio
-    astronomy share is predominantly for the operational requirements of
-    facilities like ASKAP, MWA, and DIRP. The Partner share is available only
-    to researchers from any of the iVEC Partners (i.e. CSIRO and the four WA
-    public universities), whereas the National Merit Allocation Scheme will be
-    available to researchers Australia-wide. Finally, the Director's share is
-    to support pilot or startup projects, code scaling work, urgent computing
-    requirements and large-scale data intensive visualisation.
-</p>
-
-<p>
-    Although access to the (non-Director's Discretionary) shares will
-    ultimately be via different mechanisms, in this first round, which covers
-    the 2nd half of 2011, a single process will be used for all four. Please note
-    that time is awarded to projects, which may have many users.
-</p>
-
-<h3>Infrastructure</h3>
-
-<p>
-    Compute resources in this first round of time allocation are available on
-    epic.ivec.org, a 85 TF system comprised of 9,600 cores with 500 terabytes
-    of high-performance storage housed at iVEC@Murdoch.
-</p>
-
-<h3>Who should complete this application?</h3>
-
-<p>
-    As iVEC moves forwards over the next four years, all of its supercomputing
-    infrastructure will be funded through the Pawsey Project. This will be a
-    big change to the iVEC community as we are now required to allocate time
-    through a much more formal process than in the past. Consequently, this
-    application process may be unexpected or even appear intimidating to many users. However,
-    there is always help at hand, so please don't hesitate to contact
-    <a href="mailto:help@ivec.org">help@ivec.org</a> with any questions. Please make every effort to answer all
-    sections of the application. We understand that this is a learning process for
-    both iVEC and our users and so this first round will be treated
-    accordingly.
-</p>
-
-<p>
-    The applications will be evaluated by a mixture of science and
-    supercomputing experts, so please target your application to an audience
-    with a generic scientific background. Do not assume they have deep
-    knowledge of your application area.
-</p>
-
-<p>
-    Note that time is allocated to projects - these can have many team members.
-    Thus, applications are submitted by Project Leaders on behalf of the
-    project team. Members of a project team are not require to complete an 
-    application, however they must still agree to the iVEC conditions of
-    use at <a href="http://www.ivec.org/services/apply-account/condition-use">http://www.ivec.org/services/apply-account/condition-use</a>. Typically
-    Project Leaders will be research leaders within a scientific research
-    group, laboratory, or community.
-</p>
-
-<p>
-    The Project Leader is responsible for
-    <ul>
-        <li>Completing the application contained within this web site</li>
-        <li>Being the primary point of contact between the project team members and iVEC</li>
-        <li>Completing the project reports within 30 days at the end of the granting period</li>
-        <li>Submitting requests to add/remove users to existing projects</li>
-        <li>Management of data storage and sharing during and after the project</li>
-    </ul>
-</p>
-
-<p>
-    Please note that iVEC will manage the allocation on a best effort basis but
-    cannot guarantee that approved projects will receive their full allocations
-    and that unused allocations will not roll over to the next allocation
-    period.
-</p>
-
-<h3>Allocation Rounds</h3>
-<p>
-You can register at any time. Once registered, applications are only available during
-open allocation rounds. Open and recently closed rounds are listed below.
-</p>
-<table id='rounds' width=100%>
-<tr><th>Resource</th><th>Round Name</th><th>Opens</th><th>Closes</th><th>Status</th></tr>
-% for round in allocation_rounds:
-    <% closed = 'class="closed"' if round.status=='closed' else ''%>
-    <tr ${closed}>
-        <td>${round.system}</td>
-        <td>${round.name}</td>
-        <td>${round.start_date}</td>
-        <td>${round.end_date}</td>
-        <td>${round.status}</td>
-    </tr>
-% endfor
-</table>
-<br/>
 
