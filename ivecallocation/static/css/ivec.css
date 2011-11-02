@@ -72,9 +72,21 @@ form th {
     width: 10em;
 }
 
+
+
 form p.submit-row {
     margin-left: 11em;
     margin-bottom: 0;
+}
+
+.errornote {
+    font-size: 12px !important;
+    display: block;
+    padding: 4px 5px 4px 25px;
+    margin: 0 0 3px 0;
+    border: 1px solid red;
+    color: red;
+    background: #ffc url(../img/admin/icon_error.gif) 5px .3em no-repeat;
 }
 
 form .errorlist {
