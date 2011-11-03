@@ -16,8 +16,9 @@ ERROR_MESSAGE = ugettext_lazy("Please enter a correct username and password. Not
 
 class IvecAdminSite(AdminSite):
     
-    def index(self, request, extra_context=None, **kwargs):
-        return super(IvecAdminSite, self).index(request, extra_context)
+    def index(self, request, **kwargs):
+        res = super(IvecAdminSite, self).index(request)
+        return res
     
     def admin_view(self, view, cacheable=False):
         """
