@@ -10,7 +10,7 @@ from django.views.generic.simple import redirect_to
 import admin
 
 from django.utils.webhelpers import url as wh_url
-from django.contrib.auth.forms import PasswordResetForm
+from allocation.admin_forms import RecaptchaPasswordResetForm
 
 urlpatterns = patterns('',
     # Example:
@@ -19,9 +19,12 @@ urlpatterns = patterns('',
     # Uncomment the admin/doc line below to enable admin documentation:
     # (r'^admin/doc/', include('django.contrib.admindocs.urls')),
 
+    # accept 'director' url suffix at top level to guide director class
+    # users to their own registration page
+    (r'^(?P<usertype>director)/', admin.site.admin_view(admin.site.index)),
+
     # Uncomment the next line to enable the admin:
     (r'^', include(admin.site.urls)),
-    url(r'^(?P<usertype>director)/', include(admin.site.urls), name='directors'),
     
         
     # Uncomment this line to enable the mango status system
@@ -35,7 +38,7 @@ urlpatterns = patterns('',
     (r'^login[/]$', redirect_to, {'url': wh_url('/')}),
     (r'^admin[/]$', redirect_to, {'url': wh_url('/')}),
 
-    (r'^reset-password[/]$', 'django.contrib.auth.views.password_reset', {'password_reset_form': PasswordResetForm}),
+    (r'^reset-password[/]$', 'ivecallocation.allocation.views.password_reset'),
 )
 
 urlpatterns += patterns('ivecallocation.allocation.views',

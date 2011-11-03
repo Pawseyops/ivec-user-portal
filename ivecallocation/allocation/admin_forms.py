@@ -3,6 +3,8 @@ from django.contrib.auth.models import User
 from models import *
 from datetime import datetime
 from django.db.models import Q
+from django.contrib.auth.forms import PasswordResetForm
+from ccg.recaptcha import *
 
 class SystemForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
@@ -119,5 +121,17 @@ class ReviewerCommentForm(forms.ModelForm):
         model = ReviewerComment
 
 
-
+class RecaptchaPasswordResetForm(RecaptchaForm, PasswordResetForm):
+    
+    captcha = RecaptchaFieldPlaceholder(widget=RecaptchaWidget(theme='white'),
+                                        label='Are you a human?')
+    
+    def __init__(self, remote_ip=None, *args):
+        print "Called init"
+        if remote_ip:
+            self.remote_ip = remote_ip
+        return super(RecaptchaPasswordResetForm, self).__init__(self.remote_ip, *args)
+        
+    def __call__(self, *args):
+        return RecaptchaPasswordResetForm(self.remote_ip, *args)
 

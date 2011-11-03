@@ -11,6 +11,9 @@ from ivecallocation.allocation.utils import get_querylist
 from django.db.models import Q
 from ivecallocation.allocation import models
 from ivecallocation.allocation import account_services
+from ivecallocation.allocation.admin_forms import RecaptchaPasswordResetForm
+import django.contrib.auth.views
+import ivecallocation.admin
 
 PROCESSED_PARTICIPANT_SESSION_KEY = 'PROCESSED_PARTICIPANT'
 
@@ -139,4 +142,15 @@ def priority_areas(request, allocationround_id):
     return render_to_response('allocation/priority_areas.html',
                               {'ajax': request.is_ajax(),
                                'priority_areas': priority_areas})
+
+
+def password_reset(request):
+    remote_ip = request.META['REMOTE_ADDR'] if 'REMOTE_ADDR' in request.META else request.META['HTTP_X_FORWARDED_HOST']
+    form = RecaptchaPasswordResetForm(remote_ip=remote_ip)
+    return django.contrib.auth.views.password_reset(
+        request,
+        password_reset_form=form,
+        is_admin_site=True,
+        template_name='admin/password_reset_form.html')
     
+       
