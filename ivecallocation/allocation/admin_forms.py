@@ -99,6 +99,10 @@ class PublicationForm(forms.ModelForm):
 
     class Meta:
         model = Publication
+        
+class ParticipantForm(forms.ModelForm):
+    class Meta:
+        model = Participant
 
 
 class ReviewerScoreForm(forms.ModelForm):

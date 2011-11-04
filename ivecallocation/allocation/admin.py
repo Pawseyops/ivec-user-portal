@@ -18,8 +18,9 @@ class ResearchClassificationInline(admin.TabularInline):
     extra = 1
 
 class ParticipantInline(admin.TabularInline):
-    model = Participant
-    extra = 1
+    model = Application.participant.through
+    extra = 1      
+    form = ParticipantForm
 
 class PublicationInline(admin.TabularInline):
     model = Publication
@@ -70,6 +71,7 @@ class ApplicationAdmin(admin.ModelAdmin):
     form = ApplicationForm
     search_fields = ['project_title']
     actions = ['CSV_summary_of_LDAP_accounts', 'create_ldap_groups']
+    exclude = ['participant']
 
     allocation_round_fieldset = ('Allocation round',
                                     {'fields':
@@ -331,7 +333,8 @@ class ParticipantAdmin(admin.ModelAdmin):
     list_display = ['name', 'email', 'department_institute', 'application_id', 'status', 'account', 'has_account_details', 'fetched_from_ldap', 'hours_allocated', 'application_complete']
     # NOTE: the 'application__complete' filter depends on a patch of '/home/fjanon/ivecallocation/trunk/ivecallocation/django/contrib/admin/filterspecs.py'
     # See the note in that file
-    list_filter = ['account', 'admin', 'student', 'status', 'range:application__hours_allocated', 'application__complete']
+    list_filter = ['account', 'admin', 'student', 'status']
+    #list_filter = ['account', 'admin', 'student', 'status', 'range:application__hours_allocated', 'application__complete']
     #list_filter = ['account', 'admin', 'student', 'status', 'range:application__hours_allocated']
     search_fields = ['name', 'email']
     actions = ['fetch_ldap_details', 'send_account_creation_email', 'create_user_account', 'send_account_created_email', 'CSV_summary_of_LDAP_accounts']
