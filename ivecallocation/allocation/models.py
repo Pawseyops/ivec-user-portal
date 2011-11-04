@@ -52,6 +52,81 @@ class AllocationRound(models.Model):
             label = self.system
         return "%s: %s to %s" % (label, self.start_date, self.end_date)
 
+class ParticipantStatus(models.Model):
+    name = models.CharField(max_length=50)
+    description = models.CharField(max_length=256, null=True, blank=True)
+
+    def __unicode__(self):
+        return "%s" % self.name
+
+class Participant(models.Model):
+    STATUS = {
+        'NEW': 1,
+        'EMAIL_SENT': 2,
+        'DETAILS_FILLED': 3,
+        'ACCOUNT_CREATED': 4,
+        'ACCOUNT_CREATED_EMAIL_SENT': 5,
+    }
+
+    name = models.CharField(max_length=256, null=True, blank=True)
+    department_institute = models.CharField(max_length=128, verbose_name="Department, Institution", null=True, blank=True)
+    email = models.EmailField(null=True, blank=True)
+    account = models.BooleanField()
+    admin = models.BooleanField()
+    student = models.BooleanField()
+    eft = models.FloatField(null=True, blank=True, verbose_name="EFT %")
+    status = models.ForeignKey(ParticipantStatus)
+    account_email_hash = models.CharField(max_length=50, null=True, blank=True)
+    account_email_on = models.DateTimeField(null=True, blank=True)
+    details_filled_on = models.DateTimeField(null=True, blank=True)
+    account_created_on = models.DateTimeField(null=True, blank=True)
+    account_created_email_on = models.DateTimeField(null=True, blank=True)
+
+    def save(self, *args, **kwargs):
+        instance = getattr(self, 'instance', None)
+        if not self.pk:
+            participants = Participant.objects.filter(email=self.email)
+            if len(participants) > 0:
+                print "Not saving a dupe..."
+                return
+        super(Participant, self).save(*args, **kwargs)
+
+    def has_account_details(self):
+        try:
+            self.participantaccount
+            # TODO why doesn't this work? works for participant, not for participantaccount
+            #url = reverse('admin:allocation_participantaccount_change', args=[self.participant.id] )
+            url = '../participantaccount/%s' % self.participantaccount.id 
+            return "<a href='%s'>Yes</a>" % url
+        except ParticipantAccount.DoesNotExist:
+            return 'No'
+    has_account_details.allow_tags = True
+
+    def fetched_from_ldap(self):
+        try:
+            pa = self.participantaccount
+            return pa.data_fetched_on is not None
+        except ParticipantAccount.DoesNotExist:
+            return False
+
+    def application_id(self):
+        return self.application_id
+    application_id.admin_order_field = 'application__id'
+
+    def hours_allocated(self):
+        return self.application.hours_allocated
+    hours_allocated.admin_order_field = 'application__hours_allocated'
+
+    # FJ to add a filter in the participant admin interface
+    def application_complete(self):
+        return self.application.complete
+    #application_complete.admin_order_field = 'application__complete'
+    application_complete.boolean = True
+
+    def __unicode__(self):
+        return "%s" % self.name
+
+
 class Application(models.Model):
     project_title = models.CharField(max_length=100, help_text=help_text_project_title)
     project_summary = models.CharField(max_length=1000, help_text=help_text_project_summary, null=True, blank=True)    
@@ -70,6 +145,7 @@ class Application(models.Model):
     complete =  models.BooleanField(verbose_name="ready to submit application")
     allocation_round = models.ForeignKey(AllocationRound) # null=True for south
     priority_area = models.ForeignKey(PriorityArea, help_text=help_text_available_priority_areas)
+    participant = models.ManyToManyField(Participant, related_name='application')
 
     def __cmp__(self, other):
         if self.overall_score() < other.overall_score():
@@ -125,71 +201,7 @@ class FieldOfResearchCode(models.Model):
     def __unicode__(self):
         return "%s" % self.code
 
-class ParticipantStatus(models.Model):
-    name = models.CharField(max_length=50)
-    description = models.CharField(max_length=256, null=True, blank=True)
 
-    def __unicode__(self):
-        return "%s" % self.name
-
-class Participant(models.Model):
-    STATUS = {
-        'NEW': 1,
-        'EMAIL_SENT': 2,
-        'DETAILS_FILLED': 3,
-        'ACCOUNT_CREATED': 4,
-        'ACCOUNT_CREATED_EMAIL_SENT': 5,
-    }
-
-    application = models.ForeignKey(Application)
-    name = models.CharField(max_length=256, null=True, blank=True)
-    department_institute = models.CharField(max_length=128, verbose_name="Department, Institution", null=True, blank=True)
-    email = models.EmailField(null=True, blank=True)
-    account = models.BooleanField()
-    admin = models.BooleanField()
-    student = models.BooleanField()
-    eft = models.FloatField(null=True, blank=True, verbose_name="EFT %")
-    status = models.ForeignKey(ParticipantStatus)
-    account_email_hash = models.CharField(max_length=50, null=True, blank=True)
-    account_email_on = models.DateTimeField(null=True, blank=True)
-    details_filled_on = models.DateTimeField(null=True, blank=True)
-    account_created_on = models.DateTimeField(null=True, blank=True)
-    account_created_email_on = models.DateTimeField(null=True, blank=True)
-
-    def has_account_details(self):
-        try:
-            self.participantaccount
-            # TODO why doesn't this work? works for participant, not for participantaccount
-            #url = reverse('admin:allocation_participantaccount_change', args=[self.participant.id] )
-            url = '../participantaccount/%s' % self.participantaccount.id 
-            return "<a href='%s'>Yes</a>" % url
-        except ParticipantAccount.DoesNotExist:
-            return 'No'
-    has_account_details.allow_tags = True
-
-    def fetched_from_ldap(self):
-        try:
-            pa = self.participantaccount
-            return pa.data_fetched_on is not None
-        except ParticipantAccount.DoesNotExist:
-            return False
-
-    def application_id(self):
-        return self.application_id
-    application_id.admin_order_field = 'application__id'
-
-    def hours_allocated(self):
-        return self.application.hours_allocated
-    hours_allocated.admin_order_field = 'application__hours_allocated'
-
-    # FJ to add a filter in the participant admin interface
-    def application_complete(self):
-        return self.application.complete
-    #application_complete.admin_order_field = 'application__complete'
-    application_complete.boolean = True
-
-    def __unicode__(self):
-        return "%s" % self.name
 
 class Institution(models.Model):
     display_name = models.CharField(max_length=256, null=False, blank=False)
