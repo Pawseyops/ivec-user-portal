@@ -204,7 +204,8 @@ class ApplicationAdmin(admin.ModelAdmin):
           {'fields': 
                (
                'complete',              
-               )
+               ),
+           'description': "This application will not be processed until you mark it as ready by checking this box."
            }
          ),  
     ]
