@@ -16,8 +16,13 @@ ERROR_MESSAGE = ugettext_lazy("Please enter a correct username and password. Not
 
 class IvecAdminSite(AdminSite):
     
+    # This index template inherits from the standard (mako) admin template
+    # and adds some help text.
+    index_template = 'admin/index_with_msg.html'
+    
     def index(self, request, **kwargs):
-        res = super(IvecAdminSite, self).index(request)
+        extra_context = {'title': '<BR>'} # remove the Site administration title
+        res = super(IvecAdminSite, self).index(request, extra_context)
         return res
     
     def admin_view(self, view, cacheable=False):
