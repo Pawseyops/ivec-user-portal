@@ -20,6 +20,7 @@ class ResearchClassificationInline(admin.TabularInline):
 class ParticipantInline(admin.TabularInline):
     model = Participant
     extra = 1
+    exclude = ['participantaccount']
 
 class PublicationInline(admin.TabularInline):
     model = Publication
@@ -400,7 +401,9 @@ class ParticipantAccountAdminForm(forms.ModelForm):
 
     def clean_uid(self):
         data = self.cleaned_data['uid']
-        unique_uid = self.instance.get_unique_uid(test_uid=data)
+        first_name = self.cleaned_data['first_name']
+        last_name = self.cleaned_data['last_name']
+        unique_uid = self.instance.get_unique_uid(test_uid=data, first_name=first_name, last_name=last_name)
         if data != unique_uid:
             raise forms.ValidationError('Non unique uid "%s": I suggest "%s".' % (data, unique_uid))
         return data

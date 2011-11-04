@@ -100,7 +100,6 @@ class PublicationForm(forms.ModelForm):
     class Meta:
         model = Publication
 
-
 class ReviewerScoreForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super(ReviewerScoreForm, self).__init__(*args, **kwargs)

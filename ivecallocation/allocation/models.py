@@ -155,6 +155,25 @@ class Participant(models.Model):
     details_filled_on = models.DateTimeField(null=True, blank=True)
     account_created_on = models.DateTimeField(null=True, blank=True)
     account_created_email_on = models.DateTimeField(null=True, blank=True)
+    participantaccount = models.ForeignKey('ParticipantAccount', null=True)
+
+    def save(self, *args, **kwargs):
+        instance = getattr(self, 'instance', None)
+        if not self.pk:
+            participant_account = ParticipantAccount()
+            participants = Participant.objects.filter(email=self.email)
+            if len(participants) > 0:
+                # Existing participants with this email address
+                # Attempt to re-use existing participantaccount records before
+                # creating a new empty one.
+                existing_participant = participants[0]
+                if existing_participant.participantaccount:
+                    participant_account = existing_participant.participantaccount
+                else:
+                    participant_account = ParticipantAccount()
+            participant_account.save()
+            self.participantaccount = participant_account
+        super(Participant, self).save(*args, **kwargs)
 
     def has_account_details(self):
         try:
@@ -199,7 +218,6 @@ class Institution(models.Model):
         return "%s" % self.display_name
 
 class ParticipantAccount(models.Model):
-    participant = models.OneToOneField(Participant)
     institution = models.ForeignKey(Institution, null=True)
     first_name = models.CharField(max_length=256)
     last_name = models.CharField(max_length=256)
@@ -212,7 +230,7 @@ class ParticipantAccount(models.Model):
     old_ldap_details = models.CharField(max_length=2000, null=True, blank=True)
     data_fetched_on = models.DateTimeField(null=True, blank=True)
     
-    def get_unique_uid(self, test_uid = None):
+    def get_unique_uid(self, test_uid = None, first_name = None, last_name = None):
         '''This function checks to make sure a uid is unique.
            You can either pass one in (test_uid) or it will
            use self.uid '''
@@ -236,8 +254,11 @@ class ParticipantAccount(models.Model):
         if test_uid is None:
             test_uid = self.uid
 
+        if not first_name: first_name = self.first_name
+        if not last_name: last_name = self.last_name
+
         if test_uid is None or len(test_uid) == 0:
-            test_uid = ("%s%s" % (self.first_name[0], self.last_name)).lower()
+            test_uid = ("%s%s" % (first_name[0], last_name)).lower()
 
 
         #catch uid's that have somehow come with a capitalisation (from LDAP perhaps).
@@ -246,7 +267,7 @@ class ParticipantAccount(models.Model):
 
         candidate_uid = test_uid 
         if not check_unique_uid(candidate_uid):
-            candidate_uid = ("%s%s" % (self.first_name[0], self.last_name)).lower()
+            candidate_uid = ("%s%s" % (first_name[0], last_name)).lower()
             counter = 1
             while not check_unique_uid(candidate_uid):
                 candidate_uid = ("%s%s" % (test_uid, str(counter))).lower()

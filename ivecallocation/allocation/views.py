@@ -60,15 +60,13 @@ def account_request(request, email_hash):
     except Participant.DoesNotExist:
         return render_to_response('allocation/invalid_hash.html', {})
 
-    had_ldap_details = False
     try:
         participant_account = participant.participantaccount
-        had_ldap_details = True
     except ParticipantAccount.DoesNotExist:
         participant_account = ParticipantAccount(participant=participant) 
  
     if request.method == 'POST':
-        if had_ldap_details:
+        if participant_account.fetched_from_ldap():
             form = ParticipantAccountForm(request.POST)
         else:
             form = ParticipantAccountWithPasswordForm(request.POST)
@@ -78,14 +76,14 @@ def account_request(request, email_hash):
             participant_account.last_name = form.cleaned_data.get('last_name')
             participant_account.institution_id = form.cleaned_data.get('institution').id
             participant_account.phone = form.cleaned_data.get('phone')
-            if not had_ldap_details:
+            if not participant_account.fetched_from_ldap():
                 participant_account.password_hash = account_services.hash_password(form.cleaned_data.get('password1'))
             account_services.save_account_details(participant_account)
             request.session[PROCESSED_PARTICIPANT_SESSION_KEY] = email_hash
             return HttpResponseRedirect(siteurl(request) + 'account-details/thanks')
     else:
   
-        if had_ldap_details:
+        if participant_account.fetched_from_ldap():
             data_dict = {}
             data_dict['first_name'] = participant_account.first_name
             data_dict['last_name'] = participant_account.last_name
