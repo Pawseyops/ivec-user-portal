@@ -30,7 +30,7 @@ class Migration(DataMigration):
 
         # and a default allocation_round (closed) for attaching existing applications to
         default_allocation_round = orm.AllocationRound(
-            name='Epic Legacy', system=default_system, start_date='1970-01-01', end_date='2011-09-01')
+            name='Epic 2011', system=default_system, start_date='2011-07-01', end_date='2011-09-01')
         default_allocation_round.save()
         default_allocation_round.priority_area = priority_areas
         default_allocation_round.save()
