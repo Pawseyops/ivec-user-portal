@@ -12,7 +12,7 @@ logger = logging.getLogger('ivecallocation')
 from ivecallocation.allocation.models import *
 from django.db import transaction
 from django.utils import simplejson
-from django.template import loader
+from django.template import loader, Context
 
 
 def send_account_creation_mail(participant, request):
@@ -38,7 +38,7 @@ def send_account_created_notification_mail(participant, request):
     hours_allocated = participant.application.hours_allocated
     assert project is not None and len(project)>0, "Project could not be retrieved at time of 'account created' email for user %s" % (uid) 
     assert (hours_allocated is not None) and (hours_allocated > 0), "Invalid hours allocated (%s) at time of 'account created' email" % (str(hours_allocated) )
-    message = message_template.render(participant=participant, project=project, uid=uid)
+    message = message_template.render(Context({'participant': participant, 'project': project, 'uid': uid}))
     send_mail(subject, message, participant.email)
 
     participant.status_id = Participant.STATUS['ACCOUNT_CREATED_EMAIL_SENT']
