@@ -198,11 +198,15 @@ def create_user_accounts(participant_id_list):
 
             if participant.status_id != Participant.STATUS['DETAILS_FILLED']:   # account not ready yet
                 result['errors'] += 1
+                logger.debug("Skipping participant %s, details not filled" % (participant.email) )
                 continue # next participant
 
             try:
                 participant_account = participant.participantaccount
                 email = participant.email
+
+                if not participant_account:
+                    raise ParticipantAccount.DoesNotExist()
 
                 if participant_account:
                     logger.debug("participant: %s %s email:%s" % (participant_account.first_name, participant_account.last_name, email) )
@@ -215,12 +219,12 @@ def create_user_accounts(participant_id_list):
 
                     if not userdetails:
                         # user entry does not exist in the new ldap, create it
-                        #print "creating user in LDAP"
+                        logger.debug("creating user %s in LDAP"%(email))
                         userdone = create_user_account(ldaph, participant, usercontainer, userdn, basedn)
                         if userdone:
                             result['created'] += 1
                     else:
-                        #print "updating user in LDAP"
+                        logger.debug("updating user %s in LDAP"%(email))
                         userdone = update_user_account(ldaph, participant)
                         if userdone:
                             result['updated'] += 1
@@ -261,7 +265,7 @@ def create_user_accounts(participant_id_list):
                         application.save()
 
             except ParticipantAccount.DoesNotExist, e:
-                logger.debug("ParticipantAccount.DoesNotExist %s error: %s" % (participant_account.uid, e) )
+                logger.debug("ParticipantAccount.DoesNotExist error: %s" % (e) )
                 result['errors'] += 1
         ldaph.close()
     return result

@@ -461,7 +461,7 @@ class LDAPHandler(object):
         #ok so we are good to go.
         logger.debug('preparing to add group')
         newattrs = []
-        newattrs.append( ('cn', groupname) )
+        newattrs.append( ('cn', str(groupname)) )
         newattrs.append( ('objectClass', self.GROUPOC) )
         #newattrs.append( ('uniqueMember', 'uid=dummy') )   # is it needed?
 
@@ -483,7 +483,7 @@ class LDAPHandler(object):
     def create_ou(self, name, parentdn):
         '''Create an OU for a group, return True if succeeded otherwise False'''
         newattrs = []
-        newattrs.append( ('ou', name) )
+        newattrs.append( ('ou', str(name)) )
         newattrs.append( ('objectClass', 'organizationalunit') )
 
         dn = 'ou=%s,%s' % (name, parentdn)
@@ -515,12 +515,12 @@ class LDAPHandler(object):
         newattrs = []
         if attributes:
             newattrs = attributes
-        newattrs.append( ('cn', groupname) )
+        newattrs.append( ('cn', str(groupname)) )
         if not objectClasses:
             objectClasses = self.GROUPOC
         newattrs.append( ('objectClass', objectClasses) )   # objectClasses must be a list
         if description:
-            newattrs.append( ('description', description) )
+            newattrs.append( ('description', str(description)) )
 
         dn = 'cn=%s,%s' % (groupname, parentdn)
         logger.debug('calling ldap_add: %s AND %s' % (str(dn), str(newattrs) ) )
