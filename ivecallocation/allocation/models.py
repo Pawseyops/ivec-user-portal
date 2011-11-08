@@ -338,10 +338,10 @@ class SupercomputerJob(models.Model):
 
     application = models.ForeignKey(Application)
     job_type = models.CharField(max_length=1, choices=JOB_TYPE_CHOICES, null=True, blank=True)
-    processes = models.IntegerField(verbose_name="Number of (MPI) processes", null=True, blank=True)
+    processes = models.IntegerField(verbose_name="Number of (MPI) processes per job", null=True, blank=True)
     processes_per_node = models.IntegerField(null=True, blank=True)
     wallclock_time_per_job = models.CharField(max_length=32, null=True, blank=True)
-    number_of_type_of_job = models.IntegerField(verbose_name="Number of jobs of this type", null=True, blank=True)
+    number_of_type_of_job = models.IntegerField(verbose_name="Number of jobs of this type over the entire project", null=True, blank=True)
     total_memory = models.CharField(max_length=32, null=True, blank=True)
     data_transfer = models.CharField(max_length=32, verbose_name="Amount of data read/written to disk", null=True, blank=True)
 
