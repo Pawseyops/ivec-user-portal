@@ -6,7 +6,7 @@ from django.utils.webhelpers import url
 
 ${self.block_extrahead()}<%def name="block_extrahead()">
 
-<script type="text/javascript" src="${url('/static/admin-media/js/jquery.min.js')}"></script>
+${parent.block_extrahead()}
 
 <script type="text/javascript">
 // update the available list of priority areas as the user
