@@ -21,7 +21,7 @@ class IvecAdminSite(AdminSite):
     index_template = 'admin/index_with_msg.html'
     
     def index(self, request, **kwargs):
-        extra_context = {'title': '<BR>'} # remove the Site administration title
+        extra_context = {'title': ''} # remove the Site administration title
         res = super(IvecAdminSite, self).index(request, extra_context)
         return res
     

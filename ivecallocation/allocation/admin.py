@@ -38,6 +38,7 @@ class SupportingFundingInline(admin.TabularInline):
 class SupercomputerJobInline(admin.TabularInline):
     model = SupercomputerJob
     extra = 1
+    exclude = ['processes_per_node']
 
 class LibraryInline(admin.TabularInline):
     model = Library

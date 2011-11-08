@@ -34,7 +34,7 @@ in terms of number of processes, data volumes worked with, computing resources u
 (5000 characters max).
 """
 
-help_text_core_hours="""How much CPU time do you require between July 1 and December 30 2011 in core hours?
+help_text_core_hours="""How much CPU time do you require between January 1 and December 30 2012 in core hours?
 This should be consistent with the information given in Computational Methodology."""
 
 
