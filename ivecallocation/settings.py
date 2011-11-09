@@ -38,7 +38,7 @@ LOGOUT_URL = url('/accounts/logout/')
 ## Django Core stuff
 ##
 TEMPLATE_LOADERS = [
-    'django.template.loaders.makoloader.filesystem.Loader',
+    'ccg.template.loaders.makoloader.filesystem.Loader',
     'django.template.loaders.filesystem.Loader',
     'django.template.loaders.app_directories.Loader',
 ]
