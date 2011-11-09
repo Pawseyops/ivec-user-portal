@@ -13,7 +13,7 @@
 #
 # http://www.pip-installer.org/en/latest/requirement-format.html
 #
-eggs/ccg-python-build_v2_0.tar.gz
+eggs/ccg-python-build_v2_1.tar.gz
 eggs/ccg-django-backends-0.2.tar.gz
 eggs/django-registration-ccg-0.8-alpha-1-ccg2.tar.gz  
 eggs/ccg-django-makoloader-0.2.1.tar.gz
