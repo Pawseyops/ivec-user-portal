@@ -21,7 +21,7 @@ def send_account_creation_mail(participant, request):
     email_hash = str(uuid.uuid4())
     link = "%s%s/%s" % (siteurl(request), 'account-request', email_hash)
 
-    message = message_template.render(participant=participant, link=link)
+    message = message_template.render(Context({participant=participant, link=link})
     send_mail(subject, message, participant.email)
 
     participant.account_email_hash = email_hash
