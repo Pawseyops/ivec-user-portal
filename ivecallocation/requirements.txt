@@ -16,7 +16,7 @@
 eggs/ccg-python-build_v2_1.tar.gz
 eggs/ccg-django-backends-0.2.tar.gz
 eggs/django-registration-ccg-0.8-alpha-1-ccg2.tar.gz  
-eggs/ccg-django-makoloader-0.2.1.tar.gz
+eggs/ccg-django-makoloader-0.2.2.tar.gz
 eggs/south-0.7.3.tar.gz
 eggs/ccg-django-extras-0.1.tar.gz
 eggs/egenix-mx-base-3.2.0.tar.gz
