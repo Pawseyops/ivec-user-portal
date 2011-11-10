@@ -39,7 +39,7 @@ open allocation rounds. Open and recently closed rounds are listed below.
 
 <form action="${ reverse('admin:index') }" method="post" class="login" id="login-form">${ csrf_tag(csrf_token) }
 
-% if form.errors:
+% if form.errors and '__all__' in form.errors:
 % for error in form.errors['__all__']:
 
 <p class="errornote">
