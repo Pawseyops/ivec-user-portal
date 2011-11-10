@@ -21,7 +21,7 @@ def send_account_creation_mail(participant, request):
     email_hash = str(uuid.uuid4())
     link = "%s%s/%s" % (siteurl(request), 'account-request', email_hash)
 
-    message = message_template.render(Context({participant=participant, link=link})
+    message = message_template.render(Context({'participant': participant, 'link': link}))
     send_mail(subject, message, participant.email)
 
     participant.account_email_hash = email_hash
@@ -57,9 +57,8 @@ def fetch_old_ldap_details(participant):
 
     if details is not None:
         try:
-            try:
-                participant_account = participant.participantaccount
-            except ParticipantAccount.DoesNotExist:
+            participant_account = participant.participantaccount
+            if not participant_account:
                 participant_account = ParticipantAccount(participant=participant)
             
             participant_account.old_ldap_details = simplejson.dumps(details)
