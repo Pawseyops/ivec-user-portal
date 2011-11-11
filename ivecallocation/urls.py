@@ -23,10 +23,13 @@ urlpatterns = patterns('',
     # users to their own registration page
     (r'^(?P<usertype>director)/', admin.site.admin_view(admin.site.index)),
 
+    # deprecated URLs
+    (r'^login[/]$', redirect_to, {'url': wh_url('/')}),
+    (r'^admin[/]$', redirect_to, {'url': wh_url('/')}),
+
     # Uncomment the next line to enable the admin:
     (r'^', include(admin.site.urls)),
     
-        
     # Uncomment this line to enable the mango status system
     #(r'^project_status', status_view),
     
@@ -34,10 +37,7 @@ urlpatterns = patterns('',
     (r'^accounts/login', redirect_to, {'url': wh_url('/')}),
     (r'^accounts/', include('registration.backends.ivec.urls')),
     
-    #(r'^$', redirect_to, {'url': wh_url('/accounts/register/')}),
-    (r'^login[/]$', redirect_to, {'url': wh_url('/')}),
-    (r'^admin[/]$', redirect_to, {'url': wh_url('/')}),
-
+    # forgot password link
     (r'^reset-password[/]$', 'ivecallocation.allocation.views.password_reset'),
 )
 
