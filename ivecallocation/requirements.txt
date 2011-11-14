@@ -33,4 +33,4 @@ wsgiref>=0.1.2
 eggs/python-ldap-2.3.5.tar.gz
 virtualenv==1.6.4
 Mercurial>=1.9.3
-Fabric>=1.2.2
+Fabric==1.2.2
