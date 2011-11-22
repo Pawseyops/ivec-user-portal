@@ -4,7 +4,7 @@ from django.shortcuts import render_to_response, get_object_or_404
 from django.contrib.admin.views.decorators import staff_member_required
 from django.core.exceptions import ObjectDoesNotExist
 from django.core import urlresolvers
-from django.utils.webhelpers import siteurl
+from ccg.utils.webhelpers import siteurl
 from models import *
 from forms import *
 from ivecallocation.allocation.utils import get_querylist

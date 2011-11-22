@@ -9,7 +9,7 @@ from django.views.generic.simple import redirect_to
 
 import admin
 
-from django.utils.webhelpers import url as wh_url
+from ccg.utils.webhelpers import url as wh_url
 from allocation.admin_forms import RecaptchaPasswordResetForm
 
 urlpatterns = patterns('',
@@ -48,9 +48,4 @@ urlpatterns += patterns('ivecallocation.allocation.views',
     url(r'^account-details/thanks[/]$', 'account_details_thanks', name='account-details-thanks'),
 )
 
-urlpatterns += patterns('',
-    (r'^static/(?P<path>.*)$',
-    'django.views.static.serve',
-    {'document_root': os.path.join(os.path.dirname(__file__),"static"), 'show_indexes': True}),
-)
 
