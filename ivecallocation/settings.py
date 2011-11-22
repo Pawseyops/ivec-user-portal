@@ -4,7 +4,8 @@
 # Edit here or override under appsettings.ivecallocation
 
 import os
-from django.utils.webhelpers import url
+import logging
+from ccg.utils.webhelpers import url
 
 # SCRIPT_NAME isnt set when not under wsgi
 if not os.environ.has_key('SCRIPT_NAME'):
@@ -28,7 +29,6 @@ TIME_ZONE = 'Australia/Perth'
 LANGUAGE_CODE = 'en-us'
 USE_I18N = True
 
-LOG_DIRECTORY = os.path.join(PROJECT_DIRECTORY, 'logs')
 TEMPLATE_DEBUG = DEBUG
 
 LOGIN_URL = url('/accounts/login/')
@@ -44,12 +44,11 @@ TEMPLATE_LOADERS = [
 ]
 
 MIDDLEWARE_CLASSES = [
-    'django.middleware.email.EmailExceptionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.middleware.doc.XViewMiddleware',
-    'django.middleware.ssl.SSLRedirect'
+    'ccg.middleware.ssl.SSLRedirect'
 ]
 TEMPLATE_DIRS = [
     os.path.join(PROJECT_DIRECTORY,"templates"),
@@ -60,11 +59,10 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.sites',
     'django.contrib.admin',
+    'django.contrib.staticfiles',
     'south',
 ]
 
-# for local development, this is set to the static serving directory. For deployment use Apache Alias
-STATIC_SERVER_PATH = os.path.join(PROJECT_DIRECTORY,"static")
 
 # a directory that will be writable by the webserver, for storing various files...
 WRITABLE_DIRECTORY = os.path.join(PROJECT_DIRECTORY,"scratch")
@@ -82,10 +80,12 @@ MAKO_MODULENAME_CALLABLE = ''
 # cookies
 SESSION_COOKIE_AGE = 60*60
 
-#STATIC_ROOT = os.path.join(PROJECT_DIRECTORY,"static")
+
+STATIC_ROOT = os.path.join(PROJECT_DIRECTORY,"static")
+STATIC_URL = '/static/'
 MEDIA_ROOT = os.path.join(PROJECT_DIRECTORY,"static","media")
 MEDIA_URL = '/static/media/'
-ADMIN_MEDIA_PREFIX = url('/static/admin-media/')
+ADMIN_MEDIA_PREFIX = url('/static/admin/')
 
 # there is no default setup here as one of these configs should be made 'default' by the settings
 DATABASES = {
@@ -193,11 +193,11 @@ SSL_FORCE = True
 ##
 ## LOGGING
 ##
-import logging
 LOG_DIRECTORY = os.path.join(PROJECT_DIRECTORY,"logs")
-LOGGING_LEVEL = logging.DEBUG
-LOGGING_FORMATTER = logging.Formatter('[%(name)s:%(levelname)s:%(filename)s:%(lineno)s:%(funcName)s] %(message)s')
-LOGS = ['ivecallocation', 'mango_ldap']
+assert os.path.exists(LOG_DIRECTORY), "No logs directory, please create one: %s" % LOG_DIRECTORY
+LOGGING = { 'version': 1,
+            'disable_existing_loggers': True,}
+
 # registration app settings
 ACCOUNT_ACTIVATION_DAYS = 14
 

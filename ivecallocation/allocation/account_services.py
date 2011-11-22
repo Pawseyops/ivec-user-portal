@@ -2,12 +2,12 @@ import mako
 from django.core import mail as django_mail
 from django.core.urlresolvers import reverse
 from ivecallocation import settings
-from django.utils.webhelpers import siteurl
+from ccg.utils.webhelpers import siteurl
 import uuid
 import datetime
 import ldap_helper
 from django.utils import simplejson
-from django.contrib import logging
+import logging
 logger = logging.getLogger('ivecallocation') 
 from ivecallocation.allocation.models import *
 from django.db import transaction

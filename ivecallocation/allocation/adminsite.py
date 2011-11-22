@@ -5,7 +5,7 @@ from django.utils.translation import ugettext_lazy, ugettext as _
 from django.conf import settings
 from django.contrib.auth import authenticate, login
 from django import http
-from django.utils.webhelpers import url
+from ccg.utils.webhelpers import url
 from django.contrib.auth import REDIRECT_FIELD_NAME
 from django.views.decorators.csrf import csrf_protect
 from django.utils.functional import update_wrapper
