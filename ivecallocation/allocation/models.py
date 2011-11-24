@@ -3,6 +3,7 @@ from django.db import models
 from django.contrib.auth.models import User as DjangoUser
 from django.db.models import Avg
 from django.core.urlresolvers import reverse
+from django.utils.safestring import mark_safe
 from datetime import date
 
 #from choices import *
@@ -50,7 +51,8 @@ class AllocationRound(models.Model):
             label = self.name
         else:
             label = self.system
-        return "%s: %s to %s" % (label, self.start_date, self.end_date)
+        return "%s: %s to %s" % (label, self.start_date.strftime('%d %b %Y'),
+            self.end_date.strftime('%d %b %Y'))
 
 class Application(models.Model):
     project_title = models.CharField(max_length=100, help_text=help_text_project_title)
@@ -68,7 +70,7 @@ class Application(models.Model):
     created_by = models.ForeignKey(DjangoUser, editable=False, related_name="%(class)s_creators",null=True)
     created_on = models.DateTimeField(auto_now_add=True, editable=False)
     complete =  models.BooleanField(verbose_name="ready to submit application")
-    allocation_round = models.ForeignKey(AllocationRound) # null=True for south
+    allocation_round = models.ForeignKey(AllocationRound, help_text=mark_safe("<p id='allocation_round_notice' class='help allocation_round_notice'>&nbsp;</p>")) # null=True for south
     priority_area = models.ForeignKey(PriorityArea, help_text=help_text_available_priority_areas)
 
     def __cmp__(self, other):

@@ -1,3 +1,5 @@
+<% from ccg.utils.webhelpers import url %>
+<% from datetime import date %>
 <%inherit file="admin/change_form.html"/>
 <%!
 import ivecallocation.allocation.views
@@ -7,26 +9,39 @@ from ccg.utils.webhelpers import url
 ${self.block_extrahead()}<%def name="block_extrahead()">
 
 ${parent.block_extrahead()}
+<link type="text/css" rel="stylesheet" media="all" href="${url('/static/css/adminextra.css')}">
 
 <script type="text/javascript">
 // update the available list of priority areas as the user
 // changes the allocation round
-$(document).ready(function() {
-    $('#id_allocation_round').bind('change', function () {
 
-        if (!this.value) {
-            $('#id_priority_area')[0].value="";
-            $('#id_priority_area')[0].disabled=true;
-            return;
-        }
+(function($) {
+    
+    notices = new Array();
+    notices[0] = 'hello';
+    % for ar in allocation_rounds:
+    notices[${ar.id}] = 'You have selected to apply for resource allocation on ${ar.system.name}. Allocations for this round are open from <b>${ar.start_date.strftime('%d %b %Y')}</b> to <b>${ar.end_date.strftime('%d %b %Y')}</b>';
+    % endfor
+    
+    $(document).ready(function() {
+        $('#id_allocation_round').bind('change', function () {
+            if (!this.value) {
+                $('#id_priority_area')[0].value="";
+                $('#id_priority_area')[0].disabled=true;
+                $('#allocation_round_notice')[0].innerHTML = '&nbsp;';
+                return;
+            }
         
-        $('#id_priority_area')[0].disabled=true;
-        $.get('${url('/priority_areas/')}'+this.value+'/', function(data) {
-            $('#id_priority_area')[0].innerHTML=data;
+            $('#id_priority_area')[0].disabled=true;
+            $.get('${url('/priority_areas/')}'+this.value+'/', function(data){
+                $('#id_priority_area')[0].innerHTML=data;
+            });
+            $('#id_priority_area')[0].disabled=false;
+            $('#allocation_round_notice')[0].innerHTML =
+                notices[parseInt($('#id_allocation_round')[0].value)];
         });
-        $('#id_priority_area')[0].disabled=false;
     });
-});
+})(django.jQuery);
 </script>
 
 </%def>

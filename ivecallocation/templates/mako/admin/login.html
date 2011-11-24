@@ -27,8 +27,8 @@ open allocation rounds. Open and recently closed rounds are listed below.
     <tr ${closed}>
         <td>${round.system}</td>
         <td>${round.name}</td>
-        <td>${round.start_date}</td>
-        <td>${round.end_date}</td>
+        <td>${round.start_date.strftime('%d %b %Y')}</td>
+        <td>${round.end_date.strftime('%d %b %Y')}</td>
         <td>${round.status}</td>
     </tr>
 % endfor
