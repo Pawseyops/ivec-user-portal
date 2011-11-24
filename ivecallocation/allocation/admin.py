@@ -282,10 +282,16 @@ class ApplicationAdmin(admin.ModelAdmin):
                  if i[0] == 'Priority Areas':
                      self.fieldsets.remove(i)
                      self.exclude = ['priority_area']
+        
+        # make pretty user messages about allocation rounds
+        extra_context = {'allocation_rounds': []}
+        for allocation_round in AllocationRound.objects.all():
+            extra_context['allocation_rounds'].append(allocation_round)
+        
         return super(ApplicationAdmin, self).add_view(request, form_url=form_url, extra_context=extra_context)
     
     def change_view(self, request, object_id, extra_context=None):        
-        self.exclude_review_fields(request.user, ('allocation.change_reviewerscore', 'allocation.change_reviewercomment'))                           
+        self.exclude_review_fields(request.user, ('allocation.change_reviewerscore', 'allocation.change_reviewercomment'))
         return super(ApplicationAdmin, self).change_view(request, object_id, extra_context=extra_context)
     
     # remove the entire Review fieldset (including the inlines) if permissions aren't met
