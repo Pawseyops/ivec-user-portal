@@ -171,6 +171,7 @@ RECAPTCHA_PRIVATE_KEY = "6LdDRcgSAAAAAOY7q8rX8rPRbCKNRY6-cxm2WL4q"
 ROOT_URLCONF = 'ivecallocation.urls'
 
 INSTALLED_APPS.extend( [
+    'django_extensions',
     'allocation',
     'registration',
 ] )
