@@ -66,7 +66,7 @@ def account_request(request, email_hash):
         participant_account = ParticipantAccount(participant=participant) 
  
     if request.method == 'POST':
-        if participant_account.fetched_from_ldap():
+        if participant.fetched_from_ldap():
             form = ParticipantAccountForm(request.POST)
         else:
             form = ParticipantAccountWithPasswordForm(request.POST)
@@ -76,14 +76,14 @@ def account_request(request, email_hash):
             participant_account.last_name = form.cleaned_data.get('last_name')
             participant_account.institution_id = form.cleaned_data.get('institution').id
             participant_account.phone = form.cleaned_data.get('phone')
-            if not participant_account.fetched_from_ldap():
+            if not participant.fetched_from_ldap():
                 participant_account.password_hash = account_services.hash_password(form.cleaned_data.get('password1'))
             account_services.save_account_details(participant_account)
             request.session[PROCESSED_PARTICIPANT_SESSION_KEY] = email_hash
             return HttpResponseRedirect(siteurl(request) + 'account-details/thanks')
     else:
   
-        if participant_account.fetched_from_ldap():
+        if participant.fetched_from_ldap():
             data_dict = {}
             data_dict['first_name'] = participant_account.first_name
             data_dict['last_name'] = participant_account.last_name
