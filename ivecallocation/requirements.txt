@@ -14,13 +14,13 @@
 # http://www.pip-installer.org/en/latest/requirement-format.html
 #
 eggs/Mako-0.5.0.tar.gz
-eggs/Mango-py-1.3.1-ccg-196.tar.gz
+eggs/Mango-py-1.3.1-ccg1-1.tar.gz
 eggs/MarkupSafe-0.15.tar.gz
 eggs/ccg-auth-0.3.1.tar.gz
 eggs/ccg-extras-0.1.3.tar.gz
 eggs/ccg-makoloader-0.2.3.tar.gz
 eggs/ccg-python-build_v2_2_6.tar.gz
-eggs/django-registration-ccg-0.8-alpha-1-ccg2.tar.gz
+eggs/ccg-registration-0.8-alpha-1-ccg2.tar.gz
 eggs/egenix-mx-base-3.2.0.tar.gz
 eggs/psycopg2-2.0.8.tar.gz
 eggs/python-ldap-2.3.5.tar.gz
