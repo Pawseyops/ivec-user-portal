@@ -292,6 +292,7 @@ class ApplicationAdmin(admin.ModelAdmin):
     
     def change_view(self, request, object_id, extra_context=None):        
         self.exclude_review_fields(request.user, ('allocation.change_reviewerscore', 'allocation.change_reviewercomment'))
+        extra_context = {'allocation_rounds': []}
         return super(ApplicationAdmin, self).change_view(request, object_id, extra_context=extra_context)
     
     # remove the entire Review fieldset (including the inlines) if permissions aren't met
