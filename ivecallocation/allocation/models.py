@@ -157,7 +157,7 @@ class Participant(models.Model):
     details_filled_on = models.DateTimeField(null=True, blank=True)
     account_created_on = models.DateTimeField(null=True, blank=True)
     account_created_email_on = models.DateTimeField(null=True, blank=True)
-    participantaccount = models.ForeignKey('ParticipantAccount', null=True)
+    participantaccount = models.ForeignKey('ParticipantAccount', null=True, related_name='participant')
 
     def save(self, *args, **kwargs):
         instance = getattr(self, 'instance', None)
