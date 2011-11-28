@@ -466,8 +466,8 @@ def get_applications_CSV(id_list):
     return returnlist
 
 @transaction.commit_on_success
-def save_account_details(participant_account):
-    participant = participant_account.participant
+def save_account_details(participant):
+    participant_account = participant.participantaccount
     participant.status_id = Participant.STATUS['DETAILS_FILLED']
     participant.details_filled_on = datetime.datetime.now()
     #make sure the uid is valid

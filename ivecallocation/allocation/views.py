@@ -78,7 +78,7 @@ def account_request(request, email_hash):
             participant_account.phone = form.cleaned_data.get('phone')
             if not participant.fetched_from_ldap():
                 participant_account.password_hash = account_services.hash_password(form.cleaned_data.get('password1'))
-            account_services.save_account_details(participant_account)
+            account_services.save_account_details(participant)
             request.session[PROCESSED_PARTICIPANT_SESSION_KEY] = email_hash
             return HttpResponseRedirect(siteurl(request) + 'account-details/thanks')
     else:
