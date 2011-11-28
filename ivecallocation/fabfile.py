@@ -21,14 +21,12 @@ def snapshot():
     """
     Make a snapshot deployment
     """
-    env.ccg_virtualenv = "/usr/local/python/cleanpython/bin/python virt_ivecallocation/bin/virtualenv"
     _ccg_deploy_snapshot()
 
 def release():
     """
     Make a release deployment
     """
-    env.ccg_virtualenv = "/usr/local/python/cleanpython/bin/python virt_ivecallocation/bin/virtualenv"
     _ccg_deploy_release()
 
 def testrelease():
