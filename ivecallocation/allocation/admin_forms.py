@@ -1,5 +1,5 @@
 from django import forms
-from django.contrib.auth.models import User
+from django.contrib.auth.models import User, Group
 from models import *
 from datetime import datetime
 from django.db.models import Q
@@ -17,7 +17,7 @@ class AllocationRoundForm(forms.ModelForm):
     class Meta:
         model = AllocationRound
 
-class ApplicationForm(forms.ModelForm):
+class ApplicationForm(forms.ModelForm):      
     def __init__(self, *args, **kwargs):
         super(ApplicationForm, self).__init__(*args, **kwargs)
         self.fields["project_title"].widget = forms.TextInput(attrs={'size':'100'})
@@ -28,7 +28,9 @@ class ApplicationForm(forms.ModelForm):
         self.fields["data_transfers"].widget = forms.Textarea(attrs={'rows':6, 'cols':100}) #field is 512 chars max in model
         
         now = datetime.now()
+        
         self.fields["allocation_round"].empty_label = "-- select allocation round --"
+        self.fields["priority_area"].empty_label = "-- select priority area --"
         
         instance = getattr(self, 'instance', None)
         if instance and instance.id:
@@ -41,11 +43,15 @@ class ApplicationForm(forms.ModelForm):
             self.fields["allocation_round"].queryset = AllocationRound.objects.filter(
                 start_date__lte=now, end_date__gte=now)
             self.fields["allocation_round"].widget.widget = forms.Select(attrs={})
-        
-        if "priority_area" in self.fields.keys():
-            self.fields["priority_area"].empty_label = "-- select priority area --"
-        
-    
+            
+        directors = Group.objects.get(name='directors')
+        if directors in self.request.user.groups.all():
+            self.director_form = True
+            self.fields["priority_area"].queryset = PriorityArea.objects.filter(code='director')
+            self.fields['priority_area'].initial = PriorityArea.objects.get(code='director')
+            self.fields['priority_area'].widget.widget.attrs['disabled'] = True
+            self.fields['priority_area'].widget.attrs['readonly'] = True
+ 
     def clean(self):   
         # Allocation round is expected to be absent on change...
         instance = getattr(self, 'instance', None)
@@ -55,8 +61,11 @@ class ApplicationForm(forms.ModelForm):
         
         # priority area must be among those valid for the allocation round          
         allocation_round = self.cleaned_data.get("allocation_round")
-        priority_area = self.cleaned_data.get("priority_area")
-        if priority_area not in allocation_round.priority_area.all():
+        if self.director_form:
+            priority_area = PriorityArea.objects.get(code='director')
+        else:
+            priority_area = self.cleaned_data.get("priority_area")
+        if allocation_round and priority_area not in allocation_round.priority_area.all():
             error = "Priority area %s is not available for allocation round %s" % (priority_area, allocation_round)
             self._errors["priority_area"] = self.error_class([error])
             
