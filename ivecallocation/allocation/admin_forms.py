@@ -45,6 +45,7 @@ class ApplicationForm(forms.ModelForm):
             self.fields["allocation_round"].widget.widget = forms.Select(attrs={})
             
         directors = Group.objects.get(name='directors')
+        self.director_form = False
         if directors in self.request.user.groups.all():
             self.director_form = True
             self.fields["priority_area"].queryset = PriorityArea.objects.filter(code='director')
