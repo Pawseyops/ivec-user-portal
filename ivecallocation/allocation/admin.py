@@ -274,14 +274,15 @@ class ApplicationAdmin(admin.ModelAdmin):
         # mail our admins about the new application
         if not change: self.mail_notification(request, obj)
     
+    # Attach the request to the form so we can construct it dynamically
+    # based on the request. Some things are just much easier in the form class!
+    def get_form(self, request, obj=None, **kwargs):
+        form = super(ApplicationAdmin, self).get_form(request, obj, **kwargs)
+        form.request = request
+        return form
+    
     def add_view(self, request, form_url='', extra_context=None):
         self.exclude_review_fields(request.user, ('allocation.add_reviewerscore', 'allocation.add_reviewercomment'))
-        directors = Group.objects.get(name='directors')
-        if directors in request.user.groups.all():
-            for i in self.fieldsets:
-                 if i[0] == 'Priority Areas':
-                     self.fieldsets.remove(i)
-                     self.exclude = ['priority_area']
         
         # make pretty user messages about allocation rounds
         extra_context = {'allocation_rounds': []}

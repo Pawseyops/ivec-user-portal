@@ -4,6 +4,7 @@ from django.shortcuts import render_to_response, get_object_or_404
 from django.contrib.admin.views.decorators import staff_member_required
 from django.core.exceptions import ObjectDoesNotExist
 from django.core import urlresolvers
+from django.contrib.auth.models import User, Group
 from ccg.utils.webhelpers import siteurl
 from models import *
 from forms import *
@@ -134,12 +135,20 @@ def account_details_thanks(request):
             error = "Unable to retrieve participant by hash: %s" % (str(participant_email_hash))
     return render_to_response('allocation/account_details_thanks.html', {"participantdetails": participantdetails, "error":error})
 
+@staff_member_required
 def priority_areas(request, allocationround_id):
-    allocation_round = AllocationRound.objects.get(id=allocationround_id)
-    priority_areas = allocation_round.priority_area.all()
+    directors = Group.objects.get(name='directors')
+    director_form = False
+    if directors in request.user.groups.all():
+        director_form = True
+        priority_areas = [PriorityArea.objects.get(code='director')]
+    else:
+        allocation_round = AllocationRound.objects.get(id=allocationround_id)
+        priority_areas = allocation_round.priority_area.all()
     return render_to_response('allocation/priority_areas.html',
                               {'ajax': request.is_ajax(),
-                               'priority_areas': priority_areas})
+                               'priority_areas': priority_areas,
+                               'director_form': director_form})
 
 
 def password_reset(request):
