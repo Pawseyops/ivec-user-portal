@@ -44,14 +44,17 @@ class ApplicationForm(forms.ModelForm):
                 start_date__lte=now, end_date__gte=now)
             self.fields["allocation_round"].widget.widget = forms.Select(attrs={})
             
-        directors = Group.objects.get(name='directors')
+        directors = PriorityArea.objects.get(code='director')
         self.director_form = False
-        if directors in self.request.user.groups.all():
+        if 'directors' in [g.name for g in self.request.user.groups.all()]:
             self.director_form = True
             self.fields["priority_area"].queryset = PriorityArea.objects.filter(code='director')
             self.fields['priority_area'].initial = PriorityArea.objects.get(code='director')
             self.fields['priority_area'].widget.widget.attrs['disabled'] = True
             self.fields['priority_area'].widget.attrs['readonly'] = True
+            self.fields["allocation_round"].queryset = self.fields["allocation_round"].queryset.filter(priority_area=directors)
+        if not self.fields["allocation_round"].queryset.count():
+            raise NoAllocationRoundsException()    
  
     def clean(self):   
         # Allocation round is expected to be absent on change...
@@ -144,3 +147,5 @@ class RecaptchaPasswordResetForm(RecaptchaForm, PasswordResetForm):
     def __call__(self, *args):
         return RecaptchaPasswordResetForm(self.remote_ip, *args)
 
+class NoAllocationRoundsException(Exception):
+    pass

@@ -12,6 +12,7 @@ from ivecallocation.allocation import account_services
 from django.http import HttpResponse
 from django.core.mail import mail_admins
 from django.template.loader import render_to_string
+from django.shortcuts import render_to_response
 
 class ResearchClassificationInline(admin.TabularInline):
     model = ResearchClassification
@@ -286,8 +287,14 @@ class ApplicationAdmin(admin.ModelAdmin):
         extra_context = {'allocation_rounds': []}
         for allocation_round in AllocationRound.objects.all():
             extra_context['allocation_rounds'].append(allocation_round)
-        
-        return super(ApplicationAdmin, self).add_view(request, form_url=form_url, extra_context=extra_context)
+        try:
+            return super(ApplicationAdmin, self).add_view(request, form_url=form_url, extra_context=extra_context)
+        except NoAllocationRoundsException:
+            pri = PriorityArea.objects.get(code='director')
+            director = True if 'directors' in [g.name for g in request.user.groups.all()] else False
+            extra_context['allocation_rounds'] = AllocationRound.objects.filter(priority_area=pri)
+            extra_context.update({'user': request.user, 'director': director})
+            return render_to_response("allocation/no_allocation_rounds.html", extra_context)
     
     def change_view(self, request, object_id, extra_context=None):        
         self.exclude_review_fields(request.user, ('allocation.change_reviewerscore', 'allocation.change_reviewercomment'))
@@ -427,7 +434,6 @@ class ParticipantAccountAdminForm(forms.ModelForm):
 
 class ParticipantAccountAdmin(admin.ModelAdmin):
     form = ParticipantAccountAdminForm 
-
 
 def register(site):
     site.register(Application, ApplicationAdmin)
