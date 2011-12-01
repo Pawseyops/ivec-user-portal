@@ -1,0 +1,30 @@
+<%inherit file="admin/base_site.html"/>
+<%def name="block_breadcrumbs()"><div class="breadcrumbs"><a href="../">${trans('Home')}</a> &rsaquo; ${trans('Password reset')}</div></%def>
+
+<%def name="block_title()">${trans("No Allocation Rounds")}</%def>
+
+<%def name="block_content()">
+
+<p>
+There are currently no open allocation rounds. Below is a list of all
+allocation rounds, including upcoming ones. Please try again when an allocation round opens.  
+% if 'directors' in [g.name for g in user.groups.all()]:
+<font color=red><b>Because you have registered as a Director, only allocation rounds for the Directors' Share are shown below.</b></font>
+% endif
+</p>
+
+<table id='rounds' width=100%>
+<tr><th>Resource</th><th>Round Name</th><th>Opens</th><th>Closes</th><th>Status</th></tr>
+% for round in allocation_rounds:
+    <% closed = 'class="closed"' if round.status=='closed' else ''%>
+    <tr ${closed}>
+        <td>${round.system}</td>
+        <td>${round.name}</td>
+        <td>${round.start_date.strftime('%d %b %Y')}</td>
+        <td>${round.end_date.strftime('%d %b %Y')}</td>
+        <td>${round.status}</td>
+    </tr>
+% endfor
+</table>
+
+</%def>
