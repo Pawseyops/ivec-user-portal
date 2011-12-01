@@ -151,7 +151,8 @@ class Participant(models.Model):
     admin = models.BooleanField()
     student = models.BooleanField()
     eft = models.FloatField(null=True, blank=True, verbose_name="EFT %")
-    status = models.ForeignKey(ParticipantStatus)
+    status = models.ForeignKey(ParticipantStatus,
+        default=STATUS['NEW'])
     account_email_hash = models.CharField(max_length=50, null=True, blank=True)
     account_email_on = models.DateTimeField(null=True, blank=True)
     details_filled_on = models.DateTimeField(null=True, blank=True)
