@@ -21,7 +21,7 @@ urlpatterns = patterns('',
 
     # accept 'director' url suffix at top level to guide director class
     # users to their own registration page
-    (r'^(?P<usertype>director)/', admin.site.admin_view(admin.site.index)),
+    url(r'^(?P<usertype>director)', admin.site.admin_view(admin.site.index)),
 
     # deprecated URLs
     (r'^login[/]$', redirect_to, {'url': wh_url('/')}),
