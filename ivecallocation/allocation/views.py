@@ -1,6 +1,7 @@
 import operator
 from django.http import HttpResponse, HttpResponseNotFound, HttpResponseRedirect
 from django.shortcuts import render_to_response, get_object_or_404
+from django.contrib.auth.decorators import login_required
 from django.contrib.admin.views.decorators import staff_member_required
 from django.core.exceptions import ObjectDoesNotExist
 from django.core import urlresolvers
@@ -18,6 +19,7 @@ import ivecallocation.admin
 
 PROCESSED_PARTICIPANT_SESSION_KEY = 'PROCESSED_PARTICIPANT'
 
+@login_required
 @staff_member_required
 def summary(request):
 
