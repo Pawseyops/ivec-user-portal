@@ -27,9 +27,6 @@ urlpatterns = patterns('',
     (r'^login[/]$', redirect_to, {'url': wh_url('/')}),
     (r'^admin[/]$', redirect_to, {'url': wh_url('/')}),
 
-    # Uncomment the next line to enable the admin:
-    (r'^', include(admin.site.urls)),
-    
     # Uncomment this line to enable the mango status system
     #(r'^project_status', status_view),
     
@@ -46,6 +43,12 @@ urlpatterns += patterns('ivecallocation.allocation.views',
     url(r'^summary/$', 'summary', name='summary'),
     url(r'^account-request/(?P<email_hash>[\w\d\-]+)[/]$', 'account_request', name='account-request'),
     url(r'^account-details/thanks[/]$', 'account_details_thanks', name='account-details-thanks'),
+
+)
+
+# put admin at the end to consume everything that doesn't match
+urlpatterns += patterns('',
+    url(r'^', include(admin.site.urls)),
 )
 
 
