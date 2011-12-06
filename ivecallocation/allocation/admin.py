@@ -265,7 +265,8 @@ class ApplicationAdmin(admin.ModelAdmin):
                 print instance
                 if (isinstance(instance, ReviewerScore) or
                     isinstance(instance, ReviewerComment)):
-                    instance.reviewer = request.user
+                    if not instance.reviewer:
+                        instance.reviewer = request.user
                 instance.save()
             formset.save_m2m()
 
