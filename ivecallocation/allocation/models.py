@@ -101,7 +101,7 @@ class ReviewerScore(models.Model):
     research_merit = models.IntegerField(null=True, blank=True)
     computational_merit = models.IntegerField(null=True, blank=True)    
     score = models.IntegerField(null=True, blank=True)
-    reviewer = models.ForeignKey(DjangoUser, related_name="%(class)s_reviewers", null=True)
+    reviewer = models.ForeignKey(DjangoUser, related_name="%(class)s_reviewers", null=True, blank=True)
 
     def save(self, *args, **kwargs):
         self.score = min(self.research_merit, self.computational_merit)
@@ -110,7 +110,7 @@ class ReviewerScore(models.Model):
 class ReviewerComment(models.Model):
     application = models.ForeignKey(Application)    
     reviewer_comment = models.TextField(null=True, blank=True)
-    reviewer = models.ForeignKey(DjangoUser, related_name="%(class)s_reviewers", null=True)    
+    reviewer = models.ForeignKey(DjangoUser, related_name="%(class)s_reviewers", null=True, blank=True)    
 
 class ResearchClassification(models.Model):
     application = models.ForeignKey(Application)
