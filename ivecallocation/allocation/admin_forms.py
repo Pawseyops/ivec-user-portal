@@ -42,6 +42,7 @@ class ApplicationForm(forms.ModelForm):
                 Q(start_date__lte=now, end_date__gte=now) | Q(id=instance.allocation_round.id))
             self.fields['allocation_round'].widget.widget.attrs['disabled'] = True
             self.fields['allocation_round'].widget.attrs['readonly'] = True
+            self.fields['priority_area'].initial = instance.priority_area
             self.fields["priority_area"].queryset = PriorityArea.objects.filter(allocationround=instance.allocation_round)
         else:
             self.fields["allocation_round"].queryset = AllocationRound.objects.filter(
@@ -52,10 +53,11 @@ class ApplicationForm(forms.ModelForm):
         self.director_form = False
         if 'directors' in [g.name for g in self.request.user.groups.all()]:
             self.director_form = True
-            self.fields["priority_area"].queryset = PriorityArea.objects.filter(code='director')
-            self.fields['priority_area'].initial = PriorityArea.objects.get(code='director')
-            self.fields['priority_area'].widget.widget.attrs['disabled'] = True
-            self.fields['priority_area'].widget.attrs['readonly'] = True
+            if not instance or instance.priority_area == directors:
+                self.fields["priority_area"].queryset = PriorityArea.objects.filter(code='director')
+                self.fields['priority_area'].initial = directors
+                self.fields['priority_area'].widget.widget.attrs['disabled'] = True
+                self.fields['priority_area'].widget.attrs['readonly'] = True
             self.fields["allocation_round"].queryset = self.fields["allocation_round"].queryset.filter(priority_area=directors)
         if not self.fields["allocation_round"].queryset.count():
             raise NoAllocationRoundsException()    
@@ -63,9 +65,13 @@ class ApplicationForm(forms.ModelForm):
     def clean(self):   
         # Allocation round is expected to be absent on change...
         instance = getattr(self, 'instance', None)
-        if instance and instance.id and 'allocation_round' in self._errors:
-            del self._errors['allocation_round']
-            self.cleaned_data['allocation_round'] = self.instance.allocation_round
+        if instance and instance.id:
+            if 'allocation_round' in self._errors:
+                del self._errors['allocation_round']
+                self.cleaned_data['allocation_round'] = self.instance.allocation_round
+            if 'priority_area' in self._errors:
+                del self._errors['priority_area']
+                self.cleaned_data['priority_area'] = self.instance.priority_area
         
         # priority area must be among those valid for the allocation round          
         allocation_round = self.cleaned_data.get("allocation_round")
@@ -85,6 +91,13 @@ class ApplicationForm(forms.ModelForm):
             return self.instance.allocation_round
         else:
             return self.cleaned_data['allocation_round']
+    
+    def clean_priority_area(self):
+        instance = getattr(self, 'instance', None)
+        if instance and instance.id:
+            return self.instance.priority_area
+        else:
+            return self.cleaned_data['priority_area']
     
     class Meta:
         model = Application
