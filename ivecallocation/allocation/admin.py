@@ -258,8 +258,19 @@ class ApplicationAdmin(admin.ModelAdmin):
              'project_title': obj.project_title})
         mail_admins("New allocation application", body)
 
+    # force the reviewer to be the logged in user
+    def save_formset(self, request, form, formset, change):
+            instances = formset.save(commit=False)
+            for instance in instances:
+                print instance
+                if (isinstance(instance, ReviewerScore) or
+                    isinstance(instance, ReviewerComment)):
+                    instance.reviewer = request.user
+                instance.save()
+            formset.save_m2m()
+
     # add the user to created_by on save
-    def save_model(self, request, obj, form, change):            
+    def save_model(self, request, obj, form, change):          
         if not change:
             obj.created_by = request.user
             

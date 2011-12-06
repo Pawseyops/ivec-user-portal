@@ -4,6 +4,10 @@ from models import *
 from datetime import datetime
 from django.db.models import Q
 from django.contrib.auth.forms import PasswordResetForm
+from django.forms.util import flatatt
+from django.utils.html import escape, conditional_escape
+from django.utils.safestring import mark_safe
+from django.utils.encoding import force_unicode
 from ccg.recaptcha import *
 
 class SystemForm(forms.ModelForm):
@@ -98,11 +102,18 @@ class RestrictedApplicationForm(forms.ModelForm):
 
         self.fields["data_transfers"].widget = forms.Textarea(attrs={'rows':6, 'cols':100}) #field is 512 chars max in model
 
-
     class Meta:
         model = Application
 
-
+class ReviewerLabelWidget(forms.Widget):        
+    def render(self, name, value, attrs=None):
+        if value is None:
+            value = ''
+        else:
+            value = User.objects.get(id=value).username
+        final_attrs = self.build_attrs(attrs, name=name)
+        return mark_safe(u'<span%s>%s</span>' % (flatatt(final_attrs),
+            conditional_escape(force_unicode(value))))
 
 class PublicationForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
@@ -113,22 +124,36 @@ class PublicationForm(forms.ModelForm):
     class Meta:
         model = Publication
 
-class ReviewerScoreForm(forms.ModelForm):
+class ReviewerBaseForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
-        super(ReviewerScoreForm, self).__init__(*args, **kwargs)
+        super(ReviewerBaseForm, self).__init__(*args, **kwargs)
 
-    reviewer = forms.ModelChoiceField(queryset=User.objects.filter(is_staff=True), required=True)
+        instance = getattr(self, 'instance', None)
+        if instance and instance.id:
+            self.fields['reviewer'].widget = ReviewerLabelWidget()
+        else:
+            self.fields['reviewer'].widget = forms.HiddenInput()
 
+
+    def clean(self):
+        instance = getattr(self, 'instance', None)
+        if instance and instance.id  and 'reviewer' in self._errors:
+            del self._errors['reviewer']
+            self.cleaned_data['reviewer'] = instance.reviewer
+        return self.cleaned_data
+
+    def clean_reviewer(self):
+        instance = getattr(self, 'instance', None)
+        if instance and instance.id:
+            return instance.reviewer
+        return self.cleaned_data['reviewer']
+
+class ReviewerScoreForm(ReviewerBaseForm):
     class Meta:
         model = ReviewerScore
 
 
-class ReviewerCommentForm(forms.ModelForm):
-    def __init__(self, *args, **kwargs):
-        super(ReviewerCommentForm, self).__init__(*args, **kwargs)
-
-    reviewer = forms.ModelChoiceField(queryset=User.objects.filter(is_staff=True), required=True)
-
+class ReviewerCommentForm(ReviewerBaseForm):
     class Meta:
         model = ReviewerComment
 
