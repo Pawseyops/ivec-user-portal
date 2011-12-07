@@ -1,6 +1,27 @@
 <%inherit file="admin/base_site.html"/>
 <%namespace name="admin" module="django.contrib.admin.templatetags.adminmedia" />
 
+${self.block_extrahead()}<%def name="block_extrahead()">
+${parent.block_extrahead()}
+<script type="text/javascript" src="/static/admin/js/jquery.min.js"></script>
+<script type="text/javascript" src="/static/admin/js/jquery.init.js"></script>
+<script type="text/javascript">
+(function($) {
+    $(document).ready(function() {
+        // navigate to page on click event
+        $('#select_round').bind('change', function() { goToPage(); } );
+    });
+
+    function goToPage() {
+        round_id = $('#select_round').val()
+        if (round_id) {
+            window.location.href = round_id;
+        }
+    }
+})(django.jQuery);
+</script>
+</%def>
+
 
 % if not is_popup:
 ${self.block_breadcrumbs()}<%def name="block_breadcrumbs()"><div class="breadcrumbs"><a href="${root_path}">${trans("Home")}</a> &rsaquo; ${title}</div></%def>
@@ -8,6 +29,34 @@ ${self.block_breadcrumbs()}<%def name="block_breadcrumbs()"><div class="breadcru
 
 ${self.block_content()}<%def name="block_content()">
 <div id="content-main">
+
+% if allocation_round:
+    <h2>Summary for allocation round ${allocation_round}</h2>
+    Choose another:
+% else:
+    <h2>Select allocation round</h2>
+% endif
+
+
+<form>
+     <select id="select_round">
+        <option value=''>-- select allocation round --</option>
+% for round in all_rounds:
+<%
+if round == allocation_round:
+    selected = 'selected'
+else:
+    selected = ''
+%>
+          <option value="${round.id}" ${selected}>${round}</option>
+% endfor
+     </select>
+</form>
+
+<%
+if not allocation_round:
+    return ''
+%>
 
 <table>
 % for priority in all_apps.keys():
