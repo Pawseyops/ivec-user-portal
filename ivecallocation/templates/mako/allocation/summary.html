@@ -3,8 +3,8 @@
 
 ${self.block_extrahead()}<%def name="block_extrahead()">
 ${parent.block_extrahead()}
-<script type="text/javascript" src="${url('/static/admin/js/jquery.min.js')}"></script>
-<script type="text/javascript" src="${url('/static/admin/js/jquery.init.js')}"></script>
+<script type="text/javascript" src="${url(admin_media_prefix() + 'js/jquery.min.js')}"></script>
+<script type="text/javascript" src="${url(admin_media_prefix() + 'js/jquery.init.js')}"></script>
 <script type="text/javascript">
 (function($) {
     $(document).ready(function() {
