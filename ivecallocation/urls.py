@@ -40,10 +40,9 @@ urlpatterns = patterns('',
 
 urlpatterns += patterns('ivecallocation.allocation.views',
     url(r'^priority_areas/(?P<allocationround_id>\d+)/$', 'priority_areas', name='priority-areas'),
-    url(r'^summary/$', 'summary', name='summary'),
+    url(r'^summary/(?P<allocationround_id>\d+)?/?$', 'summary', name='summary'),
     url(r'^account-request/(?P<email_hash>[\w\d\-]+)[/]$', 'account_request', name='account-request'),
     url(r'^account-details/thanks[/]$', 'account_details_thanks', name='account-details-thanks'),
-
 )
 
 # put admin at the end to consume everything that doesn't match
