@@ -32,7 +32,7 @@ def summary(request, allocationround_id=None):
     if query_list:
         apps = Application.objects.filter(reduce(operator.or_,query_list)).filter(complete=True)
     else:
-        apps = []
+        apps = Application.objects.none()
         
     if allocation_round:
         apps = apps.filter(allocation_round=allocation_round)
