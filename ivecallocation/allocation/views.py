@@ -25,7 +25,7 @@ def summary(request):
     if query_list:
         apps = Application.objects.filter(reduce(operator.or_,query_list)).filter(complete=True)
     else:
-        apps = []
+        apps = Application.objects.none()
 
     # Build a dictionary full of application objects keyed on priority_area name
     all_apps = {}
