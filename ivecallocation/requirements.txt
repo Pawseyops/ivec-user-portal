@@ -22,6 +22,6 @@ eggs/ccg-makoloader-0.2.3.tar.gz
 eggs/ccg-registration-0.8-alpha-1-ccg2.tar.gz
 eggs/egenix-mx-base-3.2.0.tar.gz
 eggs/psycopg2-2.0.8.tar.gz
-eggs/python-ldap-2.3.5.tar.gz
+python-ldap==2.3.13
 eggs/south-0.7.3.tar.gz
 django-extensions>=0.7.1
