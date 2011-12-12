@@ -21,15 +21,12 @@ urlpatterns = patterns('',
 
     # accept 'director' url suffix at top level to guide director class
     # users to their own registration page
-    (r'^(?P<usertype>director)/', admin.site.admin_view(admin.site.index)),
+    url(r'^(?P<usertype>director)', admin.site.admin_view(admin.site.index)),
 
     # deprecated URLs
     (r'^login[/]$', redirect_to, {'url': wh_url('/')}),
     (r'^admin[/]$', redirect_to, {'url': wh_url('/')}),
 
-    # Uncomment the next line to enable the admin:
-    (r'^', include(admin.site.urls)),
-    
     # Uncomment this line to enable the mango status system
     #(r'^project_status', status_view),
     
@@ -43,9 +40,14 @@ urlpatterns = patterns('',
 
 urlpatterns += patterns('ivecallocation.allocation.views',
     url(r'^priority_areas/(?P<allocationround_id>\d+)/$', 'priority_areas', name='priority-areas'),
-    url(r'^summary/$', 'summary', name='summary'),
+    url(r'^summary/(?P<allocationround_id>\d+)?/?$', 'summary', name='summary'),
     url(r'^account-request/(?P<email_hash>[\w\d\-]+)[/]$', 'account_request', name='account-request'),
     url(r'^account-details/thanks[/]$', 'account_details_thanks', name='account-details-thanks'),
+)
+
+# put admin at the end to consume everything that doesn't match
+urlpatterns += patterns('',
+    url(r'^', include(admin.site.urls)),
 )
 
 

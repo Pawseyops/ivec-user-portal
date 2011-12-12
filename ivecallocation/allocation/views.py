@@ -1,6 +1,7 @@
 import operator
 from django.http import HttpResponse, HttpResponseNotFound, HttpResponseRedirect
 from django.shortcuts import render_to_response, get_object_or_404
+from django.contrib.auth.decorators import login_required
 from django.contrib.admin.views.decorators import staff_member_required
 from django.core.exceptions import ObjectDoesNotExist
 from django.core import urlresolvers
@@ -18,14 +19,23 @@ import ivecallocation.admin
 
 PROCESSED_PARTICIPANT_SESSION_KEY = 'PROCESSED_PARTICIPANT'
 
+@login_required
 @staff_member_required
-def summary(request):
+def summary(request, allocationround_id=None):
+
+    all_rounds = AllocationRound.objects.all()
+    allocation_round = None
+    if allocationround_id:
+        allocation_round = AllocationRound.objects.get(id=allocationround_id)
 
     query_list = get_querylist(request=request)
     if query_list:
         apps = Application.objects.filter(reduce(operator.or_,query_list)).filter(complete=True)
     else:
         apps = Application.objects.none()
+        
+    if allocation_round:
+        apps = apps.filter(allocation_round=allocation_round)
 
     # Build a dictionary full of application objects keyed on priority_area name
     all_apps = {}
@@ -50,6 +60,8 @@ def summary(request):
         'edit_url': urlresolvers.reverse('admin:allocation_application_change', args=(1,)),
         'urlresolvers':urlresolvers,
         'show_review':show_review,
+        'allocation_round': allocation_round,
+        'all_rounds': all_rounds,
 #        'edit_url': urlresolvers.reverse('admin:yabi_tool_change', args=(tool.id,)),
 #        'json_url': webhelpers.url('/ws/tool/' + quote(tool.name)),
 #        'tool_params': format_params(tool.toolparameter_set.order_by('id')),

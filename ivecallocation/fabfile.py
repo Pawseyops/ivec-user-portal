@@ -11,23 +11,23 @@ env.writeable_dirs.extend(["scratch"]) # add directories you wish to have create
 env.content_excludes.extend([]) # add quoted patterns here for extra rsync excludes
 env.content_includes.extend([]) # add quoted patterns here for extra rsync includes
 
-def deploy():
+def deploy(migration=True):
     """
     Make a user deployment
     """
-    _ccg_deploy_user()
+    _ccg_deploy_user(migration)
 
-def snapshot():
+def snapshot(migration=True):
     """
     Make a snapshot deployment
     """
-    _ccg_deploy_snapshot()
+    _ccg_deploy_snapshot(migration)
 
-def release():
+def release(migration=True):
     """
     Make a release deployment
     """
-    _ccg_deploy_release()
+    _ccg_deploy_release(migration)
 
 def testrelease():
     """
