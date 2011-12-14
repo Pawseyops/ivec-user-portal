@@ -51,52 +51,68 @@ then
     exit 1;
 fi
 
-# only install if we dont already exist
-if [ ! -d $VPYTHON_DIR ]
+if [ $VIRTUALPYTHON ]
 then
-    echo -e '\n\nNo virtual python dir, lets create one\n\n'
-
-    # only install virtual env if its not hanging around
-    if [ ! -d "${CACHE}/${VIRTUALENV}" ]
-    then
-        echo -e '\n\nNo virtual env, creating\n\n'
-  
-        # only download the tarball if needed
-        if [ ! -f "${CACHE}/${VIRTUALENV_TARBALL}" ]
-        then
-            wget -O "${CACHE}/${VIRTUALENV_TARBALL}" http://pypi.python.org/packages/source/v/virtualenv/${VIRTUALENV_TARBALL}
-        fi
-
-        # build virtualenv
-        cd ${CACHE}
-        tar zxvf $VIRTUALENV_TARBALL
-        cd $VIRTUALENV
-        $TARGET_PYTHON setup.py build
-        cd ${PROJECT_DIR}
-
-    fi
-       
-    # create a virtual python in the current directory
-    $TARGET_PYTHON ${CACHE}/$VIRTUALENV/build/lib*/virtualenv.py --no-site-packages $VPYTHON_DIR
-
-    ${PIP} install ${PIP_OPTS} -r ${BUILD_REQUIREMENTS}
-    if [ -f "${REQUIREMENTS}" ]
-    then
-        if [ -f "pre-${REQUIREMENTS}" ]
-        then 
-            ${PIP} install ${PIP_OPTS} -r pre-${REQUIREMENTS}
-        fi
-        ${PIP} install ${PIP_OPTS} -r ${REQUIREMENTS}
-        if [ -f "post-${REQUIREMENTS}" ]
-        then 
-            ${PIP} install ${PIP_OPTS} -r post-${REQUIREMENTS}
-        fi
-    fi
-
-    # hack activate to set some environment we need
-    echo "PROJECT_DIRECTORY=`pwd`;" >>  $VPYTHON_DIR/bin/activate
-    echo "export PROJECT_DIRECTORY " >>  $VPYTHON_DIR/bin/activate
+    echo "Run bootstrap.sh from outside of a virtualpython environment";
+    exit 1;
 fi
+
+if [ -d $VPYTHON_DIR ]
+then
+    echo -e "\n\nYou already have a virtual python dir ($VPYTHON_DIR)"
+    read -n 1 -p "Purge before continuing? (abort/yes/NO): " PURGE
+    echo
+    if [ "$PURGE" = "y" ]; then
+        echo -n "Deleting $VPYTHON_DIR...";
+        rm -rf $VPYTHON_DIR;
+        echo "done.";
+    elif [ "$PURGE" = "a" ]; then
+        echo "Aborting...";
+        exit 0;
+    fi
+fi
+
+
+# only install virtual env if its not hanging around
+if [ ! -d "${CACHE}/${VIRTUALENV}" ]
+then
+    echo -e '\n\nNo virtual env, creating\n\n'
+
+    # only download the tarball if needed
+    if [ ! -f "${CACHE}/${VIRTUALENV_TARBALL}" ]
+    then
+        wget -O "${CACHE}/${VIRTUALENV_TARBALL}" http://pypi.python.org/packages/source/v/virtualenv/${VIRTUALENV_TARBALL}
+    fi
+
+    # build virtualenv
+    cd ${CACHE}
+    tar zxvf $VIRTUALENV_TARBALL
+    cd $VIRTUALENV
+    $TARGET_PYTHON setup.py build
+    cd ${PROJECT_DIR}
+
+fi
+   
+# create a virtual python in the current directory
+$TARGET_PYTHON ${CACHE}/$VIRTUALENV/build/lib*/virtualenv.py --no-site-packages $VPYTHON_DIR
+
+${PIP} install ${PIP_OPTS} -r ${BUILD_REQUIREMENTS}
+if [ -f "${REQUIREMENTS}" ]
+then
+    if [ -f "pre-${REQUIREMENTS}" ]
+    then 
+        ${PIP} install ${PIP_OPTS} -r pre-${REQUIREMENTS}
+    fi
+    ${PIP} install ${PIP_OPTS} -r ${REQUIREMENTS}
+    if [ -f "post-${REQUIREMENTS}" ]
+    then 
+        ${PIP} install ${PIP_OPTS} -r post-${REQUIREMENTS}
+    fi
+fi
+
+# hack activate to set some environment we need
+echo "PROJECT_DIRECTORY=`pwd`;" >>  $VPYTHON_DIR/bin/activate
+echo "export PROJECT_DIRECTORY " >>  $VPYTHON_DIR/bin/activate
 
 # tell the user how to activate this python install
 echo -e "\n\n What just happened?\n\n"
