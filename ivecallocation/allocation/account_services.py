@@ -380,7 +380,7 @@ def update_user_account(ldaph, participant):
 
     res = ldaph.ldap_update_user(username = uid,
                              newusername = uid,
-                             newpassword = participant_account.password_hash,
+                             newpassword = str(participant_account.password_hash),
                              detailsDict = detailsdict,
                              pwencoding = None)
 
