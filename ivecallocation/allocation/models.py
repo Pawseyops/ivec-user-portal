@@ -174,6 +174,7 @@ class Participant(models.Model):
                     participant_account = existing_participant.participantaccount
                 else:
                     participant_account = ParticipantAccount()
+                    participant_account.first_name = self.name
             participant_account.save()
             self.participantaccount = participant_account
         super(Participant, self).save(*args, **kwargs)
@@ -209,6 +210,9 @@ class Participant(models.Model):
         return self.application.complete
     #application_complete.admin_order_field = 'application__complete'
     application_complete.boolean = True
+
+    def get_ldap_groups(self):
+        return self.participantaccount.get_ldap_groups()
 
     def __unicode__(self):
         return "%s" % self.name
@@ -287,6 +291,13 @@ class ParticipantAccount(models.Model):
             self.uid_number = self.id + offset
             self.gid_number = self.id + offset
             self.save()
+
+    def get_ldap_groups(self):
+        return [(p.application.priority_area.name,
+            p.application.priority_area.code,
+            p.application.id,
+            p.application.project_title)
+            for p in self.participant.all()]
 
     def __unicode__(self):
         return "%s %s" % (self.first_name, self.last_name)
