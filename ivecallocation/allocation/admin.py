@@ -271,7 +271,8 @@ class ApplicationAdmin(admin.ModelAdmin):
             formset.save_m2m()
 
     # add the user to created_by on save
-    def save_model(self, request, obj, form, change):          
+    def save_model(self, request, obj, form, change):
+                 
         if not change:
             obj.created_by = request.user
             
@@ -284,6 +285,10 @@ class ApplicationAdmin(admin.ModelAdmin):
         obj.save()
         # mail our admins about the new application
         if not change: self.mail_notification(request, obj)
+        
+        # always set the ldap project name based on the priority area
+        obj.ldap_project_name = '%s%s' % (obj.priority_area.code, str(obj.id))
+        obj.save()
     
     # Attach the request to the form so we can construct it dynamically
     # based on the request. Some things are just much easier in the form class!

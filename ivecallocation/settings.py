@@ -107,7 +107,7 @@ IVEC_LDAP_GROUPBASE = 'cn=groups,dc=ldap,%s' % (IVEC_LDAP_BASE)
 IVEC_LDAP_SERVER    = 'ldap://absinthe.ivec.org'
 IVEC_LDAP_ADMINBASE = IVEC_LDAP_BASE
 IVEC_LDAP_USERDN    = 'uid=allocationapp,ou=Special Users,dc=informatics'
-IVEC_LDAP_PASSWORD  = 'default'
+IVEC_LDAP_PASSWORD  = 'sty/puds'
 
 #LDAP settings for the directory of users for EPIC
 EPIC_LDAP_DOMAIN    = 'dc=org'
@@ -120,7 +120,7 @@ EPIC_LDAP_SERVER    = 'ldaps://fdsdev.localdomain'
 EPIC_LDAP_ADMINBASE = EPIC_LDAP_BASE
 EPIC_LDAP_POSIXGROUPBASE = 'ou=POSIX,ou=Groups,%s' % (EPIC_LDAP_BASE)
 EPIC_LDAP_USERDN    = 'uid=portalapp,ou=System,ou=People' # 'uid=portalapp,ou=System,ou=People,dc=ivec,dc=org'
-EPIC_LDAP_PASSWORD  = 'default'
+EPIC_LDAP_PASSWORD  = 'te3rueto'
 
 #These need to be defined for the ldap module to work, and can be overridden later.
 AUTH_LDAP_SERVER = None
@@ -197,8 +197,83 @@ SSL_FORCE = True
 ##
 LOG_DIRECTORY = os.path.join(PROJECT_DIRECTORY,"logs")
 assert os.path.exists(LOG_DIRECTORY), "No logs directory, please create one: %s" % LOG_DIRECTORY
-LOGGING = { 'version': 1,
-            'disable_existing_loggers': True,}
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': True,
+    'formatters': {
+        'verbose': {
+            'format': 'IVECALLOCATION [%(name)s:' + 'ivecallocation' + ':%(levelname)s:%(asctime)s:%(filename)s:%(lineno)s:%(funcName)s] %(message)s'
+        },
+        'db': {
+            'format': 'IVECALLOCATION [%(name)s:' + 'ivecallocation' + ':%(duration)s:%(sql)s:%(params)s] %(message)s'
+        },
+        'simple': {
+            'format': 'IVECALLOCATION ' + 'ivecallocation' + ' %(levelname)s %(message)s'
+        },
+    },
+    'filters': {
+    },
+    'handlers': {
+        'null': {
+            'level':'DEBUG',
+            'class':'django.utils.log.NullHandler',
+        },
+        'console':{
+            'level':'DEBUG',
+            'class':'logging.StreamHandler',
+            'formatter': 'verbose'
+        },
+        'file':{
+            'level':'DEBUG',
+            'class':'logging.handlers.TimedRotatingFileHandler',
+            'filename': os.path.join(LOG_DIRECTORY, 'ivecallocation.log'),
+            'when':'midnight',
+            'formatter': 'verbose'
+        },
+        'db_logfile':{
+            'level':'DEBUG',
+            'class':'logging.handlers.TimedRotatingFileHandler',
+            'filename': os.path.join(LOG_DIRECTORY, 'ivecallocation_db.log'),
+            'when':'midnight',
+            'formatter': 'db'
+        },
+        'syslog':{
+            'level':'DEBUG',
+            'class':'logging.handlers.SysLogHandler',
+            'address':'/dev/log',
+            'facility':'local4',
+            'formatter': 'verbose'
+        },        
+        'mail_admins': {
+            'level': 'ERROR',
+            'class': 'django.utils.log.AdminEmailHandler',
+            'formatter':'verbose',
+            'include_html':True
+        }
+    },
+    'loggers': {
+        'django': {
+            'handlers':['null'],
+            'propagate': True,
+            'level':'DEBUG',
+        },
+        'django.request': {
+            'handlers': ['file', 'syslog', 'mail_admins'],
+            'level': 'DEBUG',
+            'propagate': False,
+        },
+        'django.db.backends': {
+            'handlers': ['db_logfile', 'mail_admins'],
+            'level': 'DEBUG',
+            'propagate': False,
+        },
+        'mango_ldap': {
+            'handlers': ['file'],
+            'level': 'DEBUG',
+            'propagate': False,
+        },
+    }
+}
 
 # registration app settings
 ACCOUNT_ACTIVATION_DAYS = 14

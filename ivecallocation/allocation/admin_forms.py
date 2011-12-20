@@ -53,7 +53,7 @@ class ApplicationForm(forms.ModelForm):
         self.director_form = False
         if 'directors' in [g.name for g in self.request.user.groups.all()]:
             self.director_form = True
-            if not instance or instance.priority_area == directors:
+            if not instance.id or instance.priority_area == directors:
                 self.fields["priority_area"].queryset = PriorityArea.objects.filter(code='director')
                 self.fields['priority_area'].initial = directors
                 self.fields['priority_area'].widget.widget.attrs['disabled'] = True
@@ -94,7 +94,7 @@ class ApplicationForm(forms.ModelForm):
     
     def clean_priority_area(self):
         instance = getattr(self, 'instance', None)
-        if instance and instance.id:
+        if instance and instance.id and 'priority_area' not in self.cleaned_data:
             return self.instance.priority_area
         else:
             return self.cleaned_data['priority_area']
