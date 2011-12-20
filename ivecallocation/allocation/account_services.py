@@ -230,18 +230,17 @@ def create_user_accounts(participant_id_list):
 
                     if userdone:
                         # user added or updated to the ldap directory, add the user to the group, create the group if it doesn't exist
-                        (parentarea, childarea, areanum) = get_application_area(participant.application)
-
-                        groupname = '%s%s' % (childarea, areanum)
-                        gidnumber = str(30010 + participant.application.id)
-                        description = str(participant.application.project_title)
-                        groupdone = create_group(ldaphandler = ldaph, parentou = parentarea, groupname = groupname, description = description, gidnumber = gidnumber)
+                        for (parentarea, childarea, areanum, title) in participant.get_ldap_groups():
+                            groupname = '%s%s' % (childarea, str(areanum))
+                            gidnumber = str(30010 + areanum)
+                            description = str(title)
+                            groupdone = create_group(ldaphandler = ldaph, parentou = parentarea, groupname = groupname, description = description, gidnumber = gidnumber)
                         
-                        uid = participant_account.uid
-                        #print "Adding user uid: %s to group: %s" % (uid, groupname)
-                        # ldap_add_user_to_group(username, groupname, objectclass='groupofuniquenames', membershipattr="uniqueMember"):
-                        usergroupdone = ldaph.ldap_add_user_to_group(uid, groupname, objectclass='posixgroup', membershipattr='memberUid')
-                        #print "Adding user uid: %s to group: %s RESULT: %s" % (uid, groupname, usergroupdone)
+                            uid = participant_account.uid
+                            #print "Adding user uid: %s to group: %s" % (uid, groupname)
+                            # ldap_add_user_to_group(username, groupname, objectclass='groupofuniquenames', membershipattr="uniqueMember"):
+                            usergroupdone = ldaph.ldap_add_user_to_group(uid, groupname, objectclass='posixgroup', membershipattr='memberUid')
+                            #print "Adding user uid: %s to group: %s RESULT: %s" % (uid, groupname, usergroupdone)
 
                         # create a posixGroup with cn=uid
                         posixgroupname = participant_account.uid
@@ -257,11 +256,6 @@ def create_user_accounts(participant_id_list):
                             participant.status_id = Participant.STATUS['ACCOUNT_CREATED']
                             participant.account_created_on = datetime.datetime.now()
                             participant.save()
-
-                        # save the groupname like 'Astronomy23' in the application
-                        application = participant.application
-                        application.ldap_project_name = groupname
-                        application.save()
 
             except ParticipantAccount.DoesNotExist, e:
                 logger.debug("ParticipantAccount.DoesNotExist error: %s" % (e) )
@@ -386,7 +380,7 @@ def update_user_account(ldaph, participant):
 
     res = ldaph.ldap_update_user(username = uid,
                              newusername = uid,
-                             newpassword = participant_account.password_hash,
+                             newpassword = str(participant_account.password_hash),
                              detailsDict = detailsdict,
                              pwencoding = None)
 
