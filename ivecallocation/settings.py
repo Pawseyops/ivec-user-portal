@@ -107,7 +107,7 @@ IVEC_LDAP_GROUPBASE = 'cn=groups,dc=ldap,%s' % (IVEC_LDAP_BASE)
 IVEC_LDAP_SERVER    = 'ldap://absinthe.ivec.org'
 IVEC_LDAP_ADMINBASE = IVEC_LDAP_BASE
 IVEC_LDAP_USERDN    = 'uid=allocationapp,ou=Special Users,dc=informatics'
-IVEC_LDAP_PASSWORD  = 'sty/puds'
+IVEC_LDAP_PASSWORD  = 'default'
 
 #LDAP settings for the directory of users for EPIC
 EPIC_LDAP_DOMAIN    = 'dc=org'
@@ -120,7 +120,7 @@ EPIC_LDAP_SERVER    = 'ldaps://fdsdev.localdomain'
 EPIC_LDAP_ADMINBASE = EPIC_LDAP_BASE
 EPIC_LDAP_POSIXGROUPBASE = 'ou=POSIX,ou=Groups,%s' % (EPIC_LDAP_BASE)
 EPIC_LDAP_USERDN    = 'uid=portalapp,ou=System,ou=People' # 'uid=portalapp,ou=System,ou=People,dc=ivec,dc=org'
-EPIC_LDAP_PASSWORD  = 'te3rueto'
+EPIC_LDAP_PASSWORD  = 'default'
 
 #These need to be defined for the ldap module to work, and can be overridden later.
 AUTH_LDAP_SERVER = None
