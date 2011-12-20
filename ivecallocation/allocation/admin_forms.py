@@ -94,7 +94,7 @@ class ApplicationForm(forms.ModelForm):
     
     def clean_priority_area(self):
         instance = getattr(self, 'instance', None)
-        if instance and instance.id:
+        if instance and instance.id and 'priority_area' not in self.cleaned_data:
             return self.instance.priority_area
         else:
             return self.cleaned_data['priority_area']
