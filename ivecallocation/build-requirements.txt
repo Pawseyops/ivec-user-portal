@@ -19,4 +19,4 @@ wsgiref>=0.1.2
 virtualenv==1.6.4
 Mercurial>=1.9.3
 Fabric==1.2.2
-hg+https://code.google.com/p/ccg-python-build@e339273417e4#egg=ccg-python-build
+eggs/ccg-python-build-2.3.1.tar.gz
