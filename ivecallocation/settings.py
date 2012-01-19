@@ -14,6 +14,7 @@ if not os.environ.has_key('SCRIPT_NAME'):
 SCRIPT_NAME =   os.environ['SCRIPT_NAME']
 PROJECT_DIRECTORY = os.environ['PROJECT_DIRECTORY']
 
+
 DEBUG = True
 DEV_SERVER = True
 SITE_ID = 1
@@ -110,17 +111,17 @@ IVEC_LDAP_USERDN    = 'uid=allocationapp,ou=Special Users,dc=informatics'
 IVEC_LDAP_PASSWORD  = 'default'
 
 #LDAP settings for the directory of users for EPIC
-EPIC_LDAP_DOMAIN    = 'dc=org'
-EPIC_LDAP_COMPANY   = 'dc=ivec'
+EPIC_LDAP_DOMAIN    = 'dc=com'
+EPIC_LDAP_COMPANY   = 'dc=my-domain'
 EPIC_LDAP_BASE      = '%s,%s' % (EPIC_LDAP_COMPANY, EPIC_LDAP_DOMAIN)
 EPIC_LDAP_USER_OU   = 'ou=People'
 EPIC_LDAP_USERBASE  = '%s,%s' % (EPIC_LDAP_USER_OU, EPIC_LDAP_BASE)
 EPIC_LDAP_GROUPBASE = 'ou=Projects,ou=Groups,%s' % (EPIC_LDAP_BASE)
-EPIC_LDAP_SERVER    = 'ldaps://fdsdev.localdomain'
+EPIC_LDAP_SERVER    = 'ldap://localhost'
 EPIC_LDAP_ADMINBASE = EPIC_LDAP_BASE
 EPIC_LDAP_POSIXGROUPBASE = 'ou=POSIX,ou=Groups,%s' % (EPIC_LDAP_BASE)
-EPIC_LDAP_USERDN    = 'uid=portalapp,ou=System,ou=People' # 'uid=portalapp,ou=System,ou=People,dc=ivec,dc=org'
-EPIC_LDAP_PASSWORD  = 'default'
+EPIC_LDAP_USERDN    = 'cn=Manager' # 'uid=portalapp,ou=System,ou=People,dc=ivec,dc=org'
+EPIC_LDAP_PASSWORD  = 'secret'
 
 #These need to be defined for the ldap module to work, and can be overridden later.
 AUTH_LDAP_SERVER = None
