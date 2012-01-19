@@ -6,6 +6,7 @@ from django.core.urlresolvers import reverse
 from django.utils.safestring import mark_safe
 from datetime import date
 
+
 #from choices import *
 from help_text import *
 
@@ -173,7 +174,7 @@ class Participant(models.Model):
                 if existing_participant.participantaccount:
                     participant_account = existing_participant.participantaccount
                 else:
-                    participant_account = ParticipantAccount()
+                    participant_account = ParticipantAccount(first_name=self.name)
             participant_account.save()
             self.participantaccount = participant_account
         super(Participant, self).save(*args, **kwargs)
@@ -232,6 +233,7 @@ class ParticipantAccount(models.Model):
 
     old_ldap_details = models.CharField(max_length=2000, null=True, blank=True)
     data_fetched_on = models.DateTimeField(null=True, blank=True)
+
     
     def get_unique_uid(self, test_uid = None, first_name = None, last_name = None):
         '''This function checks to make sure a uid is unique.

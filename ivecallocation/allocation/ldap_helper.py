@@ -40,11 +40,22 @@ def createpassword(newpassword, pwencoding=None):
             m.update(newpassword)
             logger.debug( 'doing md5')
             encpassword = '{MD5}%s' % (base64.encodestring( m.digest()) ) 
+        elif pwencoding == 'ssha':
+            logger.debug('doing SSHA')
+            encpassword = ssha_password(newpassword)
         #Insert other encoding schemes here.            
         else:
             raise Exception("Unsupported password encoding")
 
     return encpassword.strip()
+
+def ssha_password(password):
+    import hashlib, os
+    from base64 import encodestring
+    salt = os.urandom(4)
+    h = hashlib.sha1(password)
+    h.update(salt)
+    return "{SSHA}" + encodestring(h.digest() + salt)[:-1]
 
 class LDAPSearchResult(object):
     """A class to model LDAP results.

@@ -446,7 +446,7 @@ def get_user_account_details(uid):
     ldaph.close()
     return {'details': ldap_details, 'groups': groups}
 
-def hash_password(newpassword, pwencoding='md5'):
+def hash_password(newpassword, pwencoding='ssha'):
     return ldap_helper.createpassword(newpassword, pwencoding=pwencoding)
 
 def get_applications_CSV(id_list):
