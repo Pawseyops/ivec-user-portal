@@ -20,7 +20,7 @@ http://ccg-django-extras.googlecode.com/files/ccg-auth-0.3.2.tar.gz
 http://ccg-django-extras.googlecode.com/files/ccg-extras-0.1.4.tar.gz
 http://ccg-django-extras.googlecode.com/files/ccg-makoloader-0.2.4.tar.gz
 http://ccg-django-extras.googlecode.com/files/ccg-registration-0.8-alpha-1-ccg2.tar.gz
-egenix-mx-base==3.2.0
+egenix-mx-base
 psycopg2==2.0.8
 python-ldap==2.3.13
 south==0.7.3
