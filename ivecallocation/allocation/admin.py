@@ -10,9 +10,10 @@ from django.db.models import Q
 from ivecallocation.allocation.utils import get_querylist
 from ivecallocation.allocation import account_services
 from django.http import HttpResponse
-from django.core.mail import mail_admins
+from django.core.mail import mail_admins, send_mail
 from django.template.loader import render_to_string
 from django.shortcuts import render_to_response
+from ivecallocation import settings
 
 class ResearchClassificationInline(admin.TabularInline):
     model = ResearchClassification
@@ -256,7 +257,8 @@ class ApplicationAdmin(admin.ModelAdmin):
             {'id': obj.id,
              'username': request.user.username,
              'project_title': obj.project_title})
-        mail_admins("New allocation application", body)
+        send_mail("New allocation application", body, settings.SERVER_EMAIL,
+            [m[1] for m in settings.APPLICATION_NOTICES])
 
     # force the reviewer to be the logged in user
     def save_formset(self, request, form, formset, change):

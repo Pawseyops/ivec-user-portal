@@ -6,7 +6,7 @@
 # if any subscript fails, fail the entire script so we immediately know
 set -e
 
-VERSION='2.3.0'
+VERSION='2.3.2'
 PROJECT_DIR=`pwd`
 CACHE='/tmp'
 PIP_DOWNLOAD_CACHE=${CACHE}
@@ -100,12 +100,11 @@ fi
 # create a virtual python in the current directory
 $TARGET_PYTHON ${CACHE}/$VIRTUALENV/build/lib*/virtualenv.py --no-site-packages $VPYTHON_DIR
 
-echo export PATH=$PWD/$VPYTHON_DIR/bin:$PATH
 export PATH=$PWD/$VPYTHON_DIR/bin:$PATH
 
 # make mercurial a standard build requirement so we can use hg+http URLs
 # in the build-requirements file
-${PIP} install ${PIP_OPTS} 'Mercurial>=1.9.3'
+${PIP} install ${PIP_OPTS} 'Mercurial==2.0.1'
 
 ${PIP} install ${PIP_OPTS} -r ${BUILD_REQUIREMENTS}
 if [ -f "${REQUIREMENTS}" ]
