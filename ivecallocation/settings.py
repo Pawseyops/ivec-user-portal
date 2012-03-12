@@ -149,6 +149,7 @@ ADMINS = [
     ( 'alert', 'alerts@yourdomain.com' )
 ]
 MANAGERS = ADMINS
+APPLICATION_NOTICES = ADMINS
 
 ##
 ## CAPTCHA settings
