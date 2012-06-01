@@ -13,15 +13,15 @@ from ivecallocation.allocation.models import *
 from django.db import transaction
 from django.utils import simplejson
 from django.template import loader, Context
+from models import EmailTemplate
 
 
 def send_account_creation_mail(participant, request):
     subject = "Successful application for Pawsey funded iVEC infrastructure"
-    message_template = loader.get_template('allocation/account_request_email.txt')
     email_hash = str(uuid.uuid4())
     link = "%s%s/%s" % (siteurl(request), 'account-request', email_hash)
-
-    message = message_template.render(Context({'participant': participant, 'link': link}))
+    template = EmailTemplate.objects.get(name='Participant Account Request')
+    message = template.render_to_string({'participant': participant, 'link': link})
     send_mail(subject, message, participant.email)
 
     participant.account_email_hash = email_hash
@@ -31,14 +31,14 @@ def send_account_creation_mail(participant, request):
 
 def send_account_created_notification_mail(participant, request):
     subject = "Account created for Pawsey funded iVEC infrastructure"
-    message_template = loader.get_template('allocation/account_created_email.txt')
     uid = participant.participantaccount.uid
     account_details = get_user_account_details(uid)
     project = participant.application.ldap_project_name 
     hours_allocated = participant.application.hours_allocated
     assert project is not None and len(project)>0, "Project could not be retrieved at time of 'account created' email for user %s" % (uid) 
     assert (hours_allocated is not None) and (hours_allocated > 0), "Invalid hours allocated (%s) at time of 'account created' email" % (str(hours_allocated) )
-    message = message_template.render(Context({'participant': participant, 'project': project, 'uid': uid}))
+    template = EmailTemplate.objects.get(name='Participant Account Created')
+    message = template.render_to_string({'participant': participant, 'project': project, 'uid': uid})
     send_mail(subject, message, participant.email)
 
     participant.status_id = Participant.STATUS['ACCOUNT_CREATED_EMAIL_SENT']
@@ -77,8 +77,7 @@ def fetch_old_ldap_details(participant):
             
     return retval
 
-def send_mail(subject, message, to):
-    #assert 'ccg.murdoch.edu.au' in to, "Can send email just to a ccg.murdoch.edu.au address"    
+def send_mail(subject, message, to):   
     django_mail.send_mail(subject, message, settings.DEFAULT_FROM_EMAIL, [to])
 
 def get_ivec_ldap_details(emailaddress):

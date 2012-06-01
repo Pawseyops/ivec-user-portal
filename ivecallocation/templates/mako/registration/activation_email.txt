@@ -2,7 +2,7 @@
 <% from django.contrib.sites.models import Site %>
 <% current_site = Site.objects.get_current() %>
 
-Recently this email address was used to create a profile to apply for resouces on Pawsey-funded iVEC infrastructure.
+Recently this email address was used to create a profile to apply for resources on Pawsey-funded iVEC infrastructure.
 
 To activate this profile, please use this link:
 

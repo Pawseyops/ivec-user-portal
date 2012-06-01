@@ -253,11 +253,12 @@ class ApplicationAdmin(admin.ModelAdmin):
 
     # send an email notification of the new application
     def mail_notification(self, request, obj):
-        body = render_to_string('allocation/application_notification_email.txt',
-            {'id': obj.id,
-             'username': request.user.username,
-             'project_title': obj.project_title})
-        send_mail("New allocation application", body, settings.SERVER_EMAIL,
+        template = EmailTemplate.objects.get(name='Application Notification')
+        body = template.render_to_string({
+            'id': obj.id,
+            'username': request.user.username,
+            'project_title': obj.project_title})
+        send_mail(template.subject, body, settings.SERVER_EMAIL,
             [m[1] for m in settings.APPLICATION_NOTICES])
 
     # force the reviewer to be the logged in user
@@ -449,16 +450,15 @@ class ParticipantAccountAdminForm(forms.ModelForm):
 class ParticipantAccountAdmin(admin.ModelAdmin):
     form = ParticipantAccountAdminForm 
 
+class EmailTemplateAdmin(admin.ModelAdmin):
+    form = EmailTemplateForm
+
 def register(site):
     site.register(Application, ApplicationAdmin)
-##    site.register(ResearchClassification)
-##    site.register(FieldOfResearchCode)
     site.register(Participant, ParticipantAdmin)
     site.register(ParticipantAccount, ParticipantAccountAdmin)
     site.register(Institution)
     site.register(System, SystemAdmin)
     site.register(AllocationRound, AllocationRoundAdmin)
-##    site.register(Publication)
-##    site.register(ResearchFunding)
-##    site.register(SupercomputerJob)
-##    site.register(Library)
+    site.register(EmailTemplate, EmailTemplateAdmin)
+

@@ -10,6 +10,13 @@ from django.utils.safestring import mark_safe
 from django.utils.encoding import force_unicode
 from ccg.recaptcha import *
 
+class EmailTemplateForm(forms.ModelForm):
+    def __init__(self, *args, **kwargs):
+        super(EmailTemplateForm, self).__init__(*args, **kwargs)
+        self.fields["template"].widget = forms.Textarea(attrs={'rows':30, 'cols':80})
+    class Meta:
+        model = EmailTemplate
+
 class SystemForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super(SystemForm, self).__init__(*args, **kwargs)
