@@ -4,6 +4,7 @@ from django.contrib.auth.models import User as DjangoUser
 from django.db.models import Avg
 from django.core.urlresolvers import reverse
 from django.utils.safestring import mark_safe
+from mako.template import Template
 from datetime import date
 
 
@@ -15,12 +16,24 @@ from help_text import *
 #import logging
 #logger = logging.getLogger('ivecallocation')
 
+class EmailTemplate(models.Model):
+    name = models.CharField(max_length=100, help_text=help_text_emailtemplate_name)
+    subject = models.CharField(max_length=100, help_text=help_text_emailtemplate_subject)
+    template = models.CharField(max_length=8192, blank=True, help_text=help_text_emailtemplate_template)
+
+    def __unicode__(self):
+        return self.name
+        
+    def render_to_string(self, template_vars):
+        return Template(self.template).render(**template_vars)
+        
+
 class System(models.Model):
     name = models.CharField(max_length=100, help_text=help_text_system_name)
     description = models.CharField(max_length=1000, help_text=help_text_system_description)
     
     def __unicode__(self):
-        return "%s" % self.name
+        return self.name
 
 class PriorityArea(models.Model):
     name = models.CharField(max_length=32)

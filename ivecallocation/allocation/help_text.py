@@ -97,3 +97,6 @@ If left blank, the system name will be used instead."""
 help_text_allocationround_priority_area = """Applications for this round can only be made for these priority areas."""
 
 
+help_text_emailtemplate_name = """The name of your email template"""
+help_text_emailtemplate_subject = """The subject header for emails sent using this template"""
+help_text_emailtemplate_template = """Your email template body in Mako templating syntax"""
