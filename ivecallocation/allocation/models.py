@@ -256,11 +256,11 @@ class ParticipantAccount(models.Model):
         '''This function checks to make sure a uid is unique.
            You can either pass one in (test_uid) or it will
            use self.uid '''
+
         def check_unique_uid(uid):
             if uid is None or len(uid) == 0:
                 return False
             qs = ParticipantAccount.objects.filter(uid = uid)
-            print qs
             if len(qs) == 0:
                 #There were none. OK!
                 return True
@@ -269,7 +269,18 @@ class ParticipantAccount(models.Model):
                 return True
             else:
                 return False
-        
+
+
+        def build_name(part1, part2):
+            part1 = part1.lower()
+            part1 = "".join([x for x in part1 if x in 'abcdefghijklmnopqrstuvwxyz'])
+
+            part2 = part2.lower()
+            part2 = "".join([x for x in part2 if x in 'abcdefghijklmnopqrstuvwxyz'])
+
+            return "%s%s" % (part1[0],part2)
+            
+
         #Check to see if we have the same uid as anyone else.
         #if so, try for a uid using firstname + lastname[0]
         #and if that still conflicts, use self.uid + 1,2,3 etc
@@ -279,23 +290,23 @@ class ParticipantAccount(models.Model):
         if not first_name: first_name = self.first_name
         if not last_name: last_name = self.last_name
 
-        if test_uid is None or len(test_uid) == 0:
-            test_uid = ("%s%s" % (first_name[0], last_name)).lower()
 
+        #check initial and lastname
+        candidate_uid = build_name(first_name, last_name)
+        if check_unique_uid(candidate_uid):
+            return candidate_uid
 
-        #catch uid's that have somehow come with a capitalisation (from LDAP perhaps).
-        if test_uid.lower() != test_uid:
-            test_uid = test_uid.lower()
+        # check firstname and first letter of lastname
+        candidate_uid = build_name(last_name, first_name)
+        if check_unique_uid(candidate_uid):
+            return candidate_uid
 
-        candidate_uid = test_uid 
-        if not check_unique_uid(candidate_uid):
-            candidate_uid = ("%s%s" % (first_name[0], last_name)).lower()
-            counter = 1
-            while not check_unique_uid(candidate_uid):
-                candidate_uid = ("%s%s" % (test_uid, str(counter))).lower()
-                counter +=1
-
-        return candidate_uid
+        # now use a counter to get the uid
+        counter = 1
+        candidate_uid = build_name(first_name, last_name)        
+        while not check_unique_uid("%s%s" % (candidate_uid, counter)):
+            counter +=1
+        return "%s%s" % (candidate_uid, counter)
 
     def constrain_uidgid(self):
         '''Ensures the users uidnumber and gidnumber are over 20k, and unique in the database.
