@@ -160,6 +160,27 @@ def parse_ldap_url(url):
     
     return url.split('/')[2], 636 if url.startswith("ldaps") else 389 if url.startswith("ldap") else None
 
+# couple of short cuts to avoid repeating those static lists of LDAP parameters
+def ivec_ldap_handler():
+    return LDAPHandler(userdn     = settings.IVEC_LDAP_USERDN, 
+                                 password   = settings.IVEC_LDAP_PASSWORD, 
+                                 server     = settings.IVEC_LDAP_SERVER, 
+                                 user_base  = settings.IVEC_LDAP_USERBASE, 
+                                 group      = None, 
+                                 group_base = settings.IVEC_LDAP_GROUPBASE, 
+                                 admin_base = settings.IVEC_LDAP_ADMINBASE,
+                                 dont_require_cert=True, debug=True)
+
+def epic_ldap_handler():
+    return LDAPHandler(userdn     = settings.EPIC_LDAP_USERDN, 
+                                 password   = settings.EPIC_LDAP_PASSWORD, 
+                                 server     = settings.EPIC_LDAP_SERVER, 
+                                 user_base  = settings.EPIC_LDAP_USERBASE, 
+                                 group      = None, 
+                                 group_base = settings.EPIC_LDAP_GROUPBASE, 
+                                 admin_base = settings.EPIC_LDAP_ADMINBASE,
+                                 dont_require_cert=True, debug=True)
+
 class LDAPHandler(object):
     def __init__(self, userdn=None, password=None, server = settings.AUTH_LDAP_SERVER, group = settings.AUTH_LDAP_GROUP, group_base = settings.AUTH_LDAP_GROUP_BASE, admin_base = settings.AUTH_LDAP_ADMIN_BASE, user_base = settings.AUTH_LDAP_USER_BASE, dont_require_cert=None, debug=None):
         '''This class makes use of the 'settings' module, which should be accessible from the current scope.'''

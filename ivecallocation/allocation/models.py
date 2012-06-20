@@ -6,6 +6,7 @@ from django.core.urlresolvers import reverse
 from django.utils.safestring import mark_safe
 from mako.template import Template
 from datetime import date
+from allocation.ldap_helper import epic_ldap_handler
 
 
 #from choices import *
@@ -301,10 +302,27 @@ class ParticipantAccount(models.Model):
            Can only be called after the user has already been saved.
         '''
         offset = 20050
-        if ( (self.uid_number != self.id + offset) or (self.gid_number != self.id+offset)):
-            self.uid_number = self.id + offset
-            self.gid_number = self.id + offset
+        maxid = 29999
+        # Make sure the new LDAP uid doesn't already exist on the Epic LDAP server
+        # Iterate 5 times, which should be ample. If we hit the end, it might require
+        # human intervention anyway so chuck an exception.
+        epic = epic_ldap_handler()
+        for newid in range(self.id + offset, self.id + offset + 5):
+            if newid > maxid:
+                raise Exception('Maximum Epic LDAP uidNumber of %s exceeded'%maxid)
+            user = epic.get_user_details_from_attribute(attribute = 'uidNumber', value = newid)
+            if not len(user):
+                break
+        else:
+            raise Exception('Difficulty allocating an Epic LDAP uidNumber for ParticipantAccount=%s.'\
+                'Tried %s - %s, but they were all unavailable in ldap'%(self.id, self.id + offset, newid))
+        
+        if ( (self.uid_number != newid) or (self.gid_number != newid)):
+            self.uid_number = newid
+            self.gid_number = newid
             self.save()
+        
+        return newid
 
     def __unicode__(self):
         return "%s %s" % (self.first_name, self.last_name)
