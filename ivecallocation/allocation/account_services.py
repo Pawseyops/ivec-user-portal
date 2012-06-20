@@ -115,7 +115,10 @@ def create_application_group(ldaphandler, application):
     Create the group in LDAP for the application. Create the parent area if needed
     return the project name if successful else None
     '''
-    groupname = '%s%s' % (application.priority_area.code, str(application.id))
+    if application.ldap_project_name:
+        groupname = application.ldap_project_name
+    else:
+        groupname = '%s%s' % (application.priority_area.code, str(application.id))
     gidnumber = str(30010 + application.id)     # TODO: CAUTION: the offset is hard coded here
     description = str(application.project_title)
 
