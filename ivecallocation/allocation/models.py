@@ -25,7 +25,10 @@ class EmailTemplate(models.Model):
         return self.name
         
     def render_to_string(self, template_vars):
-        return Template(self.template).render(**template_vars)
+        return (
+            Template(self.subject).render(**template_vars),
+            Template(self.template).render(**template_vars)
+        )
         
 
 class System(models.Model):

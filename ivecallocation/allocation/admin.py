@@ -254,11 +254,11 @@ class ApplicationAdmin(admin.ModelAdmin):
     # send an email notification of the new application
     def mail_notification(self, request, obj):
         template = EmailTemplate.objects.get(name='Application Notification')
-        body = template.render_to_string({
+        subject, body = template.render_to_string({
             'id': obj.id,
             'username': request.user.username,
             'project_title': obj.project_title})
-        send_mail(template.subject, body, settings.SERVER_EMAIL,
+        send_mail(subject, body, settings.SERVER_EMAIL,
             [m[1] for m in settings.APPLICATION_NOTICES])
 
     # force the reviewer to be the logged in user
