@@ -8,3 +8,4 @@
 \.vagrant$
 Vagrantfile
 fab-tmp
+^bootstrap$
