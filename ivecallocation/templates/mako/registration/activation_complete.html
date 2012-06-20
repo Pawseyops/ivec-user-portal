@@ -1,0 +1,10 @@
+<%inherit file="base.html" />
+<% from ccg.utils.webhelpers import url %>
+
+<%def name="title()">Activation Complete</%def>
+
+<p>
+    Congratulations! Your account is now active. 
+    Go <a href="${url('/login')}">here</a> to login using your email address
+    and password you specified in the registration process.
+</p>
