@@ -250,6 +250,9 @@ class Institution(models.Model):
         return "%s" % self.display_name
 
 class ParticipantAccount(models.Model):
+    class Meta:
+        ordering = ('last_name', 'first_name', )
+        
     institution = models.ForeignKey(Institution, null=True)
     first_name = models.CharField(max_length=256)
     last_name = models.CharField(max_length=256)
