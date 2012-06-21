@@ -78,7 +78,7 @@ class Application(models.Model):
     research_record = models.CharField(max_length=5000, help_text=help_text_research_record, null=True, blank=True)
     research_significance = models.CharField(max_length=5000, help_text=help_text_research_significance, null=True, blank=True)
     computational_methodology = models.CharField(max_length=5000, help_text=help_text_computational_methodology, null=True, blank=True)
-    core_hours_requested = models.IntegerField(null=True, blank=True, help_text=help_text_core_hours)
+    core_hours_requested = models.IntegerField(null=True, blank=True, help_text=help_text_core_hours, verbose_name='Service units requested')
     hours_allocated = models.IntegerField(null=True, blank=True)    
     storage_temporary = models.CharField(max_length=32, null=True, blank=True, help_text=help_text_storage_temporary)
     storage_resident = models.CharField(max_length=32, null=True, blank=True, help_text=help_text_storage_resident)
