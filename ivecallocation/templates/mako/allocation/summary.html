@@ -71,7 +71,10 @@ if not allocation_round:
         <tr>
         <th>Title</th>
         <th>Created By</th>
+        <th>Res. Score</th>
+        <th>Comp. Score</th>
         <th>Overall Score</th>
+
         <th>Hours Requested</th>
         <th>Hours Allocated</th>
         % if show_review:
@@ -87,7 +90,9 @@ if not allocation_round:
         <tr>
             <td>${app.project_title}</td>
             <td>${app.created_by}</td>
-            <td>${app.overall_score()}</td>
+            <td>${"%.2f" % app.research_score()}</td>
+            <td>${"%.2f" % app.computational_score()}</td>
+            <td>${"%.2f" % app.overall_score()}</td>
             <td align="right">${app.core_hours_requested}</td>
             <td align="right">${app.hours_allocated}</td>
             % if show_review:
