@@ -1,0 +1,175 @@
+<%inherit file="registration/base.html" />
+<%! from ccg.utils.webhelpers import url %>
+<%! from django.core.urlresolvers import reverse %>
+
+
+
+<%def name="title()">
+% if usertype=='director':
+Application for Directors' Share Resources on Pawsey-Funded iVEC Infrastructure
+% else:
+Application for Resources on Pawsey-Funded iVEC Infrastructure
+% endif
+</%def>
+
+${self.block_content()}<%def name="block_content()">
+
+<h3>Allocation Rounds</h3>
+<p>
+You can register at any time. Once registered, applications are only available during
+open allocation rounds. Open and recently closed rounds are listed below.
+</p>
+<p><font color=red>Applications are only accepted between the opening and closing dates below. Allocations are for the entire 2012 calendar year.</font></p>
+
+<table id='rounds' width=100%>
+<tr><th>Resource</th><th>Round Name</th><th>Opens</th><th>Closes</th><th>Status</th></tr>
+% for round in allocation_rounds:
+    <% closed = 'class="closed"' if round.status=='closed' else ''%>
+    <tr ${closed}>
+        <td>${round.system}</td>
+        <td>${round.name}</td>
+        <td>${round.start_date.strftime('%d %b %Y')}</td>
+        <td>${round.end_date.strftime('%d %b %Y')}</td>
+        <td>${round.status}</td>
+    </tr>
+% endfor
+</table>
+<br>
+
+
+
+<form action="${ reverse('admin:index') }" method="post" class="login" id="login-form">${ csrf_tag(csrf_token) }
+
+% if form.errors and '__all__' in form.errors:
+% for error in form.errors['__all__']:
+
+<p class="errornote">
+    ${error}
+</p>
+% endfor
+% endif
+
+Log into iVEC Allocations here:
+<p><font color=red>This is not your iVEC login. It is your login for the allocations system only.</font></p>
+
+  <div class="form-row">
+    <label for="id_username">${trans('Email:')}</label> <input type="text" name="username" id="id_username" />
+  </div>
+  <div class="form-row">
+    <label for="id_password">${trans('Password:')}</label> <input type="password" name="password" id="id_password" />
+    <input type="hidden" name="this_is_the_login_form" value="1" />
+  </div>
+  <div class="submit-row">
+    <label>&nbsp;</label><input type="submit" value="${trans('Log in')}" />
+  </div>
+  
+  No login?
+  <a href="${ reverse('registration.views.register') }${usertype}">Click here to register.</a><BR>
+  <a href="${ reverse('ivecallocation.allocation.views.password_reset') }">Forgot password?</a>
+  
+</form>
+
+<script type="text/javascript">
+document.getElementById('id_username').focus()
+</script>
+
+
+<p>
+% if usertype=='director':
+    Applicants are invited to access Directors' Share of Pawsey-funded iVEC      
+    infrastructure. Contained within this web site is the process for
+    application. If you require any assistance completing this application,
+    please contact <a href="mailto:help@ivec.org">help@ivec.org</a>.
+% else:
+    Applicants are invited to access Pawsey-funded iVEC infrastructure.
+    Contained within this web site is the process for application. If you
+    require any assistance completing this application, please contact
+    <a href="mailto:help@ivec.org">help@ivec.org</a>.
+% endif
+</p>
+
+<h3>Background</h3>
+
+
+<p>
+    The Pawsey project is an $80 million Commonwealth Super Science funded
+    infrastructure project to put a petascale supercomputing system in Perth
+    that will be managed by iVEC, and operated through funds from the Western
+    Australian State Government and the iVEC Partners. The allocation of time
+    on this Pawsey-funded infrastructure is determined through mechanisms
+    agreed by iVEC and the Commonwealth.
+</p>
+
+<p>
+    The agreed allocations are:
+
+    <ul>
+        <li>25% Radio Astronomy</li>
+        <li>25% Geosciences</li>
+        <li>30% iVEC Partners</li>
+        <li>15% National Merit Allocation Scheme</li>
+        <li>5% Director's Discretionary Allocation</li>
+    </ul> 
+</p>
+
+<p>
+    These allocations may change in future years. Half of the machine has been
+    initially allocated to radio astronomy and the geosciences, both of which
+    are priority areas for the State and Commonwealth governments. The radio
+    astronomy share is predominantly for the operational requirements of
+    facilities like ASKAP, MWA, and DIRP. The Partner share is available only
+    to researchers from any of the iVEC Partners (i.e. CSIRO and the four WA
+    public universities), whereas the National Merit Allocation Scheme will be
+    available to researchers Australia-wide. Finally, the Director's share is
+    to support pilot or startup projects, code scaling work, urgent computing
+    requirements and large-scale data intensive visualisation.
+</p>
+
+<p>
+This form is to be used to apply for time in 2012 for the Radio Astronomy, Geosciences and iVEC Partner share. Please note that time is awarded to projects, which may have many users.
+</p>
+
+<h3>Infrastructure</h3>
+
+<p>
+Compute resources in this second round of time allocation are available on epic.ivec.org, a 85 TF system comprised of 9,600 cores with 500 terabytes of high-performance storage housed at iVEC@Murdoch. The GPU based fornax.ivec.org will not be in production mode until the second quarter of 2012 and will be the subject of a separate allocation round.
+</p>
+
+<h3>Who should complete this application?</h3>
+
+<p>
+    Note that time is allocated to projects - these can have many team members.
+    Thus, applications are submitted by Project Leaders on behalf of the
+    project team. Members of a project team are not require to complete an 
+    application, however they must still agree to the iVEC conditions of
+    use at <a href="http://www.ivec.org/services/apply-account/condition-use">http://www.ivec.org/services/apply-account/condition-use</a>. Typically
+    Project Leaders will be research leaders within a scientific research
+    group, laboratory, or community.
+</p>
+
+<p>
+    The Project Leader is responsible for
+    <ul>
+        <li>Completing the application contained within this web site</li>
+        <li>Being the primary point of contact between the project team members and iVEC</li>
+        <li>Completing the project reports within 30 days at the end of the granting period</li>
+        <li>Submitting requests to add/remove users to existing projects</li>
+        <li>Management of data storage and sharing during and after the project</li>
+    </ul>
+</p>
+
+<p>
+The applications will be evaluated by a mixture of science and supercomputing experts, so please target your application to an audience with a generic scientific background. Do not assume they have deep knowledge of your application area. Please don't hesitate to contact help@ivec.org if you have any questions regarding this form.
+</p>
+
+<p>
+    Please note that iVEC will manage the allocation on a best effort basis but
+    cannot guarantee that approved projects will receive their full allocations
+    and that unused allocations will not roll over to the next allocation
+    period.
+</p>
+
+
+<br/>
+
+</%def>

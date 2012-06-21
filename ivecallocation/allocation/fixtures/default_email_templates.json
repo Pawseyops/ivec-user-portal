@@ -1,0 +1,29 @@
+[
+ {
+  "pk": 1, 
+  "model": "allocation.emailtemplate", 
+  "fields": {
+   "name": "Application Notification", 
+   "template": "<% from ccg.utils.webhelpers import url %>\r\n<% from django.contrib.sites.models import Site %>\r\n<% current_site = Site.objects.get_current() %>\r\nA new iVEC resources allocation application has been lodged by '${username}':\r\n\r\n${project_title}\r\n\r\nFollow the link below to view:\r\n\r\nhttp://${current_site}${ url('/allocation/application/') }${id}/\r\n\r\n", 
+   "subject": "New allocation application"
+  }
+ }, 
+ {
+  "pk": 2, 
+  "model": "allocation.emailtemplate", 
+  "fields": {
+   "name": "Participant Account Request", 
+   "template": "Dear ${participant.name},\r\n\r\nRecently iVEC received an application for access to Pawsey funded iVEC resources titled:  \r\n\r\n\"${participant.application.project_title}\"\r\n\r\nThis application has been successful, details about the size of your allocation and how to access your account will be provided after your account has been activated.\r\n\r\nPlease click the following link to progress with your account creation process:\r\n\r\n${link}\r\n\r\nIf you experience difficulties following the above link or believe you received this email in error please contact help@ivec.org.\r\n\r\nRegards,\r\n\r\niVEC\r\n\r\n--\r\niVEC, 'Home of the Pawsey Centre'\r\n26 Dick Perry Avenue, Technology Park\r\nKensington WA 6151\r\nAustralia\r\n\r\nPhone: +61 8 6436 8831\r\nFax: +61 8 6436 8555\r\nEmail: help@ivec.org\r\nWWW:  http://www.ivec.org\r\n", 
+   "subject": "Successful application for Pawsey funded iVEC infrastructure"
+  }
+ }, 
+ {
+  "pk": 3, 
+  "model": "allocation.emailtemplate", 
+  "fields": {
+   "name": "Participant Account Created", 
+   "template": "Dear ${participant.name.strip()},\r\n\r\nYour account at iVEC has been created. Your user name is ${uid} and your project is ${project}.\r\n\r\nYou should be able to;\r\n  ssh -Y ${uid}@epic.ivec.org\r\n\r\nWhen you have logged in, you can change your password by typing;\r\n\r\npasswd\r\n\r\nand follow the prompts.\r\n\r\nYou have a project directory on epic called /scratch/${project}/${uid}.\r\nYou have ${participant.application.hours_allocated} CPU hours allocated.\r\n\r\nYou can create whatever directory structure you like here and this is where you should run your jobs from. Please note that /home and /scratch are NOT backed up, so don't leave your data here.\r\n\r\n\r\nPlease read the online help which can be found at:\r\n\r\nhttp://www.ivec.org/Supercomputing/Facilities/iVEC%40Murdoch/Epic%40Murdoch\r\n\r\n\r\nAdditionaly, you can email help@ivec.org if you have any questions.\r\n\r\n\r\nRegards,\r\n\r\niVEC\r\n\r\n--\r\niVEC, 'Home of the Pawsey Centre'\r\n26 Dick Perry Avenue, Technology Park\r\nKensington WA 6151\r\nAustralia\r\n\r\nPhone: +61 8 6436 8831\r\nFax: +61 8 6436 8555\r\nEmail: help@ivec.org\r\nWWW:  http://www.ivec.org\r\n", 
+   "subject": "Account created for Pawsey funded iVEC infrastructure"
+  }
+ }
+]

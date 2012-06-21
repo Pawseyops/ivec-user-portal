@@ -1,0 +1,57 @@
+<%inherit file="base.html" />
+<% from ccg.utils.webhelpers import url %>
+
+<%def name="title()">
+% if usertype=='director':
+Application for Directors' Share Resources on Pawsey-Funded iVEC Infrastructure
+% else:
+Application for Resources on Pawsey-Funded iVEC Infrastructure
+% endif
+</%def>
+
+<p>
+You can register at any time. Once registered, applications are only available during
+open allocation rounds.
+</p>
+
+
+<p>
+<form action="${url('/accounts/register/')}${usertype}" method="POST">${ csrf_tag(csrf_token) }
+    <p>
+        To commence your application, please enter your e-mail address and
+        desired password below. (Please do not use your iVEC password.)
+    </p>
+    <p>        
+        <font color=red>If you have previously applied for access to Pawsey-Funded iVEC Infrastructure,
+        do not complete the form below. Please contact <a href="mailto:help@ivec.org">help@ivec.org</a> for help on how to proceed.</font>
+    </p>
+    
+    <p><font color=red>This is not your iVEC login. It will be your login for the allocations system only.</font></p>
+
+    <table>
+        ${ form.as_table() }
+    </table>
+
+    <p class="submit-row">
+        <input type="submit" value="Submit" />
+    </p>
+</form>
+</p>
+
+
+
+<p>
+% if usertype=='director':
+    Applicants are invited to access Directors' Share of Pawsey-funded iVEC      
+    infrastructure. Contained within this web site is the process for
+    application. If you require any assistance completing this application,
+    please contact <a href="mailto:help@ivec.org">help@ivec.org</a>.
+% else:
+    Applicants are invited to access Pawsey-funded iVEC infrastructure.
+    Contained within this web site is the process for application. If you
+    require any assistance completing this application, please contact
+    <a href="mailto:help@ivec.org">help@ivec.org</a>.
+% endif
+</p>
+
+

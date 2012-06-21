@@ -1,0 +1,20 @@
+% if not ajax:
+<select name='test'>
+% endif
+% if not director_form:
+<option value="" selected="selected">-- select priority area --</option>
+% endif
+% for p in priority_areas:
+% if director_form:
+    % if p.code=='director':
+        <!-- printed a director -->
+        <option value="${p.id}" selected="selected" enabled='false'>${p.name}</option>
+    % endif
+% else:
+<!-- printed a non-director -->
+<option value="${p.id}">${p.name}</option>
+% endif
+% endfor
+% if not ajax:
+</select>
+% endif
