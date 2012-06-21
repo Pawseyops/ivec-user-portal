@@ -34,8 +34,7 @@ in terms of number of processes, data volumes worked with, computing resources u
 (5000 characters max).
 """
 
-help_text_core_hours="""How much CPU time do you require between January 1 and December 30 2012 in core hours?
-This should be consistent with the information given in Computational Methodology."""
+help_text_core_hours="""How much compute time do you require in this allocation period?  For CPU based resources, a Service Unit is a core hour.  For GPU based resources, this is a GPU hour."""
 
 
 help_text_storage_temporary="""Temporary scratch is only required during the running of jobs, including the pre/post processing of datasets (in terabytes)."""
