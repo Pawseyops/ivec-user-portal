@@ -90,6 +90,7 @@ class Application(models.Model):
     complete =  models.BooleanField(verbose_name="ready to submit application")
     allocation_round = models.ForeignKey(AllocationRound, help_text=mark_safe("<p id='allocation_round_notice' class='help allocation_round_notice'>&nbsp;</p>")) # null=True for south
     priority_area = models.ForeignKey(PriorityArea, help_text=help_text_available_priority_areas)
+    completed_on = models.DateTimeField(auto_now_add=True, editable=False, null=True)
 
     def __cmp__(self, other):
         if self.overall_score() < other.overall_score():
@@ -102,21 +103,9 @@ class Application(models.Model):
     def __unicode__(self):
         return "%s" % self.project_title
 
-    def research_score(self):
-        # aggregate returns dictionary, so just return the value
-        score = self.reviewerscore_set.all().aggregate(Avg('research_merit')).get('research_merit__avg', 0.0)
-        score = 0.0 if score == None else score
-        return score
-
-    def computational_score(self):
-        # aggregate returns dictionary, so just return the value
-        score = self.reviewerscore_set.all().aggregate(Avg('computational_merit')).get('computational_merit__avg', 0.0) 
-        score = 0.0 if score == None else score
-        return score
-
     def overall_score(self):
         # aggregate returns dictionary, so just return the value
-        return (self.research_score() + self.computational_score()) / 2
+        return self.reviewerscore_set.all().aggregate(Avg('score')).get('score__avg', None)
 
     def reviews(self):
         return self.reviewerscore_set.all().count()        
@@ -287,10 +276,10 @@ class ParticipantAccount(models.Model):
 
         def build_name(part1, part2):
             part1 = part1.lower()
-            part1 = "".join([x for x in part1 if x in 'abcdefghijklmnopqrstuvwxyz0123456789'])
+            part1 = "".join([x for x in part1 if x in 'abcdefghijklmnopqrstuvwxyz'])
 
             part2 = part2.lower()
-            part2 = "".join([x for x in part2 if x in 'abcdefghijklmnopqrstuvwxyz0123456789'])
+            part2 = "".join([x for x in part2 if x in 'abcdefghijklmnopqrstuvwxyz'])
 
             return "%s%s" % (part1[0],part2)
             
