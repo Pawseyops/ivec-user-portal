@@ -90,6 +90,7 @@ class Application(models.Model):
     complete =  models.BooleanField(verbose_name="ready to submit application")
     allocation_round = models.ForeignKey(AllocationRound, help_text=mark_safe("<p id='allocation_round_notice' class='help allocation_round_notice'>&nbsp;</p>")) # null=True for south
     priority_area = models.ForeignKey(PriorityArea, help_text=help_text_available_priority_areas)
+    completed_on = models.DateTimeField(auto_now_add=True, editable=False, null=True)
 
     def __cmp__(self, other):
         if self.overall_score() < other.overall_score():
@@ -101,7 +102,6 @@ class Application(models.Model):
 
     def __unicode__(self):
         return "%s" % self.project_title
-
 
     def overall_score(self):
         # aggregate returns dictionary, so just return the value
