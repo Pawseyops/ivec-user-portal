@@ -284,10 +284,10 @@ class ParticipantAccount(models.Model):
 
         def build_name(part1, part2):
             part1 = part1.lower()
-            part1 = "".join([x for x in part1 if x in 'abcdefghijklmnopqrstuvwxyz'])
+            part1 = "".join([x for x in part1 if x in 'abcdefghijklmnopqrstuvwxyz0123456789'])
 
             part2 = part2.lower()
-            part2 = "".join([x for x in part2 if x in 'abcdefghijklmnopqrstuvwxyz'])
+            part2 = "".join([x for x in part2 if x in 'abcdefghijklmnopqrstuvwxyz0123456789'])
 
             return "%s%s" % (part1[0],part2)
             
