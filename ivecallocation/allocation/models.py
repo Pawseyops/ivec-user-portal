@@ -103,9 +103,21 @@ class Application(models.Model):
     def __unicode__(self):
         return "%s" % self.project_title
 
+    def research_score(self):
+        # aggregate returns dictionary, so just return the value
+        score = self.reviewerscore_set.all().aggregate(Avg('research_merit')).get('research_merit__avg', 0.0)
+        score = 0.0 if score == None else score
+        return score
+
+    def computational_score(self):
+        # aggregate returns dictionary, so just return the value
+        score = self.reviewerscore_set.all().aggregate(Avg('computational_merit')).get('computational_merit__avg', 0.0)
+        score = 0.0 if score == None else score
+        return score
+
     def overall_score(self):
         # aggregate returns dictionary, so just return the value
-        return self.reviewerscore_set.all().aggregate(Avg('score')).get('score__avg', None)
+        return (self.research_score() + self.computational_score()) / 2
 
     def reviews(self):
         return self.reviewerscore_set.all().count()        
