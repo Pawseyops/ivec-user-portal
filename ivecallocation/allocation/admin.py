@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 import operator
+from datetime import datetime
 from ivecallocation.allocation.models import *
 from django.contrib import admin
 from django import forms
@@ -67,7 +68,7 @@ class AllocationRoundAdmin(admin.ModelAdmin):
 
 class ApplicationAdmin(admin.ModelAdmin):    
     save_on_top = True
-    list_display = ['project_title', 'created_by', 'core_hours_requested', 'priority_area', 'submitted', 'system', 'allocation_round']
+    list_display = ['project_title', 'created_by', 'core_hours_requested', 'priority_area', 'submitted', 'system', 'allocation_round', 'submitted_on']
     list_filter = ['complete', 'priority_area', 'allocation_round__system', 'allocation_round', 'range:hours_allocated']
     inlines = [ResearchClassificationInline, ParticipantInline, PublicationInline, ResearchFundingInline,
                SupportingFundingInline, SupercomputerJobInline, LibraryInline, ReviewerScoreInline, ReviewerCommentInline]
@@ -251,6 +252,13 @@ class ApplicationAdmin(admin.ModelAdmin):
     def submitted(self, obj):
         return "Submitted" if obj.complete else "Not yet submitted"
 
+
+    def submitted_on(self, obj):
+        if obj.complete:
+            return obj.completed_on if obj.completed_on else 'Prior to date tracking'
+        else:
+            return "--"
+
     # send an email notification of the new application
     def mail_notification(self, request, obj):
         template = EmailTemplate.objects.get(name='Application Notification')
@@ -283,6 +291,10 @@ class ApplicationAdmin(admin.ModelAdmin):
             directors = Group.objects.get(name='directors')
             if directors in request.user.groups.all():
                 obj.priority_area = PriorityArea.objects.get(code='director')
+
+        # Set the completed_on timestamp the first time the completed box is ticked
+        if not obj.completed_on and obj.complete:
+            obj.completed_on = datetime.now()
 
         obj.save()
         # mail our admins about the new application
