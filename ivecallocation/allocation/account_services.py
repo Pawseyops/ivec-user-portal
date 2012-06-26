@@ -21,7 +21,7 @@ def send_account_creation_mail(participant, request):
     email_hash = str(uuid.uuid4())
     link = "%s%s/%s" % (siteurl(request), 'account-request', email_hash)
     template = EmailTemplate.objects.get(name='Participant Account Request')
-    message = template.render_to_string({'participant': participant, 'link': link})
+    subject, message = template.render_to_string({'participant': participant, 'link': link})
     send_mail(subject, message, participant.email)
 
     participant.account_email_hash = email_hash
@@ -38,7 +38,7 @@ def send_account_created_notification_mail(participant, request):
     assert project is not None and len(project)>0, "Project could not be retrieved at time of 'account created' email for user %s" % (uid) 
     assert (hours_allocated is not None) and (hours_allocated > 0), "Invalid hours allocated (%s) at time of 'account created' email" % (str(hours_allocated) )
     template = EmailTemplate.objects.get(name='Participant Account Created')
-    message = template.render_to_string({'participant': participant, 'project': project, 'uid': uid})
+    subject, message = template.render_to_string({'participant': participant, 'project': project, 'uid': uid})
     send_mail(subject, message, participant.email)
 
     participant.status_id = Participant.STATUS['ACCOUNT_CREATED_EMAIL_SENT']
