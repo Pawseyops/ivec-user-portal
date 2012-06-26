@@ -1,0 +1,8 @@
+<%inherit file="base.html" />
+<% from ccg.utils.webhelpers import url %>
+
+<%def name="title()">Email Already Registered</%def>
+
+<p>
+    This email address is already registered. Try to <a href='${ url("/admin") }'>login</a>.
+</p>

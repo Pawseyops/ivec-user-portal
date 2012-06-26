@@ -1,0 +1,37 @@
+<% from ccg.utils.webhelpers import url %>
+<%namespace name="admin" module="django.contrib.admin.templatetags.adminmedia" />
+<!DOCTYPE HTML>
+<html lang="en-AU">
+    <head>
+        <meta charset="UTF-8">
+        <title>${self.title()}</title>
+
+        <link type="text/css" rel="stylesheet" media="all" href="${url('/static/css/html5reset-1.6.1.css')}">
+        <link type="text/css" rel="stylesheet" media="all" href="${url('/static/css/ivec.css')}">
+        <link type="text/css" rel="stylesheet" media="all" href="${admin_media_prefix()}css/login.css">
+
+        <!--[if lt IE 9]>
+        <script type="text/javascript" src="${url('/static/js/html5.js')}"></script>
+        <![endif]-->
+
+        ${self.head()}
+    </head>
+    <body>
+        <header>
+            <h1>${self.title()}</h1>
+        </header>
+
+        <section id="content">
+            ${next.body()}
+        <div id=footer>
+        <p>
+        Developed for iVEC by the Centre for Comparative Genomics, Murdoch University.
+        </p>
+        </div>
+        </section>
+
+    </body>
+</html>
+
+## Default head() implementation for pages that don't need anything special.
+<%def name="head()"></%def>
