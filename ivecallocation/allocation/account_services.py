@@ -369,7 +369,7 @@ def create_user_account(ldaph, participant, usercontainer, userdn, basedn):
                       detailsDict = detailsdict,
                       pwencoding = None,
                       #objectclasses = ['top', 'inetOrgPerson', 'organizationalPerson', 'person', 'posixAccount'],
-                      objectclasses = ['top', 'inetOrgPerson', 'organizationalPerson', 'person', 'posixAccount'],
+                      objectclasses = ['top', 'inetOrgPerson', 'organizationalPerson', 'person', 'posixAccount', 'inetUser'],
                       usercontainer = usercontainer,
                       userdn = userdn,
                       basedn = basedn)
