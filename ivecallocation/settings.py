@@ -105,14 +105,14 @@ DATABASES = {
 IVEC_LDAP_BASE      = 'dc=ivec,dc=org'
 IVEC_LDAP_USERBASE  = 'cn=users,dc=ldap,%s' % (IVEC_LDAP_BASE)
 IVEC_LDAP_GROUPBASE = 'cn=groups,dc=ldap,%s' % (IVEC_LDAP_BASE)
-IVEC_LDAP_SERVER    = 'ldap://absinthe.ivec.org'
+IVEC_LDAP_SERVER    = 'ldap://localhost'
 IVEC_LDAP_ADMINBASE = IVEC_LDAP_BASE
-IVEC_LDAP_USERDN    = 'uid=allocationapp,ou=Special Users,dc=informatics'
-IVEC_LDAP_PASSWORD  = 'default'
+IVEC_LDAP_USERDN    = 'cn=root,dc=ivec,dc=org'
+IVEC_LDAP_PASSWORD  = 'root'
 
 #LDAP settings for the directory of users for EPIC
-EPIC_LDAP_DOMAIN    = 'dc=com'
-EPIC_LDAP_COMPANY   = 'dc=my-domain'
+EPIC_LDAP_DOMAIN    = 'dc=ccg'
+EPIC_LDAP_COMPANY   = 'dc=epic'
 EPIC_LDAP_BASE      = '%s,%s' % (EPIC_LDAP_COMPANY, EPIC_LDAP_DOMAIN)
 EPIC_LDAP_USER_OU   = 'ou=People'
 EPIC_LDAP_USERBASE  = '%s,%s' % (EPIC_LDAP_USER_OU, EPIC_LDAP_BASE)
@@ -120,8 +120,8 @@ EPIC_LDAP_GROUPBASE = 'ou=Projects,ou=Groups,%s' % (EPIC_LDAP_BASE)
 EPIC_LDAP_SERVER    = 'ldap://localhost'
 EPIC_LDAP_ADMINBASE = EPIC_LDAP_BASE
 EPIC_LDAP_POSIXGROUPBASE = 'ou=POSIX,ou=Groups,%s' % (EPIC_LDAP_BASE)
-EPIC_LDAP_USERDN    = 'cn=Manager' # 'uid=portalapp,ou=System,ou=People,dc=ivec,dc=org'
-EPIC_LDAP_PASSWORD  = 'secret'
+EPIC_LDAP_USERDN    = 'cn=root,dc=epic,dc=ccg'
+EPIC_LDAP_PASSWORD  = 'root'
 
 #These need to be defined for the ldap module to work, and can be overridden later.
 AUTH_LDAP_SERVER = None
