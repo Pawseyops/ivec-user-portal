@@ -12,7 +12,7 @@ if not os.environ.has_key('SCRIPT_NAME'):
     os.environ['SCRIPT_NAME']=''
 
 SCRIPT_NAME =   os.environ['SCRIPT_NAME']
-PROJECT_DIRECTORY = os.environ['PROJECT_DIRECTORY']
+PROJECT_DIRECTORY = os.path.dirname(os.path.abspath(__file__))
 
 
 DEBUG = True
@@ -40,7 +40,6 @@ LOGOUT_URL = url('/accounts/logout/')
 ##
 TEMPLATE_LOADERS = [
     'ccg.template.loaders.makoloader.filesystem.Loader',
-    'django.template.loaders.filesystem.Loader',
     'django.template.loaders.app_directories.Loader',
 ]
 
@@ -52,10 +51,11 @@ MIDDLEWARE_CLASSES = [
     'django.middleware.doc.XViewMiddleware',
     'ccg.middleware.ssl.SSLRedirect'
 ]
-TEMPLATE_DIRS = [
-    os.path.join(PROJECT_DIRECTORY,"templates"),
-]
+
 INSTALLED_APPS = [
+    'django_extensions',
+    'ivecallocation.allocation',
+    'registration',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
@@ -64,7 +64,6 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'south',
 ]
-
 
 # a directory that will be writable by the webserver, for storing various files...
 WRITABLE_DIRECTORY = os.path.join(PROJECT_DIRECTORY,"scratch")
@@ -84,9 +83,9 @@ SESSION_COOKIE_AGE = 60*60
 
 
 STATIC_ROOT = os.path.join(PROJECT_DIRECTORY,"static")
-STATIC_URL = '/static/'
+STATIC_URL = url('/static/')
 MEDIA_ROOT = os.path.join(PROJECT_DIRECTORY,"static","media")
-MEDIA_URL = '/static/media/'
+MEDIA_URL = url('/static/media/')
 ADMIN_MEDIA_PREFIX = url('/static/admin/')
 
 # there is no default setup here as one of these configs should be made 'default' by the settings
@@ -94,8 +93,8 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2', # Add 'postgresql_psycopg2', 'postgresql', 'mysql', 'sqlite3' or 'oracle'.
         'NAME': 'ivecallocation',                      # Or path to database file if using sqlite3.
-        'USER': 'postgres',                      # Not used with sqlite3.
-        'PASSWORD': '',                  # Not used with sqlite3.
+        'USER': 'ivecallocation',                      # Not used with sqlite3.
+        'PASSWORD': 'ivecallocation',                  # Not used with sqlite3.
         'HOST': '',                      # Set to empty string for localhost. Not used with sqlite3.
         'PORT': '',                      # Set to empty string for default. Not used with sqlite3.
     }
@@ -173,11 +172,11 @@ RECAPTCHA_PRIVATE_KEY = "6LdDRcgSAAAAAOY7q8rX8rPRbCKNRY6-cxm2WL4q"
 ###############################################
 ROOT_URLCONF = 'ivecallocation.urls'
 
-INSTALLED_APPS.extend( [
-    'django_extensions',
-    'allocation',
-    'registration',
-] )
+#INSTALLED_APPS.extend( [
+#    'django_extensions',
+#    'ivecallocation.allocation',
+#    'registration',
+#] )
 
 AUTHENTICATION_BACKENDS = [
  'django.contrib.auth.backends.ModelBackend',
@@ -197,8 +196,10 @@ SSL_FORCE = True
 ##
 ## LOGGING
 ##
-LOG_DIRECTORY = os.path.join(PROJECT_DIRECTORY,"logs")
-assert os.path.exists(LOG_DIRECTORY), "No logs directory, please create one: %s" % LOG_DIRECTORY
+LOG_DIRECTORY = os.path.join(PROJECT_DIRECTORY, "logs")
+#if not os.path.exists(LOG_DIRECTORY):
+#    os.mkdir(LOG_DIRECTORY)
+
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': True,
@@ -293,12 +294,3 @@ APPLICATIONS_OPEN = False
 # ou=POSIX,ou=Groups,dc=ivec,dc=org
 # needs objectClass = 'top' and 'posixGroup'
 EPIC_LDAP_POSIXGROUPBASE = 'ou=POSIX,ou=Groups,%s' % (EPIC_LDAP_BASE)
-
-# Override defaults with your local instance settings.
-# They will be loaded from appsettings.ivecallocation, which can exist anywhere
-# in the instance's pythonpath. This is a CCG convention designed to support
-# global shared settings among multiple Django projects.
-try:
-    from appsettings.ivecallocation import *
-except ImportError, e:
-    pass

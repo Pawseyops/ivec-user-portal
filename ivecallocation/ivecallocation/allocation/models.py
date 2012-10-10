@@ -6,7 +6,7 @@ from django.core.urlresolvers import reverse
 from django.utils.safestring import mark_safe
 from mako.template import Template
 from datetime import date
-from allocation.ldap_helper import epic_ldap_handler
+from ivecallocation.allocation.ldap_helper import epic_ldap_handler
 
 
 #from choices import *
