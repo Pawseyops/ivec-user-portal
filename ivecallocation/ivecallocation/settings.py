@@ -12,8 +12,11 @@ if not os.environ.has_key('SCRIPT_NAME'):
     os.environ['SCRIPT_NAME']=''
 
 SCRIPT_NAME =   os.environ['SCRIPT_NAME']
-PROJECT_DIRECTORY = os.path.dirname(os.path.abspath(__file__))
+#PROJECT_DIRECTORY = os.path.dirname(os.path.abspath(__file__))
 
+WEBAPP_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+
+PROJECT_DIRECTORY = WEBAPP_ROOT
 
 DEBUG = True
 DEV_SERVER = True
@@ -55,7 +58,6 @@ MIDDLEWARE_CLASSES = [
 INSTALLED_APPS = [
     'django_extensions',
     'ivecallocation.allocation',
-    'registration',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
@@ -63,6 +65,7 @@ INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.staticfiles',
     'south',
+    'registration',
 ]
 
 # a directory that will be writable by the webserver, for storing various files...
@@ -82,7 +85,7 @@ MAKO_MODULENAME_CALLABLE = ''
 SESSION_COOKIE_AGE = 60*60
 
 
-STATIC_ROOT = os.path.join(PROJECT_DIRECTORY,"static")
+STATIC_ROOT = os.path.join(PROJECT_DIRECTORY, "static")
 STATIC_URL = url('/static/')
 MEDIA_ROOT = os.path.join(PROJECT_DIRECTORY,"static","media")
 MEDIA_URL = url('/static/media/')
