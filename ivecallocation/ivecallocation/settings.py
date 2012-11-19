@@ -12,7 +12,7 @@ if not os.environ.has_key('SCRIPT_NAME'):
     os.environ['SCRIPT_NAME']=''
 
 SCRIPT_NAME =   os.environ['SCRIPT_NAME']
-PROJECT_DIRECTORY = os.path.dirname(os.path.abspath(__file__))
+PROJECT_DIRECTORY = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 
 DEBUG = True
