@@ -299,6 +299,12 @@ class ApplicationAdmin(admin.ModelAdmin):
         obj.save()
         # mail our admins about the new application
         if not change: self.mail_notification(request, obj)
+
+        # mail our admins about the new application
+        if change:
+            if obj.complete:
+                self.mail_notification(request, obj)
+
     
     # Attach the request to the form so we can construct it dynamically
     # based on the request. Some things are just much easier in the form class!
