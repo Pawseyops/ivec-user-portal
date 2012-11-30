@@ -297,3 +297,12 @@ APPLICATIONS_OPEN = False
 # ou=POSIX,ou=Groups,dc=ivec,dc=org
 # needs objectClass = 'top' and 'posixGroup'
 EPIC_LDAP_POSIXGROUPBASE = 'ou=POSIX,ou=Groups,%s' % (EPIC_LDAP_BASE)
+
+
+try:
+    print
+    print 'Attepting to import appsettings.ivecallocation if it exists ...',
+    from appsettings.ivecallocation import *
+    print 'OK'
+except Exception, e:
+    print 'Fail'
