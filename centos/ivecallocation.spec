@@ -4,6 +4,12 @@
 %define unmangled_version 1.1.3
 %define release 1
 %define webapps /usr/local/webapps
+%define installdir %{webapps}/%{name}
+%define buildinstalldir %{buildroot}/%{installdir}
+%define settingsdir %{buildinstalldir}/settings
+%define logsdir %{buildinstalldir}/logs
+%define scratchdir %{buildinstalldir}/scratch
+%define staticdir %{buildinstalldir}/static
 
 # Turn off brp-python-bytecompile because it makes it difficult to generate the file list
 # We still byte compile everything by passing in -O paramaters to python
@@ -33,47 +39,41 @@ Django iVEC Allocation web application
 # Nothing, all handled by install
 
 %install
-
 NAME=%{name}
-INSTALLDIR=%{buildroot}/%{webapps}/%{name}
-SETTINGSDIR=$INSTALLDIR/settings
-LOGSDIR=$INSTALLDIR/logs
-SCRATCHDIR=$INSTALLDIR/scratch
-STATICDIR=$INSTALLDIR/static
 
 # Make sure the standard target directories exist
-mkdir -p $SETTINGSDIR
-mkdir -p $LOGSDIR
-mkdir -p $SCRATCHDIR
-mkdir -p $STATICDIR
-
+mkdir -p %{settingsdir}
+mkdir -p %{logsdir}
+mkdir -p %{scratchdir}
+mkdir -p %{staticdir}
 
 # Create a python prefix
-mkdir -p $INSTALLDIR/{lib,bin,include}
+mkdir -p %{buildinstalldir}/{lib,bin,include}
 
 # Install package into the prefix
 cd $CCGSOURCEDIR
-export PYTHONPATH=$INSTALLDIR/lib
-easy_install -O1 --prefix $INSTALLDIR --install-dir $INSTALLDIR/lib .
+export PYTHONPATH=%{buildinstalldir}/lib
+easy_install -O1 --prefix %{buildinstalldir} --install-dir %{buildinstalldir}/lib .
 
 # Create settings symlink so we can run collectstatic with the default settings
-touch $SETTINGSDIR/__init__.py
-ln -fs ..`find $INSTALLDIR -path "*/$NAME/settings.py" | sed s:^$INSTALLDIR::` $SETTINGSDIR/settings.py
+touch %{settingsdir}/__init__.py
+ln -fs ..`find %{buildinstalldir} -path "*/$NAME/settings.py" | sed s:^%{buildinstalldir}::` %{settingsdir}/settings.py
 
-# Run collectstatic and add all those files to INSTALLED_FILES
-python -O $INSTALLDIR/bin/django-admin.py collectstatic --noinput --pythonpath=$INSTALLDIR --settings=settings.settings
-
-install -D centos/%{name}_mod_wsgi_daemons.conf $RPM_BUILD_ROOT/etc/httpd/conf.d/%{name}_mod_wsgi_daemons.conf
-install -D centos/%{name}_mod_wsgi.conf $RPM_BUILD_ROOT/etc/httpd/conf.d/%{name}_mod_wsgi.conf
-install -D %{name}/django.wsgi $INSTALLDIR/django.wsgi
-install -m 0755 -D %{name}/%{name}-manage.py $RPM_BUILD_ROOT/%{_bindir}/%{name}
+# Install WSGI configuration into httpd/conf.d
+install -D centos/%{name}_mod_wsgi_daemons.conf %{buildroot}/etc/httpd/conf.d/%{name}_mod_wsgi_daemons.conf
+install -D centos/%{name}_mod_wsgi.conf %{buildroot}/etc/httpd/conf.d/%{name}_mod_wsgi.conf
+install -D centos/django.wsgi %{buildinstalldir}/django.wsgi
+install -m 0755 -D centos/%{name}-manage.py %{buildroot}/%{_bindir}/%{name}
 
 # At least one python package has hardcoded shebangs to /usr/local/bin/python
-find $INSTALLDIR -name '*.py' -type f | xargs sed -i 's:^#!/usr/local/bin/python:#!/usr/bin/python:'
-find $INSTALLDIR -name '*.py' -type f | xargs sed -i 's:^#!/usr/local/python:#!/usr/bin/python:'
+find %{buildinstalldir} -name '*.py' -type f | xargs sed -i 's:^#!/usr/local/bin/python:#!/usr/bin/python:'
+find %{buildinstalldir} -name '*.py' -type f | xargs sed -i 's:^#!/usr/local/python:#!/usr/bin/python:'
+
+%post
+ivecallocation collectstatic --noinput > /dev/null
 
 %clean
-rm -rf $RPM_BUILD_ROOT
+rm -rf %{buildroot}
 
 %files
 %defattr(-,root,root,-)
