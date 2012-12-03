@@ -15,7 +15,7 @@ if __name__ == "__main__":
     oldpath = sys.path[1:]
     sys.path = sys.path[:1]
     site.addsitedir(webapp_root)
-    site.addsitedir(os.path.join(webapp_root, "virtualenv/lib"))
+    site.addsitedir(os.path.join(webapp_root, "lib"))
     sys.path.extend(oldpath)
 
     # setup the settings module for the WSGI app
