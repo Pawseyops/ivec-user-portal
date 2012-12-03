@@ -63,21 +63,21 @@ ln -fs ..`find $INSTALLDIR -path "*/$NAME/settings.py" | sed s:^$INSTALLDIR::` $
 # Run collectstatic and add all those files to INSTALLED_FILES
 python -O $INSTALLDIR/bin/django-admin.py collectstatic --noinput --pythonpath=$INSTALLDIR --settings=settings.settings
 
-install -D centos/ivecallocation_mod_wsgi_daemons.conf $RPM_BUILD_ROOT/etc/httpd/conf.d/ivecallocation_mod_wsgi_daemons.conf
-install -D centos/ivecallocation_mod_wsgi.conf $RPM_BUILD_ROOT/etc/httpd/conf.d/ivecallocation_mod_wsgi.conf
-install -D ivecallocation/django.wsgi $INSTALLDIR/django.wsgi
-install -m 0755 -D ivecallocation/ivecallocation-manage.py $RPM_BUILD_ROOT/%{_bindir}/ivecallocation
+install -D centos/%{name}_mod_wsgi_daemons.conf $RPM_BUILD_ROOT/etc/httpd/conf.d/%{name}_mod_wsgi_daemons.conf
+install -D centos/%{name}_mod_wsgi.conf $RPM_BUILD_ROOT/etc/httpd/conf.d/%{name}_mod_wsgi.conf
+install -D %{name}/django.wsgi $INSTALLDIR/django.wsgi
+install -m 0755 -D %{name}/%{name}-manage.py $RPM_BUILD_ROOT/%{_bindir}/%{name}
 
 # At least one python package has hardcoded shebangs to /usr/local/bin/python
 find $INSTALLDIR -name '*.py' -type f | xargs sed -i 's:^#!/usr/local/bin/python:#!/usr/bin/python:'
 find $INSTALLDIR -name '*.py' -type f | xargs sed -i 's:^#!/usr/local/python:#!/usr/bin/python:'
 
 %clean
-#rm -rf $RPM_BUILD_ROOT
+rm -rf $RPM_BUILD_ROOT
 
 %files
 %defattr(-,root,root,-)
 /etc/httpd/conf.d/*
-%{_bindir}/ivecallocation
+%{_bindir}/%{name}
 %attr(-,apache,,apache) %{webapps}/%{name}
 
