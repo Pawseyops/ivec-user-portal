@@ -1,0 +1,16 @@
+^ivecallocation/virtualenv-.*$
+^ivecallocation/virt_.*$
+^ivecallocation/appsettings$
+^ivecallocation/scratch$
+^ivecallocation/logs/.*.log$
+^ivecallocation/build/*
+^ivecallocation/dist/*
+^ivecallocation/django_ivecallocation.egg-info/*
+.*\.pyc$
+\.DS_Store$
+\.vagrant$
+Vagrantfile
+fab-tmp
+^bootstrap$
+virt_ivecallocation/*
+.*\.log$
