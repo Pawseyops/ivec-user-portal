@@ -13,7 +13,7 @@ for package in ['allocation']:
     os.chdir(start_dir)
 
 setup(name='django-ivecallocation',
-    version='1.0',
+    version='1.1.4',
     description='iVEC Allocation',
     long_description='Django iVEC Allocation web application',
     author='Centre for Comparative Genomics',
