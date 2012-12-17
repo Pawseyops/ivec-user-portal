@@ -302,7 +302,8 @@ class ApplicationAdmin(admin.ModelAdmin):
 
         # mail our admins about the new application
         if change:
-            if obj.complete:
+            # only email if the form has just had complete checked
+            if obj.complete and 'complete' in form.changed_data:
                 self.mail_notification(request, obj)
 
     
