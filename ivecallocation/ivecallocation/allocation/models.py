@@ -327,13 +327,13 @@ class ParticipantAccount(models.Model):
         '''Ensures the users uidnumber and gidnumber are over 20k, and unique in the database.
            Can only be called after the user has already been saved.
         '''
-        offset = 20050
+        offset = 21000
         maxid = 29999
         # Make sure the new LDAP uid doesn't already exist on the Epic LDAP server
         # Iterate 5 times, which should be ample. If we hit the end, it might require
         # human intervention anyway so chuck an exception.
         epic = epic_ldap_handler()
-        for newid in range(self.id + offset, self.id + offset + 5):
+        for newid in range(self.id + offset, self.id + offset + 100):
             if newid > maxid:
                 raise Exception('Maximum Epic LDAP uidNumber of %s exceeded'%maxid)
             user = epic.get_user_details_from_attribute(attribute = 'uidNumber', value = newid)
