@@ -22,7 +22,7 @@ Include project/team management experience.<br/>
 
 help_text_research_significance = "Include relevance to national or state priority areas (5000 characters max)."
 
-help_text_computational_methodology = """Indicate why you need access to the <i>epic</i> supercomputer.<br/>
+help_text_computational_methodology = """Indicate why you need access to the supercomputer.<br/>
 Describe the scaling performance of algorithms and/or software if known,
 giving supporting references/examples where possible. If the code is
 optimised to work on a specific architecture/interconnect provide details

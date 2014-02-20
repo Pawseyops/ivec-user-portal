@@ -177,7 +177,6 @@ class ApplicationAdmin(admin.ModelAdmin):
               'core_hours_requested',
               'storage_temporary',
               'storage_resident',
-              'storage_pbstore',
               'data_transfers'
               ),
           'description': help_text_supercomputer_job
@@ -273,7 +272,7 @@ class ApplicationAdmin(admin.ModelAdmin):
     def save_formset(self, request, form, formset, change):
             instances = formset.save(commit=False)
             for instance in instances:
-                print instance
+                # print instance
                 if (isinstance(instance, ReviewerScore) or
                     isinstance(instance, ReviewerComment)):
                     if not instance.reviewer:
