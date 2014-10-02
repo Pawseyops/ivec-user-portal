@@ -7,12 +7,12 @@ help_text_project_title = "Please make it informative, it may be published (100 
 help_text_project_summary = "Please make this suitable for a general audience, and highlight the aims, novelty, and significance of the outcomes.  Again, assume that the project summary will be published. (1000 characters max)."
 
 help_text_priority_areas = """
-There are currently two priority areas that each gain independent access to 25% of the Pawsey-funded infrastructure;
-radio astronomy and the geosciences.<br/>
-Note that your application will also be considered under the other allocation schemes."""
+There are a range of allocation schemes to apply for Pawsey resources. For more information about the allocation schemes, visit:<br/> <a href=https://portal.ivec.org/docs/Supercomputers/Supercomputing_Access>https://portal.ivec.org/docs/Supercomputers/Supercomputing_Access</a>"""
 
 help_text_available_priority_areas = """
-Only priority areas available for the chosen allocation round are presented here."""
+Only Allocation Schemes available for the chosen allocation round are presented here."""
+
+help_text_funding_type = """Type of funding."""
 
 help_text_research_record = """Relevant significant contributions to the research field.<br/>
 Include supercomputing experience.<br/>
@@ -28,7 +28,7 @@ giving supporting references/examples where possible. If the code is
 optimised to work on a specific architecture/interconnect provide details
 of these optimisations.<br/>
 Describe your workflow.   E.g. expected job size and number of simultaneous
-jobs, and associated analysis/production of large data sets.<br/>
+jobs, and associated pre/post processing requirements, data set sizes.<br/>
 Describe codes used in your research, identifying size of jobs
 in terms of number of processes, data volumes worked with, computing resources utilised etc.<br/>
 (5000 characters max).
@@ -37,9 +37,9 @@ in terms of number of processes, data volumes worked with, computing resources u
 help_text_core_hours="""How much compute time do you require in this allocation period?  For CPU based resources, a Service Unit is a core hour.  For GPU based resources, this is a GPU hour."""
 
 
-help_text_storage_temporary="""Temporary scratch is only required during the running of jobs, including the pre/post processing of datasets (in terabytes)."""
+help_text_storage_temporary="""Temporary storage (scratch) is only required during the running of jobs, including the pre/post processing of datasets (in terabytes)."""
 
-help_text_storage_resident="""Resident storage refers to the data needed for day-to-day working, e.g. holding a number of restart files or input datasets (in terabytes)."""
+help_text_storage_resident="""Resident storage (group) refers to the data needed for day-to-day working, e.g. holding a number of restart files or input datasets (in terabytes)."""
 
 help_text_storage_pbstore="""The iVEC Petascale Data Store is intended for longer term archiving of data sets, not for the above storage types (in terabytes)."""
 
@@ -79,7 +79,7 @@ help_text_supercomputer_job = """<h4>Resource Request</h4><br/>
 """
 
 help_text_libraries = """<h4>Applications, Tools or Libraries</h4><br/>
-&bull; Please make sure you have access to the source code, or that a compiled version appropriate to the <i>epic</i> supercomputer is available.<br/>
+&bull; Please make sure you have access to the source code, or that a compiled version appropriate to the requested resource is available.<br/>
 &bull; Indicate in the Licensing column whether a Licence is required, and if so whether you have such a licence.<br/>
 &bull; Include requirements for libraries such as SCALAPACK, FFTW and indicate if you use a common version or install your own.<br/>
 &bull; If you build your own applications, libraries and/or tools please indicate which compilers you use.<br/>
@@ -99,3 +99,9 @@ help_text_allocationround_priority_area = """Applications for this round can onl
 help_text_emailtemplate_name = """The name of your email template"""
 help_text_emailtemplate_subject = """The subject header for emails sent using this template"""
 help_text_emailtemplate_template = """Your email template body in Mako templating syntax"""
+
+help_text_exportcontrols = """Use of Pawsey Project Infrastructure is conditional on complying with relevant laws and export controls, including:</br>
+&bull; Australian Defence Trade Controls Act <a href="https://exportcontrols.govspace.gov.au/">https://exportcontrols.govspace.gov.au/</a></br>
+&bull; United National Security Council (UNSC) sanctions regimes and the Australian autonomous sanctions regimes <a href="http://www.dfat.gov.au/sanctions/">http://www.dfat.gov.au/sanctions/</a></br>
+&bull; U.S. Export Controls <a href="http://www.state.gov/strategictrade/overview/">http://www.state.gov/strategictrade/overview/</a></br>
+If you have any questions or concerns about any of these declarations, please contact <a href=mailto:help@ivec.org>help@ivec.org</a>."""

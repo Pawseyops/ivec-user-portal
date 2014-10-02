@@ -41,7 +41,7 @@ class ApplicationForm(forms.ModelForm):
         now = datetime.now()
         
         self.fields["allocation_round"].empty_label = "-- select allocation round --"
-        self.fields["priority_area"].empty_label = "-- select priority area --"
+        self.fields["priority_area"].empty_label = "-- select allocation scheme --"
         
         instance = getattr(self, 'instance', None)
         if instance and instance.id:
