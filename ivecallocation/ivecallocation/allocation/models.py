@@ -47,6 +47,12 @@ class PriorityArea(models.Model):
     def __unicode__(self):
         return self.name
 
+class FundingType(models.Model):
+    name = models.CharField(max_length=32)
+
+    def __unicode__(self):
+        return self.name
+
 class AllocationRound(models.Model):
     system = models.ForeignKey(System, help_text=help_text_allocationround_system)
     start_date = models.DateField(help_text=help_text_allocationround_start_date)
@@ -87,9 +93,11 @@ class Application(models.Model):
     ldap_project_name = models.CharField(max_length=256, null=True, blank=True)
     created_by = models.ForeignKey(DjangoUser, editable=False, related_name="%(class)s_creators",null=True)
     created_on = models.DateTimeField(auto_now_add=True, editable=False)
+    ausdeftradecontrol = models.BooleanField(verbose_name="I understand that using the Pawsey Project Infrastructure is conditional on complying with the Australian Defence Trade Controls Act, UNSC sanctions regimes and the Australian autonomous sanctions regimes.")
+    usexportcontrol = models.BooleanField(verbose_name="I understand that using the Pawsey Project Infrastructure is conditional on complying with US Export Controls.")
     complete =  models.BooleanField(verbose_name="ready to submit application")
     allocation_round = models.ForeignKey(AllocationRound, help_text=mark_safe("<p id='allocation_round_notice' class='help allocation_round_notice'>&nbsp;</p>")) # null=True for south
-    priority_area = models.ForeignKey(PriorityArea, help_text=help_text_available_priority_areas)
+    priority_area = models.ForeignKey(PriorityArea, verbose_name="Allocation Scheme", help_text=help_text_available_priority_areas)
     completed_on = models.DateTimeField(auto_now_add=True, editable=False, null=True)
 
     def __cmp__(self, other):
@@ -176,7 +184,8 @@ class Participant(models.Model):
     application = models.ForeignKey(Application)
     name = models.CharField(max_length=256, null=True, blank=True)
     department_institute = models.CharField(max_length=128, verbose_name="Department, Institution", null=True, blank=True)
-    email = models.EmailField(null=True, blank=True)
+    email = models.EmailField(null=True, blank=True, verbose_name="Preferred Email")
+    institutional_email = models.EmailField(null=True, blank=True)
     account = models.BooleanField()
     admin = models.BooleanField()
     student = models.BooleanField()
@@ -365,10 +374,12 @@ class Publication(models.Model):
 class ResearchFunding(models.Model):
     application = models.ForeignKey(Application)    
     participant = models.CharField(max_length=256, null=True, blank=True)
-    funding_source = models.CharField(max_length=256, help_text="Include grant ID number if applicable", null=True, blank=True)
+    funding_type = models.ForeignKey(FundingType, verbose_name="Funding Type", help_text=help_text_funding_type)
+    funding_source = models.CharField(max_length=256, verbose_name="Funding body name", help_text="Include grant ID number if applicable", null=True, blank=True)
     title = models.CharField(max_length=256, null=True, blank=True)
-    years = models.CharField(max_length=64, null=True, blank=True)
-    total_funding = models.CharField(max_length=64, null=True, blank=True)
+    years = models.CharField(max_length=16, verbose_name="Start year", null=True, blank=True)
+    end_year = models.CharField(max_length=16, verbose_name="End year", null=True, blank=True)
+    total_funding = models.CharField(max_length=64, verbose_name="Total funding (AUD)", null=True, blank=True)
 
     class Meta:
         verbose_name = "research funding"
@@ -381,10 +392,12 @@ class ResearchFunding(models.Model):
 class SupportingFunding(models.Model):
     application = models.ForeignKey(Application)    
     participant = models.CharField(max_length=256, null=True, blank=True)
-    funding_source = models.CharField(max_length=256, help_text="Include grant ID number if applicable", null=True, blank=True)
+    funding_type = models.ForeignKey(FundingType, verbose_name="Funding Type", help_text=help_text_funding_type)
+    funding_source = models.CharField(max_length=256, verbose_name="Funding body name", help_text="Include grant ID number if applicable", null=True, blank=True)
     title = models.CharField(max_length=256, null=True, blank=True)
-    years = models.CharField(max_length=64, null=True, blank=True)
-    total_funding = models.CharField(max_length=64, null=True, blank=True)
+    years = models.CharField(max_length=64, verbose_name="Start year", null=True, blank=True)
+    end_year = models.CharField(max_length=64, verbose_name="End year", null=True, blank=True)
+    total_funding = models.CharField(max_length=64, verbose_name="Total funding (AUD)", null=True, blank=True)
 
     class Meta:
         verbose_name = "supporting funding"
@@ -403,7 +416,7 @@ class SupercomputerJob(models.Model):
 
     application = models.ForeignKey(Application)
     job_type = models.CharField(max_length=1, choices=JOB_TYPE_CHOICES, null=True, blank=True)
-    processes = models.IntegerField(verbose_name="Number of (MPI) processes per job", null=True, blank=True)
+    processes = models.IntegerField(verbose_name="Number of Cores/GPUs per job", null=True, blank=True)
     processes_per_node = models.IntegerField(null=True, blank=True)
     wallclock_time_per_job = models.CharField(max_length=32, null=True, blank=True)
     number_of_type_of_job = models.IntegerField(verbose_name="Number of jobs of this type over the entire project", null=True, blank=True)

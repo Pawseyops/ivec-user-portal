@@ -19,6 +19,7 @@ from ivecallocation import settings
 class ResearchClassificationInline(admin.TabularInline):
     model = ResearchClassification
     extra = 1
+    max_num = 3
 
 class ParticipantInline(admin.TabularInline):
     model = Participant
@@ -96,7 +97,7 @@ class ApplicationAdmin(admin.ModelAdmin):
           }
         ),
 
-        ('Priority Areas', 
+        ('Allocation Scheme', 
          {'fields': 
               (
               'priority_area',             
@@ -202,6 +203,15 @@ class ApplicationAdmin(admin.ModelAdmin):
                ),
            'description': ''
            }
+         ),
+         ('Declarations',
+            {'fields':
+                 (
+                 'ausdeftradecontrol',
+                 'usexportcontrol',
+                 ),
+            'description': help_text_exportcontrols
+            }
          ),
          ('Submit', 
           {'fields': 
@@ -369,7 +379,7 @@ class ApplicationAdmin(admin.ModelAdmin):
             if i[0] == 'Review':
                 return
         self.exclude = []
-        self.fieldsets.insert(-1, ('Review', 
+        self.fieldsets.insert(-2, ('Review', 
                                     {'fields': 
                                         (
                                         'ReviewerScoreInline',              
@@ -386,7 +396,7 @@ class ApplicationAdmin(admin.ModelAdmin):
 
 class ParticipantAdmin(admin.ModelAdmin):
     save_on_top = True
-    list_display = ['name', 'email', 'department_institute', 'application_id', 'status', 'account', 'has_account_details', 'fetched_from_ldap', 'hours_allocated', 'application_complete']
+    list_display = ['name', 'email', 'institutional_email', 'department_institute', 'application_id', 'status', 'account', 'has_account_details', 'fetched_from_ldap', 'hours_allocated', 'application_complete']
     # NOTE: the 'application__complete' filter depends on a patch of '/home/fjanon/ivecallocation/trunk/ivecallocation/django/contrib/admin/filterspecs.py'
     # See the note in that file
     list_filter = ['account', 'admin', 'student', 'status', 'range:application__hours_allocated', 'application__complete']
