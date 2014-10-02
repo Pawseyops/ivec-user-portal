@@ -115,7 +115,7 @@ def create_application_group(ldaphandler, application):
     Create the group in LDAP for the application. Create the parent area if needed
     return the project name if successful else None
     '''
-    if application.ldap_project_name:
+    if application.ldap_project_name is not None and application.ldap_project_name != '':
         groupname = application.ldap_project_name
     else:
         groupname = '%s%s' % (application.priority_area.code, str(application.id))
@@ -234,7 +234,10 @@ def create_user_accounts(participant_id_list):
                         # user added or updated to the ldap directory, add the user to the group, create the group if it doesn't exist
                         (parentarea, childarea, areanum) = get_application_area(participant.application)
 
-                        groupname = '%s%s' % (childarea, areanum)
+                        if participant.application.ldap_project_name is not None and participant.application.ldap_project_name != '':
+                            groupname = participant.application.ldap_project_name
+                        else:
+                            groupname = '%s%s' % (childarea, areanum)
                         gidnumber = str(30010 + participant.application.id)
                         description = str(participant.application.project_title)
                         groupdone = create_group(ldaphandler = ldaph, parentou = parentarea, groupname = groupname, description = description, gidnumber = gidnumber)
