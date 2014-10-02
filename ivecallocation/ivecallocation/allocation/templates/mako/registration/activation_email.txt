@@ -6,11 +6,11 @@ Recently this email address was used to create a profile to apply for resources 
 
 To activate this profile, please use this link:
 
-http://${current_site}${ url('/accounts/activate/') }${activation_key}/
+https://${current_site}${ url('/accounts/activate/') }${activation_key}/
 
 After activation you can login to the application site here:
 
-http://${current_site}${ url('/login/') }
+https://${current_site}${ url('/login/') }
 
 If you did not create this profile, please disregard this email.
 

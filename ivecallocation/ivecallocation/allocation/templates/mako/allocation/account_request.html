@@ -1,7 +1,7 @@
 <%inherit file="registration/base.html" />
 <% from ccg.utils.webhelpers import url %>
 
-<%def name="title()">2011 Application for Resources on Pawsey-Funded iVEC Infrastructure</%def>
+<%def name="title()">2014 Application for Resources on Pawsey-Funded iVEC Infrastructure</%def>
 
 <div style="margin: 1em;">
 <p>
@@ -15,7 +15,7 @@ Should you have any problem completing this form please contact <a href="mailto:
 </div>
 
 <form action="." method="POST" style="float: none;">${ csrf_tag(csrf_token) }
-    <p>Use of iVEC infrastructure is subject to <a href="http://www.ivec.org/services/apply-account/condition-use">Conditions of Use</a>. Please ensure that you have read these conditions and indicate you agree to these conditions below.</p>
+    <p>Use of iVEC infrastructure is subject to <a href="http://portal.ivec.org/docs/IVEC_Conditions_of_Use">Conditions of Use</a>. Please ensure that you have read these conditions and indicate you agree to these conditions below.</p>
     <p>
         Your email address is: ${ participant_email }.
     </p>
