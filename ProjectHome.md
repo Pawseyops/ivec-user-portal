@@ -1,0 +1,1 @@
+iVEC User Portal Project. The project includes a fork of the iVEC Allocation application developed and hosted by the CCG at Murdoch University, the original google code project for which can be found here: https://code.google.com/p/ivecallocation
